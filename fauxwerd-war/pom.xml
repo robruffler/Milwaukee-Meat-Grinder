@@ -5,7 +5,7 @@
   <artifactId>fauxwerd-war</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>fauxwerd-war Maven Webapp</name>
+  <name>Fauxwerd</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
