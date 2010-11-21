@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>fauxwerd</groupId>
-  <artifactId>fauxwerd-war</artifactId>
+  <artifactId>fauxwerd</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>Fauxwerd</name>
@@ -16,21 +16,21 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>fauxwerd-war</finalName>
+    <finalName>fauxwerd</finalName>
     <plugins>
       <plugin>
       	<groupId>org.codehaus.cargo</groupId>
       	<artifactId>cargo-maven2-plugin</artifactId>
       	<version>1.0.4</version>
-		<configuration>
-		  <container>
-			<containerId>tomcat6x</containerId>
-		  </container>
-		  <configuration>
-			<type>existing</type>
-			<home>/env/tomcat/apache-tomcat-6.0.29</home>
-		  </configuration>		
-		</configuration>      	
+      	<configuration>
+      	  <container>
+      	    <containerId>tomcat6x</containerId>
+      	  </container>
+      	  <configuration>
+      	    <type>existing</type>
+      	    <home>/env/tomcat/apache-tomcat-6.0.29</home>
+      	  </configuration>		
+      	</configuration>      	
       </plugin>
     </plugins>    
   </build>
