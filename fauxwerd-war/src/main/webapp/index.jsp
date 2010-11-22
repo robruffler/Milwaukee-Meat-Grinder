@@ -5,6 +5,7 @@
 	</head>
 	<body>
 		<header>
+			<p><img src="images/fauxwerd.png" alt="faxuwerd.com"/></p>
 			<h1>Hello World!  Welcome to the future!</h1>
 			<nav>
 				<ul>
