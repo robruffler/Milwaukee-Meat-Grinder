@@ -6,10 +6,10 @@
 	<body>
 		<header>
 			<p><img src="images/fauxwerd.png" alt="faxuwerd.com"/></p>
-			<h1>Hear what you've been missing.'</h1>
+			<h1>Hear what you've been missing.</h1>
 		</header>
 		<article>
-			<h1>Stay tuned for more soon.</h1>
+			<h2>Stay tuned for more soon.</h2>
 			<p>We're working hard to serve you better.</p>
 		</article>
 	</body>
