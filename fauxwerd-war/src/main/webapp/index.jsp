@@ -11,6 +11,7 @@
 		<article>
 			<h2>Stay tuned for more soon.</h2>
 			<p>We're working hard to serve you better.</p>
+			<p><a href="http://twitter.com/#!/fauxwerd">Follow us on twitter!</a></p>
 		</article>
 	</body>
 </html>
