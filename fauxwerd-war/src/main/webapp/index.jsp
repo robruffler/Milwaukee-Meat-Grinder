@@ -6,16 +6,11 @@
 	<body>
 		<header>
 			<p><img src="images/fauxwerd.png" alt="faxuwerd.com"/></p>
-			<h1>Hello World!  Welcome to the future!</h1>
-			<nav>
-				<ul>
-					<li><a href="#">Link to something cool</a>
-				</ul>
-			</nav>
+			<h1>Hear what you've been missing.'</h1>
 		</header>
 		<article>
-			<h1>This is some more content</h1>
-			<p>Hope you enjoy the show!</p>
+			<h1>Stay tuned for more soon.</h1>
+			<p>We're working hard to serve you better.</p>
 		</article>
 	</body>
 </html>
