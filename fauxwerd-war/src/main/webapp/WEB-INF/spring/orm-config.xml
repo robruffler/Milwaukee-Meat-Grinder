@@ -23,7 +23,7 @@
    those methods to be intercepted even when called internally.
    (Unlike Spring generated proxies which will only be intercepted when called from outside)--> 
   <tx:annotation-driven/>
-<!-- 
+ 
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource"/>
     <property name="hibernateProperties">
@@ -42,7 +42,7 @@
       <value>org.hibernate.cfg.AnnotationConfiguration</value>
     </property>        
   </bean>
- -->  
+  
 <!-- Removing unneccessary complexity
   <context:property-placeholder location="classpath*:/META-INF/properties/*.properties"/>
 -->
@@ -52,11 +52,11 @@
     <property name="username" value="fauxwerd"/>
     <property name="password" value="f@uxw3rd"/>
   </bean>
-<!-- 
+ 
   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
- -->
+
   <!--repository init area-->
 <!-- Don't think we really need this 
   <bean id="repository.users" class="com.springhibernate.integration.repository.HibernateUserBase"

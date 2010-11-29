@@ -100,6 +100,13 @@
       <groupId>cglib</groupId>
       <artifactId>cglib</artifactId>
       <version>2.2</version>
+      <exclusions>
+        <!-- Exclude asm -->        
+        <exclusion>
+          <groupId>asm</groupId>
+          <artifactId>asm</artifactId>
+        </exclusion>
+      </exclusions>            
     </dependency>    
         
     <!-- Hibernate -->
@@ -108,17 +115,7 @@
       <artifactId>hibernate-core</artifactId>
       <version>${org.hibernate.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-      <version>3.5.6-Final</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.0-api</artifactId>
-      <version>1.0.0.Final</version>
-    </dependency>    
-    
+
     <!-- Logging -->    
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -156,12 +153,11 @@
       <version>4.0.2.GA</version>
     </dependency>   
 
-    <!--  Joda Time -->
-    <!-- commenting out until actually used    
+    <!--  Joda Time -->    
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>1.6</version>
+      <version>1.6.2</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -170,7 +166,6 @@
       <version>1.0.2</version>
       <scope>runtime</scope>
     </dependency>
-    -->
      
     <!--  URL Rewrite -->
     <dependency>
