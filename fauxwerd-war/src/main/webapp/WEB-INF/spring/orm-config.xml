@@ -23,7 +23,7 @@
    those methods to be intercepted even when called internally.
    (Unlike Spring generated proxies which will only be intercepted when called from outside)--> 
   <tx:annotation-driven/>
-
+<!-- 
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource"/>
     <property name="hibernateProperties">
@@ -37,13 +37,12 @@
         <value>mappings/content.hbm.xml</value>
         <value>mappings/user.hbm.xml</value>
       </list>
-    </property>
-<!--     
+    </property>     
     <property name="configurationClass">
       <value>org.hibernate.cfg.AnnotationConfiguration</value>
-    </property>
- -->        
+    </property>        
   </bean>
+ -->  
 <!-- Removing unneccessary complexity
   <context:property-placeholder location="classpath*:/META-INF/properties/*.properties"/>
 -->
