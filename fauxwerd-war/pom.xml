@@ -7,54 +7,30 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>Fauxwerd</name>
   <url>http://maven.apache.org</url>
+
+  <!-- list of maven repositories to check for dependencies  -->  
+  <repositories>
+    <repository>
+      <id>maven-central</id>
+      <name>default maven repo</name>
+      <url>http://repo1.maven.org/maven2/</url>
+    </repository>
+    <repository>
+      <id>jboss-maven</id>
+      <name>home of the latest hibernate dependencies</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+    </repository>
+  </repositories>  
+  
   <!-- Shared version number properties -->
   <properties>
       <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
+      <org.hibernate.version>3.6.0.Final</org.hibernate.version>
       <org.slf4j.version>1.5.10</org.slf4j.version>      
   </properties>
 
   <dependencies>
     <!-- Spring -->
-    <!--
-        Core utilities used by other modules.
-        Define this if you use Spring Utility APIs (org.springframework.core.*/org.springframework.util.*)
-    -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>${org.springframework.version}</version>
-    </dependency>
-    <!--
-        Expression Language (depends on spring-core)
-        Define this if you use Spring Expression APIs (org.springframework.expression.*)
-    -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-expression</artifactId>
-      <version>${org.springframework.version}</version>
-    </dependency>
-    <!--
-        Bean Factory and JavaBeans utilities (depends on spring-core)
-        Define this if you use Spring Bean APIs (org.springframework.beans.*)
-    -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-      <version>${org.springframework.version}</version>
-    </dependency>
-    <!--
-        Aspect Oriented Programming (AOP) Framework (depends on spring-core, spring-beans)
-        Define this if you use Spring AOP APIs (org.springframework.aop.*)
-    -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-      <version>${org.springframework.version}</version>
-    </dependency>
-    <!--
-        Application Context (depends on spring-core, spring-expression, spring-aop, spring-beans)
-        This is the central artifact for Spring's Dependency Injection Container and is generally always defined
-    -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
@@ -67,91 +43,73 @@
         </exclusion>
       </exclusions>      
     </dependency>
-    <!--
-        Various Application Context utilities, including EhCache, JavaMail, Quartz, and Freemarker integration
-        Define this if you need any of these integrations
-    -->
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-context-support</artifactId>
+      <artifactId>spring-webmvc</artifactId>
       <version>${org.springframework.version}</version>
-    </dependency>
-    <!--
-        Transaction Management Abstraction (depends on spring-core, spring-beans, spring-aop, spring-context)
-        Define this if you use Spring Transactions or DAO Exception Hierarchy
-       (org.springframework.transaction.*/org.springframework.dao.*)
-    -->
+    </dependency>    
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
       <version>${org.springframework.version}</version>
-    </dependency>
-    <!--
-        JDBC Data Access Library (depends on spring-core, spring-beans, spring-context, spring-tx)
-        Define this if you use Spring's JdbcTemplate API (org.springframework.jdbc.*)
+    </dependency>    
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-jdbc</artifactId>
+      <artifactId>spring-aspects</artifactId>
       <version>${org.springframework.version}</version>
+      <scope>compile</scope>
     </dependency>
-    -->
-    <!--
-        Object-to-Relation-Mapping (ORM) integration with Hibernate, JPA, and iBatis.
-        (depends on spring-core, spring-beans, spring-context, spring-tx)
-        Define this if you need ORM (org.springframework.orm.*)
-    -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
       <version>${org.springframework.version}</version>
     </dependency>
-    <!--
-        Object-to-XML Mapping (OXM) abstraction and integration with JAXB, JiBX, Castor, XStream, and XML Beans.
-        (depends on spring-core, spring-beans, spring-context)
-        Define this if you need OXM (org.springframework.oxm.*)
-    -->
+    
+    <!-- Apache Commons (used for Datasource) -->
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-oxm</artifactId>
-      <version>${org.springframework.version}</version>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.2.2</version>
     </dependency>
-    <!--
-        Web application development utilities applicable to both Servlet and Portlet Environments
-        (depends on spring-core, spring-beans, spring-context)
-        Define this if you use Spring MVC, or wish to use Struts, JSF, or another web framework with Spring (org.springframework.web.*)
-    -->
+    
+    <!-- MySQL Connector (used for db driver) -->
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-      <version>${org.springframework.version}</version>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.12</version>
     </dependency>
-    <!--
-        Spring MVC for Servlet Environments (depends on spring-core, spring-beans, spring-context, spring-web)
-        Define this if you use Spring MVC with a Servlet Container such as Apache Tomcat (org.springframework.web.servlet.*)
-    -->
+    
+    <!-- javassist (need to investigate this one further, but hibernate breaks without it)-->
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc</artifactId>
-      <version>${org.springframework.version}</version>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.12.1.GA</version>
+    </dependency>    
+                
+    <!-- AspectJ -->
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>com.springsource.org.aspectj.runtime</artifactId>
+      <version>1.6.6.RELEASE</version>
     </dependency>
-    <!--
-        Spring MVC for Portlet Environments (depends on spring-core, spring-beans, spring-context, spring-web)
-        Define this if you use Spring MVC with a Portlet Container (org.springframework.web.portlet.*)
+    
+    <!-- AOP dependency -->
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc-portlet</artifactId>
-      <version>${org.springframework.version}</version>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>2.2</version>
+    </dependency>    
+        
+    <!-- Hibernate -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>${org.hibernate.version}</version>
     </dependency>
-    -->    
-    <!--
-        Support for testing Spring applications with tools such as JUnit and TestNG
-        This artifact is generally always defined with a 'test' scope for the integration testing framework and unit testing stubs
-    -->
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <version>${org.springframework.version}</version>
-      <scope>test</scope>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-annotations</artifactId>
+      <version>3.5.6-Final</version>
     </dependency>
     
     <!-- Logging -->
@@ -192,6 +150,7 @@
     </dependency>   
 
     <!--  Joda Time -->
+    <!-- commenting out until actually used    
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
@@ -204,6 +163,7 @@
       <version>1.0.2</version>
       <scope>runtime</scope>
     </dependency>
+    -->
      
     <!--  URL Rewrite -->
     <dependency>
@@ -262,37 +222,6 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>7.2.1.v20101111</version>        
       </plugin>  
-<!-- commenting these out, came from spring 3 example      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-          <showWarnings>true</showWarnings>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <warName>mvc-basic</warName>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>install</id>
-            <phase>install</phase>
-            <goals>
-              <goal>sources</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>  
- -->              
     </plugins>    
   </build>
 </project>

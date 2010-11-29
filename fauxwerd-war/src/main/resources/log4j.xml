@@ -27,6 +27,10 @@
 	<logger name="org.springframework.web">
 		<level value="info" />
 	</logger>
+	
+  <logger name="com.fauxwerd">
+    <level value="debug" />
+  </logger>	
 
 	<!-- Root Logger -->
 	<root>
