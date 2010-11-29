@@ -13,12 +13,12 @@
     <repository>
       <id>maven-central</id>
       <name>default maven repo</name>
-      <url>http://repo1.maven.org/maven2/</url>
+      <url>http://repo1.maven.org/maven2</url>
     </repository>
     <repository>
       <id>jboss-maven</id>
       <name>home of the latest hibernate dependencies</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <url>https://repository.jboss.org/nexus/content/groups/public</url>
     </repository>
   </repositories>  
   
@@ -89,8 +89,8 @@
     <!-- AspectJ -->
     <dependency>
       <groupId>org.aspectj</groupId>
-      <artifactId>com.springsource.org.aspectj.runtime</artifactId>
-      <version>1.6.6.RELEASE</version>
+      <artifactId>aspectjrt</artifactId>
+      <version>1.6.9</version>
     </dependency>
     
     <!-- AOP dependency -->
