@@ -52,11 +52,11 @@
     <property name="username" value="fauxwerd"/>
     <property name="password" value="f@uxw3rd"/>
   </bean>
-
+<!-- 
   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
-
+ -->
   <!--repository init area-->
 <!-- Don't think we really need this 
   <bean id="repository.users" class="com.springhibernate.integration.repository.HibernateUserBase"
