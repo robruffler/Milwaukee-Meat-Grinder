@@ -38,9 +38,11 @@
         <value>mappings/user.hbm.xml</value>
       </list>
     </property>
+<!--     
     <property name="configurationClass">
       <value>org.hibernate.cfg.AnnotationConfiguration</value>
-    </property>    
+    </property>
+ -->        
   </bean>
 <!-- Removing unneccessary complexity
   <context:property-placeholder location="classpath*:/META-INF/properties/*.properties"/>
