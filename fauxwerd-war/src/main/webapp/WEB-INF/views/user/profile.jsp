@@ -3,6 +3,8 @@
       pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -14,6 +16,9 @@
       <p><img src="/images/fauxwerd.png" alt="faxuwerd.com"/></p>
       <h1><fmt:message key="user.profile.title"/></h1>
     </header>
+    <div>      
+      User = <sec:authentication property="principal"/>
+    </div>
 <!--     
     <article>
       <h2><fmt:message key="index.subtitle"/></h2>

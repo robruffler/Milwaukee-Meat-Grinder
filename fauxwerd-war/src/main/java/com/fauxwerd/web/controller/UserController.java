@@ -12,6 +12,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -43,9 +44,9 @@ public class UserController {
     }
     
 	@RequestMapping(value = "register", method = RequestMethod.POST)	
-	public String create(@Valid User user, BindingResult result, HttpServletRequest req, HttpServletResponse res) {
+	public ModelAndView create(@Valid User user, BindingResult result, HttpServletRequest req, HttpServletResponse res) {
 		if (result.hasErrors()) {
-			return "user/register";
+			return new ModelAndView("user/register", "user", user);
 		}
 		
 		if (log.isDebugEnabled()) {
@@ -62,7 +63,7 @@ public class UserController {
 				
 		autoLogin(req, res, user.getEmail(), unhashedPassword);
 				
-		return "redirect:/user/profile";
+		return new ModelAndView("redirect:/user/profile", "user", user);
 	}
 	
 	@RequestMapping(value = "/profile")
@@ -80,8 +81,7 @@ public class UserController {
 			Authentication authentication = authenticationManager.authenticate(token);
 			
 			if (log.isDebugEnabled()) {
-				//not sure why this doesn't output anything - may have something to do with email/username switchup
-				log.debug(String.format("Logging in with", authentication.getPrincipal()));
+				log.debug(String.format("Logging in with %s", authentication.getPrincipal()));
 			}
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 	    } 
