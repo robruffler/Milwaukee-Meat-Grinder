@@ -1,7 +1,18 @@
 package com.fauxwerd.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "content")
 public class Content {
+	@Id @GeneratedValue
+	@Column(name = "content_id")
 	private Long id;
+	
 	private String url;
 	
 	public Content() { }

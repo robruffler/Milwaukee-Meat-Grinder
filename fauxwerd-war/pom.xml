@@ -67,6 +67,38 @@
       <version>${org.springframework.version}</version>
     </dependency>
     
+    <!-- Spring Security -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+      <version>${org.springframework.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>${org.springframework.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-openid</artifactId>
+      <version>${org.springframework.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-taglibs</artifactId>
+      <version>${org.springframework.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>${org.springframework.version}</version>
+      <scope>compile</scope>
+    </dependency>        
+    
     <!-- Apache Commons (used for Datasource) -->
     <dependency>
       <groupId>commons-dbcp</groupId>
@@ -100,13 +132,14 @@
       <groupId>cglib</groupId>
       <artifactId>cglib</artifactId>
       <version>2.2</version>
-      <exclusions>
-        <!-- Exclude asm -->        
+<!--       
+      <exclusions>  
         <exclusion>
           <groupId>asm</groupId>
           <artifactId>asm</artifactId>
         </exclusion>
-      </exclusions>            
+      </exclusions>
+ -->                  
     </dependency>    
         
     <!-- Hibernate -->
@@ -154,6 +187,7 @@
     </dependency>   
 
     <!--  Joda Time -->    
+<!-- something in this dependency breaks tomcat, commenting out until we really need it
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
@@ -163,10 +197,10 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time-jsptags</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.1</version>
       <scope>runtime</scope>
     </dependency>
-     
+ -->     
     <!--  URL Rewrite -->
     <dependency>
       <groupId>org.tuckey</groupId>

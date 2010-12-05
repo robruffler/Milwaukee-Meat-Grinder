@@ -39,8 +39,7 @@ public class ContentController {
 	
 	@RequestMapping(method=RequestMethod.POST)
 	public String addContent(HttpServletRequest req, HttpServletResponse res, Model model) {
-		
-		
+				
 		String url = req.getParameter("url");	
 		
 		try {

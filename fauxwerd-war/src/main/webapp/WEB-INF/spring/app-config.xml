@@ -8,8 +8,8 @@
 
 	<!-- Scans the classpath of this application for @Components to deploy as beans -->
  
-  	<context:component-scan base-package="com.fauxwerd.dao" />
-  	<context:component-scan base-package="com.fauxwerd.service" />
+  <context:component-scan base-package="com.fauxwerd.dao" />
+  <context:component-scan base-package="com.fauxwerd.service" />
 	<context:component-scan base-package="com.fauxwerd.web.controller" />
 
 	<!-- Application Message Bundle -->
@@ -23,5 +23,8 @@
 
 	<!-- Configures Spring MVC -->
 	<import resource="mvc-config.xml" />
+	
+	<!-- Configures Spring Security -->
+	<import resource="sec-config.xml" />
 
 </beans>

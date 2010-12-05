@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fauxwerd.dao.ContentDAO;
+import com.fauxwerd.dao.ContentDAOImpl;
 import com.fauxwerd.model.Content;
 
 @Service
@@ -23,11 +24,12 @@ public class ContentService {
     public List<Content> listContent() { 
         return contentDAO.listContent();
     }
- 
+/*
     @Transactional
     public void removeContent(Integer id) {
         contentDAO.removeContent(id);
     }
+*/    
 }
 
 
