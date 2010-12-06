@@ -16,6 +16,8 @@
     <intercept-url pattern="/user/profile.*" access="ROLE_USER" />		
 		<intercept-url pattern="/.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 		<form-login />
+		<!-- look into putting a different value into the remember-me key -->
+		<remember-me key="myAppKey"/>
 	</http>
 
 	<authentication-manager>

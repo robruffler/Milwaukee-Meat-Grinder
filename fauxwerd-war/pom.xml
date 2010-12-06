@@ -256,7 +256,7 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>7.2.1.v20101111</version>        
+        <version>7.2.1.v20101111</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
