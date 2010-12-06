@@ -4,6 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -14,6 +17,17 @@ public class Content {
 	private Long id;
 	
 	private String url;
+	
+	@OneToOne(optional=true)
+	@JoinTable(name="user_content",
+        joinColumns = {
+			@JoinColumn(name="content_id", unique = true)           
+		},
+		inverseJoinColumns = {
+			@JoinColumn(name="user_id")
+		}     
+	)	
+	private User user;
 	
 	public Content() { }
 
@@ -31,6 +45,14 @@ public class Content {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 }

@@ -62,14 +62,19 @@ public class UserController {
 		}
 				
 		autoLogin(req, res, user.getEmail(), unhashedPassword);
-				
+						
 		return new ModelAndView("redirect:/user/profile", "user", user);
 	}
 	
 	@RequestMapping(value = "/profile")
-	public String profile() {
+	public ModelAndView profile() {
 		
-		return "user/profile";
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		//this is necessary b/c of hibernate lazy loading weirdness
+		user = userService.getUserById(user.getId());
+		
+		return new ModelAndView("user/profile", "user", user);
 	}
     
 	//currently called after registration to automatically log user in

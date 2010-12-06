@@ -48,24 +48,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			return "";
 		}
 	}
-	//TODO remove commented out methods
-/*
-	@Transactional
-	public String createUser(User user) {
-		if (user.getUsername() != null) {
-			user.setPassword(createHash(user.getPassword()));
-			user.fullyEnable();
-			user.setAuthorities(defaultAuthority());
-			
-			if (log.isDebugEnabled()) {
-				log.debug(String.format("user.getAuthorities() = %s", user.getAuthorities()));
-			}
-			
-			userDAO.saveUser(user);
-		}
-		return "success";
-	}
-*/
+
 	@Transactional
 	public String createUser(User user) {
 		if (user.getEmail() != null) {
@@ -81,17 +64,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 		return "success";
 	}
-/*	
-	@Transactional
-	public User getUser(String username) {
-		return userDAO.getUser(username);
-	}
-*/
+
 	@Transactional
 	public User getUser(String email) {
 		return userDAO.getUser(email);
 	}
 	
+	@Transactional
+	public User getUserById(Long userId) {
+		return userDAO.getUserById(userId);
+	}
+/*	
 	private List<GrantedAuthority> defaultAuthority() {
 		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
 		authList.add(new GrantedAuthorityImpl("ROLE_USER"));
@@ -104,7 +87,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return authList;
 
 	}
-
+*/
 	//username = email
 	@Transactional
 	public UserDetails loadUserByUsername(String arg0) throws UsernameNotFoundException, DataAccessException {

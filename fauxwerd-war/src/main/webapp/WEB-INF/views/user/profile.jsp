@@ -17,7 +17,15 @@
       <h1><fmt:message key="user.profile.title"/></h1>
     </header>
     <div>      
-      User = <sec:authentication property="principal"/>
+      User = ${user}
+    </div>
+    <div>
+      Your content:
+      <ul>
+        <c:forEach items="${user.content}" var="contentItem">
+          <li><a href="${contentItem.url}">${contentItem.url}</a></li>
+        </c:forEach>
+      </ul>
     </div>
 <!--     
     <article>

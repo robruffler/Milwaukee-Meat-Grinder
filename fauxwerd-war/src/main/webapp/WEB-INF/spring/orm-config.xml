@@ -14,7 +14,7 @@
  -->
 
   <!--Enables the use of @AspectJ style of aspects' declarations. AspectJ run-time isn't necessarily involved-->
-<!--   
+  <!-- 
   <aop:aspectj-autoproxy/>
  -->
  
@@ -23,6 +23,7 @@
    those methods to be intercepted even when called internally.
    (Unlike Spring generated proxies which will only be intercepted when called from outside)--> 
   <tx:annotation-driven/>
+
 <!-- swapping out for annotated session factory  
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
  -->
@@ -40,14 +41,6 @@
         <value>com.fauxwerd.model.User</value>
       </list>
     </property>
-<!--     
-    <property name="mappingResources">
-      <list>
-        <value>mappings/content.hbm.xml</value>
-        <value>mappings/user.hbm.xml</value>
-      </list>
-    </property>
- -->         
     <property name="configurationClass">
       <value>org.hibernate.cfg.AnnotationConfiguration</value>
     </property>        
@@ -66,10 +59,5 @@
   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
-
-  <!--repository init area-->
-<!-- Don't think we really need this 
-  <bean id="repository.users" class="com.springhibernate.integration.repository.HibernateUserBase"
-        autowire="constructor"/>
- -->  
+ 
 </beans>

@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fauxwerd.model.Content;
+import com.fauxwerd.model.User;
 import com.fauxwerd.service.ContentService;
+import com.fauxwerd.service.UserService;
 
 @Controller
 @RequestMapping(value="/content")
@@ -29,6 +31,8 @@ public class ContentController {
     
     @Autowired 
     private ContentService contentService; 
+    @Autowired
+    private UserService userService;
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public ModelAndView getContent(Model model) {
@@ -40,21 +44,34 @@ public class ContentController {
 	@RequestMapping(method=RequestMethod.POST)
 	public String addContent(HttpServletRequest req, HttpServletResponse res, Model model) {
 				
-		String url = req.getParameter("url");	
-		
+		String url = req.getParameter("url");
+		String userIdString = req.getParameter("userId");
+		Long userId = null;
+				
 		try {
 			url = URLDecoder.decode(url, "utf-8");
+			userId = Long.valueOf(userIdString);
 		}
 		catch (UnsupportedEncodingException e) {
-			log.error(e);
+			if (log.isErrorEnabled()) {
+				log.error(e);
+			}
+		}
+		catch (NumberFormatException e) {
+			if(log.isErrorEnabled()) {
+				log.error(e);
+			}
 		}
 		
 		if(log.isDebugEnabled()) {
-			log.debug(String.format("url = %s", url));
+			log.debug(String.format("url = %s, id = %d", url, userId));
 		}		
+		
+		User user = userService.getUserById(userId);
 		
 		Content content = new Content();
 		content.setUrl(url);
+		content.setUser(user);
 		
 		contentService.addContent(content);
 		

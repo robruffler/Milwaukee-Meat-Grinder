@@ -18,22 +18,20 @@ public class UserDAOImpl implements UserDAO {
 	public void saveUser(User entity) {
 		sessionFactory.getCurrentSession().save(entity);
 	}
-	//TODO remove commented out methods
-/*
+
 	@SuppressWarnings("unchecked")
-	public User getUser(String username) {
-		List<User> users = sessionFactory.getCurrentSession().createQuery("select h from User h where username='" + username + "'").list();
+	public User getUser(String email) {
+		List<User> users = sessionFactory.getCurrentSession().createQuery("select h from User h where email='" + email + "'").list();
 	
 		if (users.size() > 0)
 			return users.get(0);
 		else
 			return null;
 	}	
-*/
 
 	@SuppressWarnings("unchecked")
-	public User getUser(String email) {
-		List<User> users = sessionFactory.getCurrentSession().createQuery("select h from User h where email='" + email + "'").list();
+	public User getUserById(Long userId) {
+		List<User> users = sessionFactory.getCurrentSession().createQuery("select h from User h where id='" + userId + "'").list();
 	
 		if (users.size() > 0)
 			return users.get(0);
