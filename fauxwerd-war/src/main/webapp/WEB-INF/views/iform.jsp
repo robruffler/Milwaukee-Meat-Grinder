@@ -14,7 +14,6 @@
 				type: 'post',
 				success: function(d,t,x) {
 					$('#response').html(d);
-					alert(d);
 				}
 			});
 		});
