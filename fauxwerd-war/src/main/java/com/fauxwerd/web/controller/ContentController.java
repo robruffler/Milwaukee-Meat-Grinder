@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fauxwerd.model.Content;
@@ -36,7 +35,7 @@ public class ContentController {
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public ModelAndView getContent(Model model) {
-		List content = contentService.listContent();
+		List<Content> content = contentService.listContent();
 		ModelAndView modelAndView = new ModelAndView("content/list", "content", content);		
 		return modelAndView;		
 	}

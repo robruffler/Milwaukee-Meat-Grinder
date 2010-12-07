@@ -18,6 +18,7 @@ public class ContentDAOImpl implements ContentDAO {
         sessionFactory.getCurrentSession().save(content);
     }
  
+    @SuppressWarnings("unchecked")
     public List<Content> listContent() {
  
         return sessionFactory.getCurrentSession().createQuery("from Content")
