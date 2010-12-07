@@ -1,4 +1,4 @@
-(function() {
+/*(function() {
 	var d=document,b=d.body,l=d.location;
 	var i = d.createElement('iframe');
 	b.appendChild(i);
@@ -10,4 +10,13 @@
 	var f = doc.getElementById('fauxwerd');
 	f.submit();
 	alert('Submitting');
+})();*/
+
+(function() {
+	var d=document,b=d.body,l=d.location;
+	var i = d.createElement('iframe');
+	i.src = 'http://localhost:8080/iform?u=28&url=' + encodeURIComponent(location.href);
+	b.appendChild(i);
+	i.width = 300;
+	i.height = 250;
 })();

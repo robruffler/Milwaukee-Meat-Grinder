@@ -26,7 +26,9 @@ public class IformController {
 	@RequestMapping(method=RequestMethod.GET)
 	public ModelAndView getIform(HttpServletRequest req, HttpServletResponse res, Model model) {
 		String url = req.getParameter("url");
+		String u = req.getParameter("u");
 		model.addAttribute("url", url);
+		model.addAttribute("u", u);
 		ModelAndView modelAndView = new ModelAndView("iform");
 		return modelAndView;
 	}
