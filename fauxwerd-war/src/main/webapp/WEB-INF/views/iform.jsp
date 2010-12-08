@@ -6,8 +6,9 @@
 <div id="response"><!-- --></div>
 	
 	<script type="text/javascript">
-		$(document).ready(function() {
-			$.ajax({
+		$(window).ready(function() {
+			if (fw.utils.cookie.eat('u') === '${u}') { 
+				$.ajax({
 				url: '/content',
 				data: {url: '${url}', userId: '${u}' },
 				cache: false,
@@ -16,6 +17,9 @@
 					$('#response').html(d);
 				}
 			});
+			} else { 
+				parent.location = 'http://' + fw.env + '/user/wrong-bookmark?url=' + encodeURIComponent('${url}');
+			} 
 		});
 	</script>
 		

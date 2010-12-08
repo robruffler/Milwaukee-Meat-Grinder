@@ -1,7 +1,20 @@
 var fw = (typeof fw === 'undefined' || !fw) ? {} : fw;
-fw.dev = (window.location.hostname.indexOf("localhost") >= 0 || window.location.hostname.indexOf("l.fauxwerd.com") >= 0);
+fw.namespace = function (nodes,root) {
+	root = root == null ? fw : root;
+	var a = nodes, o = null, i, j, d;
+	d = nodes.split(".");
+	o = root;
+	for(j = (d[0] == root) ? 1 : 0; j < d.length; j++){
+		o[d[j]] = o[d[j]] || {};
+		o = o[d[j]];
+	}
+	return o;
+};
+fw.dev = (location.hostname.indexOf('locahost') >= 0 || location.hostname.indexOf('l.fauxwerd.com') >= 0);
 fw.live = !fw.dev;
+fw.env = (fw.dev ? 'l.fauxwerd.com' : 'fauxwerd.com');
 fw.debug = fw.dev && window && typeof window.console !== "undefined";
+fw.namespace('utils');
 fw.utils = {
 	log: function() {
 		if(!fw.debug) { return; }
@@ -16,17 +29,6 @@ fw.utils = {
 				}
 			}
 		}
-	},
-	namespace: function (nodes,root) {
-		root = root == null ? fw : root;
-		var a = nodes, o = null, i, j, d;
-		d = nodes.split(".");
-		o = root;
-		for(j = (d[0] == root) ? 1 : 0; j < d.length; j++){
-			o[d[j]] = o[d[j]] || {};
-			o = o[d[j]];
-		}
-		return o;
 	},
 	cookie: {
 		eat: function(name) {

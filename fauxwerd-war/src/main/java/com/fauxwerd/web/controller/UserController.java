@@ -2,7 +2,10 @@ package com.fauxwerd.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLDecoder;
 import javax.validation.Valid;
+
+import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.ui.Model;
 
 import com.fauxwerd.model.User;
 import com.fauxwerd.service.UserService;
@@ -74,6 +78,25 @@ public class UserController {
 		user = userService.getUserById(user.getId());
 		
 		return new ModelAndView("user/profile", "user", user);
+	}
+	
+	@RequestMapping(value = "wrong-bookmark", method = RequestMethod.GET)
+	public ModelAndView wrongBookmark(HttpServletRequest req, HttpServletResponse res, Model model) {
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		user = userService.getUserById(user.getId());
+		
+		String url = req.getParameter("url");
+		
+		try {
+			url = URLDecoder.decode(url, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			if (log.isErrorEnabled()) {
+				log.error(e);
+			}
+		}
+		
+		model.addAttribute("url", url);
+		return new ModelAndView("user/wrong-bookmark","user", user);
 	}
     
 	//currently called after registration to automatically log user in
