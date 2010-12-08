@@ -52,11 +52,19 @@
 <!-- swapping out for c3p0 datasource 
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
  -->  
-  <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+  <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
     <property name="driverClass" value="com.mysql.jdbc.Driver"/>
     <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/fauxwerd"/>
     <property name="user" value="fauxwerd"/>
     <property name="password" value="f@uxw3rd"/>
+		<property name="testConnectionOnCheckout" value="true"/>
+<!--
+    <property name="initialPoolSize" value="0"/>
+    <property name="maxPoolSize" value="1"/>
+    <property name="minPoolSize" value="1"/>
+    <property name="acquireIncrement" value="1"/>
+    <property name="acquireRetryAttempts" value="0"/> 
+ -->		
   </bean>
  
   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
