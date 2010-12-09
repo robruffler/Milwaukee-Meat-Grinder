@@ -18,7 +18,7 @@
 						$('#response').html(d);
 					},
 					error: function() {
-						$('#response').html('<div class="error">Could not save. Try again in a few minutes</div>')
+						$('#response').html('<div class="error">Could not save. Try again in a few minutes.</div>');
 					}
 				});
 			} else if (u === null) {
