@@ -18,8 +18,28 @@
 
 <h3 class="url">${url}</h3>
 <p class="default">
-	You can still <a href="#">save</a> your article to <strong>${user.email}</strong> account, or you can <a href="#">login as a different user</a>.
+	You can still <a href="#" id="save-content">save</a> your article to <strong>${user.email}</strong> account, or you can <a href="#">login as a different user</a>.
 </p>
-	
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#save-content').unbind('click').click(function(e) {
+			e.preventDefault();
+			$.ajax({
+				url: '/content',
+				data: {url: '${url}', userId: '${user.id}' },
+				cache: false,
+				type: 'post',
+				success: function(d,t,x) {
+					location.href = 'http://' + fw.env + '/user/profile';
+				},
+				error: function(x,t,er) {
+					fw.modules.error({msg: "<div id='error'>Oh, dear. We seem to be having some server issues. Give it a few and try again.</div>"});
+				}
+			});
+			return false;
+		});
+	});
+</script>
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
