@@ -4,8 +4,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +20,7 @@ import com.fauxwerd.model.User;
 @Service("userService")
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    final Log log = LogFactory.getLog(getClass());
+    final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Autowired
 	private UserDAO userDAO;
@@ -70,21 +70,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public User getUserById(Long userId) {
 		return userDAO.getUserById(userId);
 	}
-/*	
-	private List<GrantedAuthority> defaultAuthority() {
-		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-		authList.add(new GrantedAuthorityImpl("ROLE_USER"));
-		authList.add(new GrantedAuthorityImpl("ROLE_ADMINISTRATOR"));
-		
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("defaultAuthority = %s", authList));
-		}
-		
-		return authList;
 
-	}
-*/
-	//username = email
+	// username = email
 	@Transactional
 	public UserDetails loadUserByUsername(String arg0) throws UsernameNotFoundException, DataAccessException {
 		User temp = getUser(arg0);
