@@ -7,8 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +26,7 @@ import com.fauxwerd.service.UserService;
 @RequestMapping(value="/content")
 public class ContentController {
 	
-    final Log log = LogFactory.getLog(getClass());
+    final Logger log = LoggerFactory.getLogger(getClass());
     
     @Autowired 
     private ContentService contentService; 
@@ -53,12 +53,12 @@ public class ContentController {
 		}
 		catch (UnsupportedEncodingException e) {
 			if (log.isErrorEnabled()) {
-				log.error(e);
+				log.error("", e);				
 			}
 		}
 		catch (NumberFormatException e) {
 			if(log.isErrorEnabled()) {
-				log.error(e);
+				log.error("", e);
 			}
 		}
 		

@@ -26,7 +26,7 @@
   <properties>
       <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
       <org.hibernate.version>3.6.0.Final</org.hibernate.version>
-      <org.slf4j.version>1.5.10</org.slf4j.version>      
+      <org.slf4j.version>1.6.1</org.slf4j.version>      
   </properties>
 
   <dependencies>
@@ -36,13 +36,11 @@
       <artifactId>spring-context</artifactId>
       <version>${org.springframework.version}</version>
       <exclusions>
-        <!-- Exclude Commons Logging in favor of SLF4j -->
-        <!-- removing this exclusion for now        
+        <!-- Exclude Commons Logging in favor of SLF4j -->        
         <exclusion>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
         </exclusion>
-         -->
       </exclusions>      
     </dependency>
     <dependency>
@@ -85,6 +83,13 @@
       <artifactId>spring-security-openid</artifactId>
       <version>${org.springframework.version}</version>
       <scope>compile</scope>
+      <exclusions>
+        <!-- Exclude Commons Logging in favor of SLF4j -->        
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>            
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -99,15 +104,7 @@
       <scope>compile</scope>
     </dependency>        
     
-    <!-- Apache Commons (used for Datasource) -->
-    <!-- replacing with c3po 
-    <dependency>
-      <groupId>commons-dbcp</groupId>
-      <artifactId>commons-dbcp</artifactId>
-      <version>1.2.2</version>
-    </dependency>
-     -->
-    <!-- c3po -->
+    <!-- c3po Datasource-->
     <dependency>
     	<groupId>c3p0</groupId>
     	<artifactId>c3p0</artifactId>
@@ -150,14 +147,6 @@
       <groupId>cglib</groupId>
       <artifactId>cglib</artifactId>
       <version>2.2</version>
-<!--       
-      <exclusions>  
-        <exclusion>
-          <groupId>asm</groupId>
-          <artifactId>asm</artifactId>
-        </exclusion>
-      </exclusions>
- -->                  
     </dependency>    
         
     <!-- Hibernate -->
@@ -219,6 +208,7 @@
       <scope>runtime</scope>
     </dependency>
  -->     
+ 
     <!--  URL Rewrite -->
     <dependency>
       <groupId>org.tuckey</groupId>
@@ -257,6 +247,8 @@
   <build>
     <finalName>ROOT</finalName>
     <plugins>
+
+      <!-- Cargo Maven plugin to deploy compiled war to tomcat -->
       <plugin>
       	<groupId>org.codehaus.cargo</groupId>
       	<artifactId>cargo-maven2-plugin</artifactId>
@@ -271,6 +263,8 @@
       	  </configuration>		
       	</configuration>      	
       </plugin>
+
+      <!-- Jetty Maven plugin to run site locally -->
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
@@ -284,6 +278,8 @@
           </systemProperties>
         </configuration>
       </plugin>
+
+      <!-- Sets compilation target to 1.6 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
