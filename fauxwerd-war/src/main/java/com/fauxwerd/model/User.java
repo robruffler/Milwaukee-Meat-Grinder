@@ -48,6 +48,7 @@ public class User implements UserDetails {
 	)
 	private List<Content> content;
 
+	//empty constructor required by hibernate
 	public User() { }
 	
 	public User(String password, String email, boolean enabled) {

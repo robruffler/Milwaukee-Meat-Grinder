@@ -9,30 +9,31 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-<!-- Commenting out AOP stuff for now, will revisit later 
+  <!-- Commenting out AOP stuff for now, will revisit later 
   <context:component-scan base-package="com.springhibernate.integration.aspects" />
- -->
+  -->
 
   <!--Enables the use of @AspectJ style of aspects' declarations. AspectJ run-time isn't necessarily involved-->
   <!-- 
   <aop:aspectj-autoproxy/>
- -->
+  -->
  
   <!--Platform Transaction Manager declared as "transactionManager" will be used.-->
   <!--"aspectj" mode enables load-time/compile-time weaving of transactional methods, which enables
    those methods to be intercepted even when called internally.
    (Unlike Spring generated proxies which will only be intercepted when called from outside)--> 
+  
   <tx:annotation-driven/>
 
-<!-- swapping out for annotated session factory  
-  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
- -->
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"> 
     <property name="dataSource" ref="dataSource"/>
     <property name="hibernateProperties">
       <props>
-        <prop key="dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+        <prop key="dialect">${hibernate.dialect}</prop>
+        <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>        
         <prop key="show_sql">true</prop>
+        <!-- Disable the second-level cache  -->
+        <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>        
       </props>
     </property>
     <property name="annotatedClasses">
@@ -46,25 +47,12 @@
     </property>        
   </bean>
   
-<!-- Removing unneccessary complexity
-  <context:property-placeholder location="classpath*:/META-INF/properties/*.properties"/>
--->
-<!-- swapping out for c3p0 datasource 
-  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
- -->  
   <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-    <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-    <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/fauxwerd"/>
-    <property name="user" value="fauxwerd"/>
-    <property name="password" value="f@uxw3rd"/>
-		<property name="testConnectionOnCheckout" value="true"/>
-<!--
-    <property name="initialPoolSize" value="0"/>
-    <property name="maxPoolSize" value="1"/>
-    <property name="minPoolSize" value="1"/>
-    <property name="acquireIncrement" value="1"/>
-    <property name="acquireRetryAttempts" value="0"/> 
- -->		
+    <property name="driverClass" value="${database.driverClass}"/>
+    <property name="jdbcUrl" value="${database.jdbcUrl}"/>
+    <property name="user" value="${database.user}"/>
+    <property name="password" value="${database.password}"/>
+    <property name="testConnectionOnCheckout" value="${database.testConnectionOnCheckout}"/> 		
   </bean>
  
   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">

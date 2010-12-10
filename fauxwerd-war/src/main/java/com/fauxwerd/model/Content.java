@@ -29,6 +29,7 @@ public class Content {
 	)	
 	private User user;
 	
+	//empty constructor required by hibernate
 	public Content() { }
 
 	public Long getId() {

@@ -31,6 +31,10 @@
 	<logger name="org.hibernate">
 	 <level value="info" />
 	</logger>
+
+  <logger name="org.hsqldb">
+   <level value="info" />
+  </logger>
 	
 	<logger name="org.springframework.security">
 	 <level value="info" />
