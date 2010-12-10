@@ -7,9 +7,8 @@ import javax.validation.Valid;
 
 import java.io.UnsupportedEncodingException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.ProviderManager;
@@ -31,7 +30,7 @@ import com.fauxwerd.service.UserService;
 @RequestMapping(value = "/user")
 public class UserController {
 
-    final Logger log = LoggerFactory.getLogger(getClass());
+    final Log log = LogFactory.getLog(getClass());
     
     @Autowired
     private UserService userService;
@@ -92,7 +91,7 @@ public class UserController {
 			url = URLDecoder.decode(url, "utf-8");
 		} catch (UnsupportedEncodingException e) {
 			if (log.isErrorEnabled()) {
-				log.error("", e);
+				log.error(e);
 			}
 		}
 		

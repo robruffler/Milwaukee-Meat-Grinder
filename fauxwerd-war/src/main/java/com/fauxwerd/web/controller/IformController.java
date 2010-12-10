@@ -3,8 +3,8 @@ package com.fauxwerd.web.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value="/iform")
 public class IformController {
 
-    final Logger log = LoggerFactory.getLogger(getClass());
+    final Log log = LogFactory.getLog(getClass());
 
 	@RequestMapping(method=RequestMethod.GET)
 	public ModelAndView getIform(HttpServletRequest req, HttpServletResponse res, Model model) {
