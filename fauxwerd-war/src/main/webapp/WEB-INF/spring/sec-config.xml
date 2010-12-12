@@ -7,22 +7,44 @@
                         http://www.springframework.org/schema/security
                          http://www.springframework.org/schema/security/spring-security-3.0.4.xsd">
 
+  <!-- enables securing methods w/ annotations -->
+  <global-method-security pre-post-annotations="enabled">
+    <!-- AspectJ pointcut expression that locates our "post" method and applies security that way
+    <protect-pointcut expression="execution(* bigbank.*Service.post*(..))" access="ROLE_TELLER"/>
+    -->
+  </global-method-security>
+
   <!-- path-type switches intercept urls to check pattern as regex -->                         
-	<http auto-config="true" access-denied-page="/" path-type="regex">
-  <!-- 
-		<intercept-url pattern="/secured/profile**" access="ROLE_SUPERVISOR,ROLE_USER,ROLE_TELLER"/>
-		<intercept-url pattern="/faces/protected**" access="ROLE_SUPERVISOR,ROLE_USER,ROLE_TELLER"/>
-  -->
-    <intercept-url pattern="/user/profile.*" access="ROLE_USER" />		
+	<http access-denied-page="/" path-type="regex">
+    <!-- in case of multiple roles, use comma delimited list -->
+    <intercept-url pattern="/user/profile.*" access="ROLE_USER" />
+    
+    <!-- static files that do not require authentication -->
+    <intercept-url pattern="/images.*" filters="none" />
+    <intercept-url pattern="/scripts.*" filters="none" />
+    <intercept-url pattern="/styles.*" filters="none" />		
+
+    <!-- all other url patterns allow anonymous access -->
 		<intercept-url pattern="/.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-		<form-login />
+
+		<form-login login-page="/user/login" authentication-failure-url="/user/login?login_error=1"/>
+		<!-- <http-basic /> -->
+		<logout logout-success-url="/" logout-url="/user/logout" />
 		<!-- look into putting a different value into the remember-me key -->
 		<remember-me key="myAppKey"/>
+		
+    <session-management>
+      <!-- Uncomment to limit the number of sessions a user can have -->
+      <!-- <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" /> -->
+    </session-management>
+		
 	</http>
 
 	<authentication-manager>
 		<authentication-provider user-service-ref="userService">
-		  <password-encoder hash="sha"/>
+		  <password-encoder hash="sha">
+		    <!-- <salt-source user-property="username" />  -->
+		  </password-encoder>
 		</authentication-provider>
   </authentication-manager>
   

@@ -12,6 +12,8 @@
 	<!-- Forwards requests to the "/" resource to the "index" view -->	 
 	<mvc:view-controller path="/" view-name="index"/>
 	
+	<mvc:view-controller path="/user/login" view-name="user/login"/>
+	
 	<!-- Configures Handler Interceptors -->	
 	<mvc:interceptors>
 		<!-- Changes the locale when a 'locale' request parameter is sent; e.g. /?locale=de -->

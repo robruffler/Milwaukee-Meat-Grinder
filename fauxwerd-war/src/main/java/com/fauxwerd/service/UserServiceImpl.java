@@ -39,8 +39,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			return hashedPass;
 		} 
 		catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if (log.isErrorEnabled()) {
+				log.error("", e);
+			}
 			return "";
 		}
 	}
@@ -50,12 +51,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		if (user.getEmail() != null) {
 			user.setPassword(createHash(user.getPassword()));
 			user.fullyEnable();
-			//user.setAuthorities(defaultAuthority());
-			
-			if (log.isDebugEnabled()) {
-				log.debug(String.format("user.getAuthorities() = %s", user.getAuthorities()));
-			}
-			
+						
 			userDAO.saveUser(user);
 		}
 		return "success";

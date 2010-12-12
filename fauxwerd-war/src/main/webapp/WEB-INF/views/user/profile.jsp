@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <jsp:include page="/WEB-INF/views/common/head.jsp">
 	<jsp:param name="title" value="Fauxwerd.com" />
@@ -15,10 +16,13 @@
 
 
 	<div>      
-		User = ${user}, ID = ${user.id}
+		<p>User = ${user}, ID = ${user.id}</p>
 	</div>
 	<div>
-		Your content:
+    <p><a href="<spring:url value="/user/logout" htmlEscape="true" />">Logout</a></p>
+	</div>
+	<div>
+		<p>Your content:</p>
 	<ul>
 		<c:forEach items="${user.content}" var="contentItem">
 			<li><a href="${contentItem.url}">${contentItem.url}</a></li>
