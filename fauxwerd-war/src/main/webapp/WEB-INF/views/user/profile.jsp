@@ -13,8 +13,6 @@
 	<jsp:param name="title" value="${index.title}"/>
 </jsp:include>
 
-
-
 	<div>      
 		<p>User = ${user}, ID = ${user.id}</p>
 	</div>

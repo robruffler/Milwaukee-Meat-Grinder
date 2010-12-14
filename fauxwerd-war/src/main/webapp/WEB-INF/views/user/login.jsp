@@ -18,12 +18,16 @@
   <jsp:param name="title" value="${index.title}"/>
 </jsp:include>
 
+<c:if test="${not empty param.login_error}">
+<!-- need to put a switch in here to detect the various error messages and output user friendly ones -->
+<p>STYLE THIS BITCH RED JURISTA! - ${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
+</c:if>
 <form action="j_spring_security_check" method="post"'>
   <fieldset>    
     <!-- <legend>Login</legend> -->  
 	  <p>
 	    <label for="j_username">email</label>
-	    <input type="text" name="j_username" id="j_username" <c:if test="${not empty param.login_error}">value='<%= session.getAttribute(AuthenticationProcessingFilter.SPRING_SECURITY_LAST_USERNAME_KEY) %>'</c:if>/>
+	    <input type="text" name="j_username" id="j_username" <c:if test="${not empty param.login_error}">value='${SPRING_SECURITY_LAST_USERNAME}'</c:if>/>
 	  </p>
 	  <p>
 		  <label for="j_password">password</label>
