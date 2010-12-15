@@ -12,7 +12,7 @@
 <jsp:include page="/WEB-INF/views/common/header.jsp">
 	<jsp:param name="title" value="${index.title}"/>
 </jsp:include>
-
+  <p>Test = ${site}, ${site.hostname}, ${site.port}</p>
 	<div>      
 		<p>User = ${user}, ID = ${user.id}</p>
 	</div>
