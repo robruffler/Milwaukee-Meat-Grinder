@@ -1,1 +1,1 @@
-<div class="success">Saved! Visit your <a href="javascript:parent.location='http://fauxwerd.com/user/profile'" id="profile">profile</a> to view your articles.</div>
+<div class="success">Saved! Visit your <a href="javascript:parent.location='http://${site.hostname}/user/profile'" id="profile">profile</a> to view your articles.</div>
