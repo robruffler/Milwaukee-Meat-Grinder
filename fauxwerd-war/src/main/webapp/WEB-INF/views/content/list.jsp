@@ -12,10 +12,10 @@
   </head>
   <body>
     <h1>Check it out</h1>
-    <ul>
+    <ol>
       <c:forEach items="${content}" var="contentItem">
         <li>${contentItem.url}</li>
       </c:forEach>
-    </ul>
+    </ol>
   </body>
 </html>
