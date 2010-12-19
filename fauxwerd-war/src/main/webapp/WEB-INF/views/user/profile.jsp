@@ -21,11 +21,11 @@
 	</div>
 	<div>
 		<p>Your content:</p>
-	<ul>
+	<ol>
 		<c:forEach items="${user.content}" var="contentItem">
 			<li><a href="${contentItem.url}">${contentItem.url}</a></li>
 		</c:forEach>
-	</ul>
+	</ol>
 	</div>
 	<jsp:include page="/WEB-INF/views/common/bookmark.jsp" />
 
