@@ -22,7 +22,7 @@
 <!-- need to put a switch in here to detect the various error messages and output user friendly ones -->
 <%-- Bad credentials = wrong username / password --%>
 <%-- UserDetailsService returned null, which is an interface contract violation = no account --%>
-<p>STYLE THIS BITCH RED JURISTA! - ${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
+<p class="error">${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
 </c:if>
 <form action="j_spring_security_check" method="post"'>
   <fieldset>    

@@ -22,9 +22,9 @@
 					}
 				});
 			} else if (u === null) {
-				parent.location = 'http://' + fw.env + '/spring_security_login?url=' + encodeURIComponent('${url}');
+				parent.location = 'http://${site.hostname}/user/login?url=' + encodeURIComponent('${url}');
 			} else { 
-				parent.location = 'http://' + fw.env + '/user/wrong-bookmark?url=' + encodeURIComponent('${url}');
+				parent.location = 'http://${site.hostname}/user/wrong-bookmark?url=' + encodeURIComponent('${url}');
 			} 
 		});
 	</script>

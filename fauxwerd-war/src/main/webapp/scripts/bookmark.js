@@ -1,1 +1,14 @@
-javascript:var t;function fauxwerd(at){var d=document,b=d.body;try{if(!b){throw(0);}var i=d.createElement('iframe');i.src=d.location.protocol+'//localhost:8080/iform?u=28&url='+encodeURIComponent(location.href);i.id='fauxwerd';i.width=300;i.height=250;b.appendChild(i);}catch(err){if(at == 10){clearTimeout(t);alert('Please allow the page to fully load, then click the bookmark again.');}else{t=setTimeout(fauxwerd,500,++at);}}}fauxwerd(1);
+FW.i = FW.d.createElement('iframe'); 
+var s=FW.i.style; 
+FW.i.src='http://'+FW.env+'/iform?u='+FW.u+'&url='+encodeURIComponent(FW.l.href);
+FW.i.id='fauxwerd';
+FW.i.width='600px';
+FW.i.height='150px';
+s.position = 'fixed'; 
+s.left=(FW.d.documentElement.clientWidth/2) -300+'px'; 
+s.top = '0'; s.border = '0';
+s.zIndex='9999999';
+FW.i.setAttribute('frameBorder','0px');
+FW.i.setAttribute('allowTransparency',true);
+FW.b.appendChild(FW.i); 
+fauxwerdBeGone(1);
