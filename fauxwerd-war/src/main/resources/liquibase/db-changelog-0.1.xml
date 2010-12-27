@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="rob" id="1">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="content"/>
+            </not>
+        </preConditions>            
+        <createTable tableName="content">
+            <column autoIncrement="true" name="content_id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="url" type="VARCHAR(2000)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rob" id="2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="hibernate_sequences"/>
+            </not>
+        </preConditions>            
+        <createTable tableName="hibernate_sequences">
+            <column name="sequence_name" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="next_val" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rob" id="3">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user"/>
+            </not>
+        </preConditions>        
+        <createTable tableName="user">
+            <column autoIncrement="true" name="user_id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="email" type="VARCHAR(256)"/>
+            <column name="password" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="TINYINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rob" id="4">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_content"/>
+            </not>
+        </preConditions>        
+        <createTable tableName="user_content">
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="rob" id="5">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="email_UNIQUE"/>
+            </not>
+        </preConditions>    
+        <createIndex indexName="email_UNIQUE" tableName="user" unique="true">
+            <column name="email"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="rob" id="6">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="content_id"/>
+            </not>
+        </preConditions>    
+        <addForeignKeyConstraint baseColumnNames="content_id" baseTableName="user_content" baseTableSchemaName="fauxwerd" constraintName="content_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="content_id" referencedTableName="content" referencedTableSchemaName="fauxwerd" referencesUniqueColumn="false"/>
+    </changeSet>
+    <changeSet author="rob" id="7">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="user_id"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_content" baseTableSchemaName="fauxwerd" constraintName="user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="user" referencedTableSchemaName="fauxwerd" referencesUniqueColumn="false"/>
+    </changeSet>
+</databaseChangeLog>

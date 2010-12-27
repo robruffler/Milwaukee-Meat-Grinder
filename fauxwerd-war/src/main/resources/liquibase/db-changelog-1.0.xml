@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="rob" id="8">    
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="user_id"/>
+        </preConditions>        
+        <dropForeignKeyConstraint constraintName="user_id" baseTableName="user_content"/>
+        <rollback>
+            <addForeignKeyConstraint constraintName="user_id"
+                baseTableName="user_content" baseColumnNames="user_id"
+                referencedTableName="user" referencedColumnNames="user_id"/>                                                  
+        </rollback>        
+    </changeSet>
+    
+    <changeSet author="rob" id="9">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="content_id"/>
+        </preConditions>  
+        <dropForeignKeyConstraint constraintName="content_id" baseTableName="user_content"/>
+        <rollback>
+            <addForeignKeyConstraint constraintName="content_id" 
+                baseTableName="user_content" baseColumnNames="content_id" 
+                referencedTableName="content" referencedColumnNames="content_id"/>                  
+        </rollback>
+    </changeSet>
+    
+    <changeSet author="rob" id="10">
+        <modifyDataType tableName="content" columnName="content_id" newDataType="BIGINT"/>
+        <dropDefaultValue tableName="content" columnName="content_id"/>
+        <rollback>
+            <modifyDataType tableName="content" columnName="content_id" newDataType="INT"/>
+	        <dropDefaultValue tableName="content" columnName="content_id"/>
+        </rollback>				
+    </changeSet>
+
+    <changeSet author="rob" id="11">
+        <modifyDataType tableName="user" columnName="user_id" newDataType="BIGINT"/>
+        <dropDefaultValue tableName="user" columnName="user_id"/> 
+        <rollback>
+            <modifyDataType tableName="user" columnName="user_id" newDataType="INT"/>
+            <dropDefaultValue tableName="user" columnName="user_id"/>        
+        </rollback>           
+    </changeSet>
+    
+    <changeSet author="rob" id="12">
+        <modifyDataType tableName="user_content" columnName="user_id" newDataType="BIGINT"/>
+        <modifyDataType tableName="user_content" columnName="content_id" newDataType="BIGINT"/>        
+        <addNotNullConstraint tableName="user_content" columnName="user_id" columnDataType="BIGINT"/>
+        <addNotNullConstraint tableName="user_content" columnName="content_id" columnDataType="BIGINT"/>
+        <rollback>
+            <modifyDataType tableName="user_content" columnName="user_id" newDataType="INT"/>
+            <modifyDataType tableName="user_content" columnName="content_id" newDataType="INT"/>
+            <addNotNullConstraint tableName="user_content" columnName="user_id" columnDataType="INT"/>
+            <addNotNullConstraint tableName="user_content" columnName="content_id" columnDataType="INT"/>                              
+        </rollback>            
+    </changeSet>
+    
+    <changeSet author="rob" id="13">
+        <addForeignKeyConstraint constraintName="fk_content_id" 
+          baseTableName="user_content" baseColumnNames="content_id" 
+          referencedTableName="content" referencedColumnNames="content_id"/>      
+    </changeSet>
+    
+    <changeSet author="rob" id="14">
+        <addForeignKeyConstraint constraintName="fk_user_id"
+          baseTableName="user_content" baseColumnNames="user_id"
+          referencedTableName="user" referencedColumnNames="user_id"/>                                          
+    </changeSet>
+    
+    <changeSet author="rob" id="15">
+        <comment>Clearing tables to account for new id generation</comment>
+        <delete tableName="user_content"/>
+        <delete tableName="content"/>
+        <delete tableName="user"/>
+        <delete tableName="hibernate_sequences"/>
+    </changeSet>
+    
+    <changeSet author="rob" id="16">
+        <addNotNullConstraint tableName="user" columnName="email" columnDataType="VARCHAR(256)"/>
+    </changeSet>
+        
+</databaseChangeLog>

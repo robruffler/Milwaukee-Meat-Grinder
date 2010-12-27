@@ -6,15 +6,18 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
+
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,25 +28,39 @@ public class User implements UserDetails {
 
 	private static final long serialVersionUID = 1251530774635471804L;
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id 
+	@GeneratedValue(generator = "USER_TABLE_GEN")
+	@TableGenerator(
+			name = "USER_TABLE_GEN",
+			pkColumnValue = "USER",
+			allocationSize = 5
+	)
 	@Column(name = "user_id")
 	private Long id;
-		
-	private String password;
-	private boolean enabled;	
 	
 	@NotNull
+	@Size(min=1, max=50)
+	private String password;
+		
+	@NotNull
+	@Pattern(regexp="(\\w+)@(\\w+\\.)(\\w+)(\\.\\w+)*")
 	@Size(min=5, max=256)
+	@NaturalId(mutable = true)
 	private String email;
 	
+	@NotNull
+	private boolean enabled;	
+	
+//TODO read about JoinTables, determine if unique = true should stay
 	@OneToMany
-	@JoinTable(name = "user_content",
-	  joinColumns = {
-		@JoinColumn(name="user_id", unique = true)           
-	  },
-	  inverseJoinColumns = {
-	    @JoinColumn(name="content_id")
-	  }
+	@JoinTable(
+		name = "user_content",
+		joinColumns = {@JoinColumn(name="user_id"/*, unique = true*/)},
+		inverseJoinColumns = {@JoinColumn(name="content_id")}
+	)
+	@org.hibernate.annotations.ForeignKey(
+		name = "FK_USER_ID",
+		inverseName = "FK_CONTENT_ID"
 	)
 	private List<Content> content;
 
@@ -62,28 +79,49 @@ public class User implements UserDetails {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	//currently only one user role so we're always returning ROLE_USER
-	public List<GrantedAuthority> getAuthorities() {
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
-
-		return authorities;
-	}
+// This setter should never be used, id is set by hibernate
+//	public void setId(Long id) {
+//		this.id = id;
+//	}
 	
 	public String getPassword() {
 		return password;
 	}
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
 
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+		
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+	
+	public List<Content> getContent() {
+		return content;
+	}
+
+	public void setContent(List<Content> content) {
+		this.content = content;
+	}
+	
 	//required by interface, returning email address instead
 	public String getUsername() {
 		return email;
 	}
 	
-	//these booleans are required by interface, using enabled state for all
+	//these booleans are required by UserDetails interface, using enabled state for all
 	public boolean isAccountNonExpired() {
 		return enabled;
 	}
@@ -96,39 +134,16 @@ public class User implements UserDetails {
 		return enabled;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
-	}
+	//currently only one user role so we're always returning ROLE_USER
+	public List<GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+		return authorities;
 	}
 	
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public List<Content> getContent() {
-		return content;
-	}
-
-	public void setContent(List<Content> content) {
-		this.content = content;
-	}
-
 	public void fullyEnable() {
-		//accountNonExpired = true;
-		//credentialsNonExpired = true;
 		enabled = true;
-		//accountNonLocked = true;
 	}
 	
 	public String toString() {

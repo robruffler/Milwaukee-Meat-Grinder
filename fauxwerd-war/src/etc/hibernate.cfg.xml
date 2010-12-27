@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<!-- USED FOR SCHEMA GENERATION ONLY -->		
+<hibernate-configuration>
+    <session-factory name="sessionFactory">
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.password">f@uxw3rd</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/fauxwerd</property>
+        <property name="hibernate.connection.username">fauxwerd</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+        <property name="hibernate.id.new_generator_mappings">true</property>
+        <mapping class="com.fauxwerd.model.Content"/>
+        <mapping class="com.fauxwerd.model.User"/>
+    </session-factory>
+</hibernate-configuration>

@@ -20,7 +20,27 @@
       <name>home of the latest hibernate dependencies</name>
       <url>https://repository.jboss.org/nexus/content/groups/public</url>
     </repository>
-  </repositories>  
+  </repositories>
+  
+   <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <name>Maven Plugin Repository</name>
+      <url>http://repo1.maven.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+    </pluginRepository>
+    <pluginRepository>
+      <id>jboss-maven</id>
+      <name>home of the latest hibernate dependencies</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public</url>    
+    </pluginRepository>
+  </pluginRepositories>  
   
   <!-- Shared version number properties -->
   <properties>
@@ -288,7 +308,51 @@
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
-      </plugin>        
+      </plugin>
+      
+      <!-- Liquibase plugin for database versioning -->
+      <plugin>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-maven-plugin</artifactId>
+        <version>2.0.0</version>
+        <configuration>
+            <changeLogFile>src/main/resources/liquibase/db-changelog-master.xml</changeLogFile>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <url>jdbc:mysql://localhost:3306/fauxwerd</url>
+            <username>fauxwerd</username>
+            <password>f@uxw3rd</password>
+            <logging>info</logging>
+            <rollbackCount>1</rollbackCount>
+        </configuration>        
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>update</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>      
+      
+      <!-- Hibernate 3 Maven plugin to generate schema DDL, etc -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <version>3.0-SNAPSHOT</version>        
+        <configuration>
+          <hibernatetool>
+            <annotationconfiguration configurationfile="src/etc/hibernate.cfg.xml" />
+            <hbm2ddl console="true" export="false" update="false" drop="false" create="true" format="true" outputfilename="schema.ddl"/>
+          </hibernatetool>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.12</version>
+          </dependency>
+        </dependencies>
+      </plugin>     
     </plugins>    
   </build>
 </project>
