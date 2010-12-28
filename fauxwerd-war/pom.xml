@@ -324,6 +324,7 @@
             <logging>info</logging>
             <rollbackCount>1</rollbackCount>
         </configuration>        
+<!-- setting this to be called by hudson after packaging the project, may need to revisit when/if we start unit testing 
         <executions>
           <execution>
             <phase>process-resources</phase>
@@ -332,6 +333,7 @@
             </goals>
           </execution>
         </executions>
+-->        
       </plugin>      
       
       <!-- Hibernate 3 Maven plugin to generate schema DDL, etc -->
