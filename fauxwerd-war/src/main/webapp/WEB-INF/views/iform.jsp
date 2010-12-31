@@ -1,7 +1,19 @@
 <%@page contentType="text/html" pageEncoding="windows-1252"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <jsp:include page="/WEB-INF/views/common/head.jsp">
 	<jsp:param name="title" value="Fauxwerd.com" />
 </jsp:include>
+
+<c:choose>
+	<c:when test="${fn:containsIgnoreCase(site.hostname, 'fauxwerd')}">
+		<c:set var="env" value="${site.hostname}"/>
+	</c:when>
+	<c:otherwise>
+		<c:set var="env" value="localhost:8080"/>
+	</c:otherwise>
+</c:choose>
 <style type="text/css">html, body {background: transparent;}</style>
 <div id="response"><!-- --></div>
 	
@@ -22,9 +34,9 @@
 					}
 				});
 			} else if (u === null) {
-				parent.location = 'http://${site.hostname}/user/login?url=' + encodeURIComponent('${url}');
+				parent.location = 'http://${env}/user/login?url=' + encodeURIComponent('${url}');
 			} else { 
-				parent.location = 'http://${site.hostname}/user/wrong-bookmark?url=' + encodeURIComponent('${url}');
+				parent.location = 'http://${env}/user/wrong-bookmark?url=' + encodeURIComponent('${url}');
 			} 
 		});
 	</script>
