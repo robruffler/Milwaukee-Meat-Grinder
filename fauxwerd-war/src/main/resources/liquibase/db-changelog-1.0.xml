@@ -82,5 +82,100 @@
     <changeSet author="rob" id="16">
         <addNotNullConstraint tableName="user" columnName="email" columnDataType="VARCHAR(256)"/>
     </changeSet>
-        
+
+    <changeSet author="rob" id="17">    
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="fk_user_id"/>
+        </preConditions>        
+        <dropForeignKeyConstraint constraintName="fk_user_id" baseTableName="user_content"/>
+        <rollback>
+            <addForeignKeyConstraint constraintName="fk_user_id"
+                baseTableName="user_content" baseColumnNames="user_id"
+                referencedTableName="user" referencedColumnNames="user_id"/>                                                  
+        </rollback>        
+    </changeSet>
+    
+    <changeSet author="rob" id="18">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="fk_content_id"/>
+        </preConditions>  
+        <dropForeignKeyConstraint constraintName="fk_content_id" baseTableName="user_content"/>
+        <rollback>
+            <addForeignKeyConstraint constraintName="fk_content_id" 
+                baseTableName="user_content" baseColumnNames="content_id" 
+                referencedTableName="content" referencedColumnNames="content_id"/>                  
+        </rollback>
+    </changeSet>
+    
+    <changeSet author="rob" id="19">
+        <addForeignKeyConstraint constraintName="fk_user_content_content" 
+          baseTableName="user_content" baseColumnNames="content_id" 
+          referencedTableName="content" referencedColumnNames="content_id"/>      
+    </changeSet>
+    
+    <changeSet author="rob" id="20">
+        <addForeignKeyConstraint constraintName="fk_user_content_user"
+          baseTableName="user_content" baseColumnNames="user_id"
+          referencedTableName="user" referencedColumnNames="user_id"/>                                          
+    </changeSet>    
+    
+    <changeSet author="rob" id="21">
+        <addPrimaryKey tableName="user_content" columnNames="user_id, content_id" constraintName="PRIMARY"/>
+    </changeSet>
+    
+    <changeSet author="rob" id="22">
+	    <addColumn tableName="user_content">
+	        <column name="date_added" type="datetime"/>
+	    </addColumn>    
+    </changeSet>
+    
+    <changeSet author="rob" id="23">
+        <addColumn tableName="content">
+            <column name="raw_html_path" type="varchar(255)"/>
+        </addColumn>    
+    </changeSet>
+    
+    <changeSet author="rob" id="24">
+        <addColumn tableName="content">
+            <column name="status" type="int">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>    
+    </changeSet>
+    
+    <changeSet author="rob" id="25">
+		<createTable tableName="site">
+		    <column name="site_id" type="bigint">
+		        <constraints primaryKey="true" nullable="false"/>
+		    </column>
+		    <column name="hostname" type="varchar(255)">
+		      <constraints unique="true" nullable="false"/>
+		    </column>
+		</createTable>    
+    </changeSet>
+
+    <changeSet author="rob" id="26">
+        <createTable tableName="site_content">
+            <column name="site_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="content_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>            
+        </createTable>    
+    </changeSet>
+    
+    <changeSet author="rob" id="27">
+        <addForeignKeyConstraint constraintName="fk_site_content_content" 
+          baseTableName="site_content" baseColumnNames="content_id" 
+          referencedTableName="content" referencedColumnNames="content_id"/>      
+    </changeSet>
+    
+    <changeSet author="rob" id="28">
+        <addForeignKeyConstraint constraintName="fk_site_content_site"
+          baseTableName="site_content" baseColumnNames="site_id"
+          referencedTableName="site" referencedColumnNames="site_id"/>                                          
+    </changeSet>    
+    
+         
 </databaseChangeLog>

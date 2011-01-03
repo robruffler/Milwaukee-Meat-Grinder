@@ -7,8 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
@@ -22,6 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
+//TODO implement equals and hashCode methods for all Entities for comparison when detatched
 @Entity
 @Table(name = "user")
 public class User implements UserDetails {
@@ -45,44 +44,43 @@ public class User implements UserDetails {
 	@NotNull
 	@Pattern(regexp="(\\w+)@(\\w+\\.)(\\w+)(\\.\\w+)*")
 	@Size(min=5, max=256)
-	@NaturalId(mutable = true)
+//	TODO re-enable NaturalId (breaks hbm2ddl on mysql)
+//	@NaturalId(mutable = true)
+	@Column(columnDefinition="varchar(256)")
 	private String email;
 	
 	@NotNull
 	private boolean enabled;	
-	
-//TODO read about JoinTables, determine if unique = true should stay
-	@OneToMany
-	@JoinTable(
-		name = "user_content",
-		joinColumns = {@JoinColumn(name="user_id"/*, unique = true*/)},
-		inverseJoinColumns = {@JoinColumn(name="content_id")}
-	)
-	@org.hibernate.annotations.ForeignKey(
-		name = "FK_USER_ID",
-		inverseName = "FK_CONTENT_ID"
-	)
-	private List<Content> content;
 
+// this code is no longer used but keeping it around as an example of oneToMany for now	
+//TODO read about JoinTables, determine if unique = true should stay
+//	@OneToMany
+//	@JoinTable(
+//		name = "user_content",
+//		joinColumns = {@JoinColumn(name="user_id"/*, unique = true*/)},
+//		inverseJoinColumns = {@JoinColumn(name="content_id")}
+//	)
+//	@org.hibernate.annotations.ForeignKey(
+//		name = "FK_USER_ID",
+//		inverseName = "FK_CONTENT_ID"
+//	)
+//	private List<Content> content;
+
+	@OneToMany(mappedBy = "user")
+	private List<UserContent> userContent = new ArrayList<UserContent>();
+	
 	//empty constructor required by hibernate
 	public User() { }
 	
-	public User(String password, String email, boolean enabled) {
-		
+	public User(String password, String email, boolean enabled) {		
 		this.password = password;
 		this.email = email;
-		this.enabled = enabled;
-		
+		this.enabled = enabled;		
 	}	
 
 	public Long getId() {
 		return id;
 	}
-
-// This setter should never be used, id is set by hibernate
-//	public void setId(Long id) {
-//		this.id = id;
-//	}
 	
 	public String getPassword() {
 		return password;
@@ -108,14 +106,22 @@ public class User implements UserDetails {
 		this.enabled = enabled;
 	}
 	
-	public List<Content> getContent() {
-		return content;
+//	public List<Content> getContent() {
+//		return content;
+//	}
+//
+//	public void setContent(List<Content> content) {
+//		this.content = content;
+//	}
+
+	public List<UserContent> getUserContent() {
+		return userContent;
 	}
 
-	public void setContent(List<Content> content) {
-		this.content = content;
+	public void setUserContent(List<UserContent> userContent) {
+		this.userContent = userContent;
 	}
-	
+		
 	//required by interface, returning email address instead
 	public String getUsername() {
 		return email;

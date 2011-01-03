@@ -235,6 +235,18 @@
       <artifactId>urlrewritefilter</artifactId>
       <version>3.1.0</version>
     </dependency>
+    
+    <!-- Quartz Dependencies -->
+    <dependency>
+        <groupId>opensymphony</groupId>
+        <artifactId>quartz-all</artifactId>
+        <version>1.6.1</version>
+    </dependency>
+    <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.2</version>
+    </dependency>    
 
     <!-- Servlet -->
     <dependency>
@@ -293,7 +305,7 @@
           <systemProperties>
             <systemProperty>
               <name>server.stage</name>
-              <value>dev</value>
+              <value>local</value>
             </systemProperty>              
           </systemProperties>
         </configuration>

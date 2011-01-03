@@ -7,12 +7,12 @@ import com.fauxwerd.model.User;
 
 public interface UserService {
 
-	String createUser(User user);
+	public String createUser(User user);
 	
-	User getUser(String username);
+	public User getUser(String username);
 	
-	User getUserById(Long userId);
+	public User getUserById(Long userId);
 	
-	UserDetails loadUserByUsername(String arg0);
+	public UserDetails loadUserByUsername(String arg0);
 	
 }

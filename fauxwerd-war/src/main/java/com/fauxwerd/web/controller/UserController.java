@@ -19,6 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.DefaultMessageCodesResolver;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -55,6 +57,22 @@ public class UserController {
 		
 		if (log.isDebugEnabled()) {
 			log.debug(String.format("User = %s", user));
+		}
+		
+		//check if user already exists
+		User existingUser = userService.getUser(user.getEmail());
+		
+		if (existingUser != null) {
+			if (log.isDebugEnabled()) {
+				log.debug(String.format("user already exists with email %s", user.getEmail()));
+			}
+			
+			//TODO this may be a bit of a hack, revisit when the time is right 
+			DefaultMessageCodesResolver messageCodesResolver = new DefaultMessageCodesResolver();			
+			String [] errorCodes = messageCodesResolver.resolveMessageCodes("Exists", "user", "email", String.class);
+			result.addError(new FieldError("user", "email", user.getEmail(), false, errorCodes, null, null));
+
+			return new ModelAndView("user/register", "user", user);
 		}
 		
 		String unhashedPassword = user.getPassword(); 

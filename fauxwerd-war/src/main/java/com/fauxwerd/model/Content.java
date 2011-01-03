@@ -1,18 +1,21 @@
 package com.fauxwerd.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name = "content")
@@ -30,19 +33,28 @@ public class Content {
 	
 	@NotNull
 	@Size(min = 9, max = 2000)
-	@NaturalId
+//	TODO re-enable NaturalId (breaks hbm2ddl on mysql)
+//	@NaturalId
+	@Column(columnDefinition = "varchar(2000)")
 	private String url;
 	
-	@OneToOne(optional=true)
-	@JoinTable(name="user_content",
-        joinColumns = {
-			@JoinColumn(name="content_id", unique = true)           
-		},
-		inverseJoinColumns = {
-			@JoinColumn(name="user_id")
-		}     
-	)	
-	private User user;
+	@NotNull
+	@Enumerated
+	private ContentStatus status;
+	
+	@Column(name = "raw_html_path")
+	private String rawHtmlPath;
+	
+	@OneToMany(mappedBy = "content")
+	private List<UserContent> userContent = new ArrayList<UserContent>();
+	
+	@ManyToOne
+	@JoinTable(name = "site_content",
+				joinColumns = { @JoinColumn(name = "content_id")},
+				inverseJoinColumns = { @JoinColumn(name = "site_id")})
+	@org.hibernate.annotations.ForeignKey(name = "FK_SITE_CONTENT_SITE",
+											inverseName = "FK_SITE_CONTENT_CONTENT")				
+	private Site site;
 	
 	//empty constructor required by hibernate
 	public Content() { }
@@ -62,13 +74,37 @@ public class Content {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
-	public User getUser() {
-		return user;
+	
+	public ContentStatus getStatus() {
+		return status;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setStatus(ContentStatus status) {
+		this.status = status;
 	}
 	
+	public String getRawHtmlPath() {
+		return rawHtmlPath;
+	}
+
+	public void setRawHtmlPath(String rawHtmlPath) {
+		this.rawHtmlPath = rawHtmlPath;
+	}
+
+	public List<UserContent> getUserContent() {
+		return userContent;
+	}
+
+	public void setUserContent(List<UserContent> userContent) {
+		this.userContent = userContent;
+	}
+
+	public Site getSite() {
+		return site;
+	}
+
+	public void setSite(Site site) {
+		this.site = site;
+	}
+		
 }

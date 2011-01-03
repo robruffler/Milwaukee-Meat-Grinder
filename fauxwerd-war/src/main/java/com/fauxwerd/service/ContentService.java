@@ -2,34 +2,29 @@ package com.fauxwerd.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.fauxwerd.dao.ContentDAO;
 import com.fauxwerd.model.Content;
+import com.fauxwerd.model.Site;
+import com.fauxwerd.model.UserContent;
 
-@Service
-public class ContentService {
-    @Autowired
-    private ContentDAO contentDAO;
- 
-    @Transactional
-    public void addContent(Content content) {
-        contentDAO.addContent(content);
-    }
- 
-    @Transactional
-    public List<Content> listContent() { 
-        return contentDAO.listContent();
-    }
-/*
-    @Transactional
-    public void removeContent(Integer id) {
-        contentDAO.removeContent(id);
-    }
-*/    
+public interface ContentService {
+
+	public void addContent(Content content);
+	
+	public void addSite(Site site);
+	
+	public void addUserContent(UserContent content);
+	
+	public void updateContent(Content content);
+	
+	public void updateUserContent(UserContent userContent);
+	
+	public Content getContentById(Long id);
+	
+	public Content getContentByUrl(String url);
+	
+	public Site getSiteByHostname(String url);
+	
+	public List<Content> listContent();
+	
+	public List<Content> listSavedContent();
 }
-
-
- 

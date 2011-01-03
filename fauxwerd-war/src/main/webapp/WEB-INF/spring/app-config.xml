@@ -10,8 +10,9 @@
 		
 	<!-- Scans the classpath of this application for @Components to deploy as beans -->
  
-  <context:component-scan base-package="com.fauxwerd.dao" />
-  <context:component-scan base-package="com.fauxwerd.service" />
+    <context:component-scan base-package="com.fauxwerd.dao" />
+    <context:component-scan base-package="com.fauxwerd.job" />
+    <context:component-scan base-package="com.fauxwerd.service" />
 	<context:component-scan base-package="com.fauxwerd.web.controller" />
 
 	<!-- Application Message Bundle -->
@@ -29,30 +30,21 @@
 	<!-- Configures Spring Security -->
 	<import resource="sec-config.xml" />
 	
-  <!-- Environment Specific Configuration -->
-  <context:property-placeholder
-    ignore-resource-not-found="true"
-    location="classpath:properties/default/*.properties,
-              classpath:properties/${server.stage}/*.properties" 
-    system-properties-mode="OVERRIDE"/>
-  
-<!-- replaced this with above, keeping for now in case we run into issues   
-  <bean id="propertyPlaceholderConfigurer"
-        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
-    <property name="locations">
-      <list>
-        <value>classpath:properties/default/*.properties</value>
-        <value>classpath:properties/${server.stage}/*.properties</value>                
-      </list>
-    </property>
-  </bean> 
- -->  
-  
-  <!-- Environment Variables -->
+	<!-- Configures Quartz Scheduled Jobs -->
+	<import resource="job-config.xml" />
+	
+    <!-- Environment Specific Configuration -->
+    <context:property-placeholder
+        ignore-resource-not-found="true"
+        location="classpath:properties/default/*.properties,
+            classpath:properties/${server.stage}/*.properties" 
+        system-properties-mode="OVERRIDE"/>
+    
+    <!-- Environment Variables -->
 	<!-- creates a java.util.Map instance with the supplied key-value pairs -->
 	<util:map id="site">
 		<entry key="hostname" value="${hostname}"/>
 		<entry key="port" value="${port}"/>
+		<entry key="dataStore" value="${dataStore}"/>
 	</util:map>  
 </beans>

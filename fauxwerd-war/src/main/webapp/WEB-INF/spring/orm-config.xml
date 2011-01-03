@@ -42,7 +42,9 @@
     <property name="annotatedClasses">
       <list>
         <value>com.fauxwerd.model.Content</value>
+        <value>com.fauxwerd.model.Site</value>
         <value>com.fauxwerd.model.User</value>
+        <value>com.fauxwerd.model.UserContent</value>
       </list>
     </property>
     <property name="configurationClass">

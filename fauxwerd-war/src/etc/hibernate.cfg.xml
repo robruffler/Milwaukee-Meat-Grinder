@@ -12,6 +12,8 @@
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
         <property name="hibernate.id.new_generator_mappings">true</property>
         <mapping class="com.fauxwerd.model.Content"/>
+        <mapping class="com.fauxwerd.model.Site"/>
         <mapping class="com.fauxwerd.model.User"/>
+        <mapping class="com.fauxwerd.model.UserContent"/>
     </session-factory>
 </hibernate-configuration>

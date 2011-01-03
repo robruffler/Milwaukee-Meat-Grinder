@@ -22,8 +22,10 @@
 	<div>
 		<p>Your content:</p>
 	<ol>
-		<c:forEach items="${user.content}" var="contentItem">
-			<li><a href="${contentItem.url}">${contentItem.url}</a></li>
+		<c:forEach items="${user.userContent}" var="userContentItem">
+			<li><a href="${userContentItem.content.url}">${userContentItem.content.url}</a> 
+			 - <c:if test="${userContentItem.content.status eq 'FETCHED'}"><a href="/content/${userContentItem.content.id}"></c:if> ${userContentItem.content.status}<c:if test="${userContentItem.content.status eq 'FETCHED'}"></a></c:if> 
+			 - ${userContentItem.dateAdded}</li>
 		</c:forEach>
 	</ol>
 	</div>

@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.fauxwerd.model.Content;
+import com.fauxwerd.model.ContentStatus;
+import com.fauxwerd.model.Site;
+import com.fauxwerd.model.UserContent;
 
 @Repository
 public class ContentDAOImpl implements ContentDAO {
@@ -17,21 +20,56 @@ public class ContentDAOImpl implements ContentDAO {
     public void addContent(Content content) {
         sessionFactory.getCurrentSession().save(content);
     }
- 
+    
+	public void addSite(Site site) {
+		sessionFactory.getCurrentSession().save(site);
+	}
+    
+    public void addUserContent(UserContent userContent) {
+    	sessionFactory.getCurrentSession().save(userContent);
+    }
+
+    public void updateContent(Content content) {
+        sessionFactory.getCurrentSession().update(content);
+    }
+
+    public void updateUserContent(UserContent userContent) {
+    	sessionFactory.getCurrentSession().update(userContent);
+    }
+    
+    public Content getContentById(Long id) {
+    	
+    	return (Content)sessionFactory.getCurrentSession().createQuery("from Content as content where content.id = ?")
+    		.setLong(0, id.longValue())
+    		.uniqueResult();
+    }
+    
+    public Content getContentByUrl(String url) {
+    	
+    	return (Content)sessionFactory.getCurrentSession().createQuery("from Content as content where content.url = ?")
+    		.setString(0, url)
+    		.uniqueResult();
+    }
+    
+    public Site getSiteByHostname(String hostname) {
+    	return (Site)sessionFactory.getCurrentSession().createQuery("from Site as site where site.hostname = ?")
+    		.setString(0, hostname)
+    		.uniqueResult();
+    }
+    
     @SuppressWarnings("unchecked")
     public List<Content> listContent() {
  
         return sessionFactory.getCurrentSession().createQuery("from Content")
                 .list();
     }
+
+    @SuppressWarnings("unchecked")
+    public List<Content> listSavedContent() {
  
-    public void removeContent(Integer id) {
-        Content content = (Content) sessionFactory.getCurrentSession().load(
-                Content.class, id);
-        if (null != content) {
-            sessionFactory.getCurrentSession().delete(content);
-        }
- 
+        return sessionFactory.getCurrentSession().createQuery("from Content as content where content.status = ?")
+        		.setParameter(0, ContentStatus.SAVED)
+                .list();
     }
-	
+        	
 }
