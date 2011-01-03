@@ -333,7 +333,7 @@
             <url>jdbc:mysql://localhost:3306/fauxwerd</url>
             <username>fauxwerd</username>
             <password>f@uxw3rd</password>
-            <logging>debug</logging>
+            <logging>info</logging>
             <rollbackCount>1</rollbackCount>
         </configuration>        
 <!-- setting this to be called by hudson after packaging the project, may need to revisit when/if we start unit testing 
