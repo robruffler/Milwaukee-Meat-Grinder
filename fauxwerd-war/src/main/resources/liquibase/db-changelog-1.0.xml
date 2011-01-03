@@ -177,5 +177,14 @@
           referencedTableName="site" referencedColumnNames="site_id"/>                                          
     </changeSet>    
     
+    <changeSet author="rob" id="29">
+        <comment>Clearing tables to account for sites</comment>
+        <delete tableName="site_content"/>
+        <delete tableName="user_content"/>
+        <delete tableName="content"/>
+        <delete tableName="hibernate_sequences">
+            <where>sequence_name="CONTENT"</where>
+        </delete>
+    </changeSet>
          
 </databaseChangeLog>
