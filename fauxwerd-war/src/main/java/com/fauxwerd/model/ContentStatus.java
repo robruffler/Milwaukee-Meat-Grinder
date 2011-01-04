@@ -4,5 +4,8 @@ public enum ContentStatus {
 	SAVED,
 	FETCHED,
 	PARSED,
-	CONVERTED
+	CONVERTED,
+	FETCH_ERROR,
+	PARSE_ERROR,
+	CONVERT_ERROR
 }

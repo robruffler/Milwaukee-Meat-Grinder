@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.ServletContextAware;
 
@@ -45,21 +46,17 @@ public class FetchContentJob implements ServletContextAware {
 			}
 			
 			RestTemplate restTemplate = new RestTemplate();
-			
-			String rawHtml = restTemplate.getForObject(content.getUrl(), String.class);
-			
-//			if (log.isDebugEnabled()) {
-//				log.debug("--------------------------------------------");
-//				log.debug(rawHtml);
-//				log.debug("--------------------------------------------");
-//			}
-			
-			String dataDirectoryPath = siteProperties.get("dataStore");			
 
-			String siteDirectoryPath = content.getSite().getHostname();
-			siteDirectoryPath = siteDirectoryPath.replace('.', '_');
+			String rawHtml = null;
 			
 			try {
+				rawHtml = restTemplate.getForObject(content.getUrl(), String.class);
+				
+				String dataDirectoryPath = siteProperties.get("dataStore");			
+
+				String siteDirectoryPath = content.getSite().getHostname();
+				siteDirectoryPath = siteDirectoryPath.replace('.', '_');
+				
 				//check if data directory exists
 				File dataDirectory = new File(dataDirectoryPath);
 				
@@ -92,12 +89,23 @@ public class FetchContentJob implements ServletContextAware {
 				if (log.isDebugEnabled()) {
 					log.debug(String.format("saved to %s", file.getAbsolutePath()));
 				}
+				
+			}
+			catch (RestClientException e) {
+				if (log.isErrorEnabled()) {
+					log.error("", e);
+				}
+				
+				//set content status to FETCH_ERROR				
+				content.setStatus(ContentStatus.FETCH_ERROR);
+				contentService.updateContent(content);				
 			}
 			catch (IOException e) {
 				if (log.isErrorEnabled()) {
 					log.error("", e);
 				}
 			}
+					
 		}
 				
 	}
