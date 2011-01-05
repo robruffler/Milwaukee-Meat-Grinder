@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
@@ -52,21 +53,8 @@ public class User implements UserDetails {
 	@NotNull
 	private boolean enabled;	
 
-// this code is no longer used but keeping it around as an example of oneToMany for now	
-//TODO read about JoinTables, determine if unique = true should stay
-//	@OneToMany
-//	@JoinTable(
-//		name = "user_content",
-//		joinColumns = {@JoinColumn(name="user_id"/*, unique = true*/)},
-//		inverseJoinColumns = {@JoinColumn(name="content_id")}
-//	)
-//	@org.hibernate.annotations.ForeignKey(
-//		name = "FK_USER_ID",
-//		inverseName = "FK_CONTENT_ID"
-//	)
-//	private List<Content> content;
-
 	@OneToMany(mappedBy = "user")
+	@OrderBy("dateAdded desc")
 	private List<UserContent> userContent = new ArrayList<UserContent>();
 	
 	//empty constructor required by hibernate
@@ -106,14 +94,6 @@ public class User implements UserDetails {
 		this.enabled = enabled;
 	}
 	
-//	public List<Content> getContent() {
-//		return content;
-//	}
-//
-//	public void setContent(List<Content> content) {
-//		this.content = content;
-//	}
-
 	public List<UserContent> getUserContent() {
 		return userContent;
 	}

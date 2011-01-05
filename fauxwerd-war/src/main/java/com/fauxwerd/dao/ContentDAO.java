@@ -3,6 +3,7 @@ package com.fauxwerd.dao;
 import java.util.List;
 
 import com.fauxwerd.model.Content;
+import com.fauxwerd.model.ContentStatus;
 import com.fauxwerd.model.Site;
 import com.fauxwerd.model.UserContent;
 
@@ -25,6 +26,7 @@ public interface ContentDAO {
 	public Site getSiteByHostname(String hostname);
 	
 	public List<Content> listContent();
+		
+	public List<Content> listContentByStatus(ContentStatus status);
 	
-	public List<Content> listSavedContent();
 }

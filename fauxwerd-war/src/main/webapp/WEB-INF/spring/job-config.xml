@@ -12,6 +12,7 @@
         <property name="triggers">
             <list>
                 <ref bean="fetchContentTrigger" />
+                <ref bean="parseContentTrigger" />
             </list>
         </property>
     </bean>
@@ -20,12 +21,24 @@
         <property name="jobDetail" ref="fetchContentJobDetail" />
         <!--  execute every 15 minutes -->
         <property name="cronExpression" value="0 * * * * ?"/>
-    </bean>    
+    </bean>
+    
+    <bean id="parseContentTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="parseContentJobDetail" />
+        <!--  execute every 15 minutes -->
+        <property name="cronExpression" value="30 * * * * ?"/>
+    </bean>            
     
     <bean id="fetchContentJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="fetchContentJob"/>
         <property name="targetMethod" value="fetch" />
         <property name="concurrent" value="false" />
     </bean>
+    
+    <bean id="parseContentJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="parseContentJob"/>
+        <property name="targetMethod" value="parse" />
+        <property name="concurrent" value="false" />
+    </bean>    
 
 </beans>

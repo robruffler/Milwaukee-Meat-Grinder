@@ -38,14 +38,10 @@ public class ContentDAOImpl implements ContentDAO {
     }
     
     public Content getContentById(Long id) {
-    	
-    	return (Content)sessionFactory.getCurrentSession().createQuery("from Content as content where content.id = ?")
-    		.setLong(0, id.longValue())
-    		.uniqueResult();
+    	return (Content)sessionFactory.getCurrentSession().get(Content.class, id);    	
     }
     
-    public Content getContentByUrl(String url) {
-    	
+    public Content getContentByUrl(String url) {    	
     	return (Content)sessionFactory.getCurrentSession().createQuery("from Content as content where content.url = ?")
     		.setString(0, url)
     		.uniqueResult();
@@ -58,18 +54,16 @@ public class ContentDAOImpl implements ContentDAO {
     }
     
     @SuppressWarnings("unchecked")
-    public List<Content> listContent() {
- 
+    public List<Content> listContent() { 
         return sessionFactory.getCurrentSession().createQuery("from Content")
                 .list();
     }
 
     @SuppressWarnings("unchecked")
-    public List<Content> listSavedContent() {
- 
+    public List<Content> listContentByStatus(ContentStatus status) {
         return sessionFactory.getCurrentSession().createQuery("from Content as content where content.status = ?")
-        		.setParameter(0, ContentStatus.SAVED)
-                .list();
+		.setParameter(0, status)
+        .list();    	
     }
         	
 }

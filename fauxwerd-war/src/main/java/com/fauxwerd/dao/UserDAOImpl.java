@@ -29,14 +29,8 @@ public class UserDAOImpl implements UserDAO {
 			return null;
 	}	
 
-	@SuppressWarnings("unchecked")
 	public User getUserById(Long userId) {
-		List<User> users = sessionFactory.getCurrentSession().createQuery("select h from User h where id='" + userId + "'").list();
-	
-		if (users.size() > 0)
-			return users.get(0);
-		else
-			return null;
+		return (User) sessionFactory.getCurrentSession().get(User.class, userId);		
 	}	
 	
 }

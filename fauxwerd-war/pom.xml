@@ -20,6 +20,11 @@
       <name>home of the latest hibernate dependencies</name>
       <url>https://repository.jboss.org/nexus/content/groups/public</url>
     </repository>
+    <repository>
+        <id>sakaiproject.org</id>
+        <name>home of the jython dependencies</name>
+        <url>http://source.sakaiproject.org/maven2</url>
+    </repository>
   </repositories>
   
    <pluginRepositories>
@@ -212,6 +217,13 @@
       <artifactId>hibernate-validator</artifactId>
       <version>4.0.2.GA</version>
     </dependency>   
+
+    <!-- Jython -->
+	<dependency>
+	   <groupId>org.python</groupId>
+	   <artifactId>jython-complete</artifactId>
+	   <version>2.5.1</version>
+	</dependency>    
 
     <!--  Joda Time -->    
 <!-- something in this dependency breaks tomcat, commenting out until we really need it

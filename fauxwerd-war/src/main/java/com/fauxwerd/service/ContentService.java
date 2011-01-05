@@ -3,6 +3,7 @@ package com.fauxwerd.service;
 import java.util.List;
 
 import com.fauxwerd.model.Content;
+import com.fauxwerd.model.ContentStatus;
 import com.fauxwerd.model.Site;
 import com.fauxwerd.model.UserContent;
 
@@ -26,5 +27,9 @@ public interface ContentService {
 	
 	public List<Content> listContent();
 	
-	public List<Content> listSavedContent();
+	public List<Content> listContentByStatus(ContentStatus status);	
+	
+	public List<Content> fetchContent();
+	
+	public List<Content> parseContent();
 }
