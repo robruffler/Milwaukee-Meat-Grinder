@@ -24,7 +24,7 @@
 		<ul>
 		    <li>Saved Today</li>
 			<c:forEach items="${user.userContent}" var="userContentItem">
-			    <c:if test="${insertedSavedEarlier && userContentItem.dateAdded < now }"><li>Saved Earlier</li><c:set var="insertedSavedEarlier" value="true"/></c:if>
+			    <c:if test="${!insertedSavedEarlier && userContentItem.dateAdded < now }"><li>Saved Earlier</li><c:set var="insertedSavedEarlier" value="true"/></c:if>
                 <li><a href="${userContentItem.content.url}">${userContentItem.content.url}</a> 
 				 - <c:if test="${userContentItem.content.status eq 'FETCHED'}"><a href="/content/${userContentItem.content.id}"></c:if> ${userContentItem.content.status}<c:if test="${userContentItem.content.status eq 'FETCHED'}"></a></c:if> 
 				 - <fmt:formatDate value="${userContentItem.dateAdded}" type="both" timeStyle="short" dateStyle="medium"/></li>
