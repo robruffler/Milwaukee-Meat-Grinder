@@ -18,6 +18,10 @@ import javax.validation.constraints.NotNull;
 @Table(name = "site")
 public class Site {
 	
+	private Long id;	
+	private String hostname;	
+	private List<Content> content = new ArrayList<Content>();
+
 	@Id 
 	@GeneratedValue (generator = "SITE_TABLE_GEN")
 	@TableGenerator (
@@ -26,15 +30,6 @@ public class Site {
 			allocationSize = 10
 	)
 	@Column(name = "site_id")
-	private Long id;
-	
-	@NotNull
-	@Column(columnDefinition = "varchar(255)")
-	private String hostname;
-	
-	@OneToMany(mappedBy = "site")
-	private List<Content> content = new ArrayList<Content>();
-
 	public Long getId() {
 		return id;
 	}
@@ -43,6 +38,8 @@ public class Site {
 		this.id = id;
 	}
 
+	@NotNull
+	@Column(columnDefinition = "varchar(255)")
 	public String getHostname() {
 		return hostname;
 	}
@@ -51,6 +48,7 @@ public class Site {
 		this.hostname = hostname;
 	}
 
+	@OneToMany(mappedBy = "site")	
 	public List<Content> getContent() {
 		return content;
 	}

@@ -226,7 +226,8 @@
 	</dependency>    
 
     <!--  Joda Time -->    
-<!-- something in this dependency breaks tomcat, commenting out until we really need it
+<!-- something in this dependency breaks tomcat, commenting out until we really need it -->
+<!--
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
@@ -236,11 +237,15 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time-jsptags</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
       <scope>runtime</scope>
     </dependency>
- -->     
- 
+    <dependency>
+        <groupId>org.jadira.usertype</groupId>
+        <artifactId>usertype.jodatime</artifactId>
+        <version>1.8</version>
+    </dependency>
+-->
     <!--  URL Rewrite -->
     <dependency>
       <groupId>org.tuckey</groupId>

@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -28,33 +29,10 @@ public class User implements UserDetails {
 
 	private static final long serialVersionUID = 1251530774635471804L;
 
-	@Id 
-	@GeneratedValue(generator = "USER_TABLE_GEN")
-	@TableGenerator(
-			name = "USER_TABLE_GEN",
-			pkColumnValue = "USER",
-			allocationSize = 5
-	)
-	@Column(name = "user_id")
-	private Long id;
-	
-	@NotNull
-	@Size(min=1, max=50)
-	private String password;
-		
-	@NotNull
-	@Pattern(regexp="(\\w+)@(\\w+\\.)(\\w+)(\\.\\w+)*")
-	@Size(min=5, max=256)
-//	TODO re-enable NaturalId (breaks hbm2ddl on mysql)
-//	@NaturalId(mutable = true)
-	@Column(columnDefinition="varchar(256)")
+	private Long id;	
+	private String password;		
 	private String email;
-	
-	@NotNull
 	private boolean enabled;	
-
-	@OneToMany(mappedBy = "user")
-	@OrderBy("dateAdded desc")
 	private List<UserContent> userContent = new ArrayList<UserContent>();
 	
 	//empty constructor required by hibernate
@@ -66,10 +44,24 @@ public class User implements UserDetails {
 		this.enabled = enabled;		
 	}	
 
+	@Id 
+	@GeneratedValue(generator = "USER_TABLE_GEN")
+	@TableGenerator(
+			name = "USER_TABLE_GEN",
+			pkColumnValue = "USER",
+			allocationSize = 5
+	)
+	@Column(name = "user_id")	
 	public Long getId() {
 		return id;
 	}
 	
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@NotNull
+	@Size(min=1, max=50)
 	public String getPassword() {
 		return password;
 	}
@@ -77,7 +69,13 @@ public class User implements UserDetails {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
+	@NotNull
+	@Pattern(regexp="(\\w+)@(\\w+\\.)(\\w+)(\\.\\w+)*")
+	@Size(min=5, max=256)
+//	TODO re-enable NaturalId (breaks hbm2ddl on mysql)
+//	@NaturalId(mutable = true)
+	@Column(columnDefinition="varchar(256)")	
 	public String getEmail() {
 		return email;
 	}
@@ -86,6 +84,7 @@ public class User implements UserDetails {
 		this.email = email;
 	}
 	
+	@NotNull	
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -93,7 +92,9 @@ public class User implements UserDetails {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-	
+
+	@OneToMany(mappedBy = "user")
+	@OrderBy("dateAdded desc")
 	public List<UserContent> getUserContent() {
 		return userContent;
 	}
@@ -103,24 +104,29 @@ public class User implements UserDetails {
 	}
 		
 	//required by interface, returning email address instead
+	@Transient
 	public String getUsername() {
 		return email;
 	}
 	
 	//these booleans are required by UserDetails interface, using enabled state for all
+	@Transient
 	public boolean isAccountNonExpired() {
 		return enabled;
 	}
 
+	@Transient
 	public boolean isAccountNonLocked() {
 		return enabled;
 	}
 
+	@Transient
 	public boolean isCredentialsNonExpired() {
 		return enabled;
 	}
 
 	//currently only one user role so we're always returning ROLE_USER
+	@Transient	
 	public List<GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		authorities.add(new GrantedAuthorityImpl("ROLE_USER"));

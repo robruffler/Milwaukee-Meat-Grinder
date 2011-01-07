@@ -23,10 +23,10 @@
 	   Today's date is <fmt:formatDate value="${now}" type="date" timeStyle="long" dateStyle="long" />
 		<ul>
 		    <li>Saved Today</li>
-			<c:forEach items="${user.userContent}" var="userContentItem">
+			<c:forEach items="${user.userContent}" var="userContentItem">			
 			    <c:if test="${!insertedSavedEarlier && userContentItem.dateAdded > now }"><li>Saved Earlier</li><c:set var="insertedSavedEarlier" value="true"/></c:if>
                 <li><a href="${userContentItem.content.url}">${userContentItem.content.url}</a> 
-				 - <c:if test="${userContentItem.content.status eq 'FETCHED'}"><a href="/content/${userContentItem.content.id}"></c:if> ${userContentItem.content.status}<c:if test="${userContentItem.content.status eq 'FETCHED'}"></a></c:if> 
+				 - <c:if test="${userContentItem.content.status eq 'FETCHED' || userContentItem.content.status eq 'PARSED'}"><a href="/content/${userContentItem.content.id}"></c:if> ${userContentItem.content.status}<c:if test="${userContentItem.content.status eq 'FETCHED' || userContentItem.content.status eq 'PARSED'}"></a></c:if> 
 				 - <fmt:formatDate value="${userContentItem.dateAdded}" type="both" timeStyle="short" dateStyle="medium"/></li>
 			</c:forEach>
 		</ul>

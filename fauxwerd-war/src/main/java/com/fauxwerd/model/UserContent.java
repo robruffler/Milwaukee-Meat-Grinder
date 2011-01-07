@@ -19,15 +19,10 @@ public class UserContent {
 	@Embeddable
 	public static class Id implements Serializable {
 		
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -2579973513441057170L;
 
-		@Column(name = "user_id")
-		private Long userId;
-		
-		@Column(name = "content_id")
+
+		private Long userId;		
 		private Long contentId;
 		
 		public Id() {}
@@ -36,7 +31,25 @@ public class UserContent {
 			this.userId = userId;
 			this.contentId = contentId;
 		}
-		
+	
+		@Column(name = "user_id")				
+		public Long getUserId() {
+			return userId;
+		}
+
+		public void setUserId(Long userId) {
+			this.userId = userId;
+		}
+
+		@Column(name = "content_id")
+		public Long getContentId() {
+			return contentId;
+		}
+
+		public void setContentId(Long contentId) {
+			this.contentId = contentId;
+		}
+
 		public boolean equals(Object o) {
 			if (o != null && o instanceof Id) {
 				Id that = (Id)o;
@@ -53,24 +66,10 @@ public class UserContent {
 		}
 	}
 	
-	@EmbeddedId
-	private Id id = new Id();
-
-	@Column(name = "date_added")
-	private Date dateAdded = new Date();
-		
-	@ManyToOne
-	@JoinColumn(name = "user_id",
-				insertable = false,
-				updatable = false)
-	@org.hibernate.annotations.ForeignKey(name = "FK_USER_CONTENT_USER")				
-	private User user;
 	
-	@ManyToOne
-	@JoinColumn(name = "content_id",
-				insertable = false,
-				updatable = false)
-	@org.hibernate.annotations.ForeignKey(name = "FK_USER_CONTENT_CONTENT")				
+	private Id id = new Id();
+	private Date dateAdded = new Date();		
+	private User user;	
 	private Content content;
 	
 	public UserContent() {}
@@ -94,6 +93,7 @@ public class UserContent {
 //		dateAdded = new Date();
 //	}	
 	
+	@EmbeddedId	
 	public Id getId() {
 		return id;
 	}
@@ -102,6 +102,7 @@ public class UserContent {
 		this.id = id;
 	}
 
+	@Column(name = "date_added")
 	public Date getDateAdded() {
 		return dateAdded;
 	}
@@ -110,6 +111,11 @@ public class UserContent {
 		this.dateAdded = dateAdded;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "user_id",
+				insertable = false,
+				updatable = false)
+	@org.hibernate.annotations.ForeignKey(name = "FK_USER_CONTENT_USER")				
 	public User getUser() {
 		return user;
 	}
@@ -118,6 +124,11 @@ public class UserContent {
 		this.user = user;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "content_id",
+				insertable = false,
+				updatable = false)
+	@org.hibernate.annotations.ForeignKey(name = "FK_USER_CONTENT_CONTENT")					
 	public Content getContent() {
 		return content;
 	}
