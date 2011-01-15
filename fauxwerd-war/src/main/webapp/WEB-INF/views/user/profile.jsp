@@ -6,9 +6,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<jsp:include page="/WEB-INF/views/common/head.jsp">
-	<jsp:param name="title" value="Fauxwerd.com" />
-</jsp:include>
+<jsp:include page="/WEB-INF/views/common/head.jsp" />
 <jsp:include page="/WEB-INF/views/common/header.jsp">
 	<jsp:param name="title" value="${index.title}"/>
 </jsp:include>

@@ -1,0 +1,97 @@
+.seo { display: none; }
+
+body {
+	background: transparent url(/images/header.gif) repeat-x top; /* standard grey */
+}
+
+#wrapper {
+	margin: 0 auto;
+	display: block;
+	width: 990px;
+}
+
+#header {
+	display: block;
+	font: bold 18px  verdana, arial, sans-serif;
+	color: #FFFDD0; /* standard cream */
+	height: 50px;
+	text-align: center;
+	margin: 0 auto 10px;
+}
+
+#site-logo {
+	display: block;
+	background: transparent url(/images/logo.png) no-repeat center;
+	width: 204px;
+	height: 50px;
+	float: left;
+}
+
+#menu { 
+	float: right;
+	margin: 0 auto;
+	padding: 0;
+}
+
+#menu li { 
+	float: left;
+	margin-right: 30px;
+	list-style: none;
+	height: 50px;
+}
+
+#menu li:hover { background: transparent url(/images/selected.png) no-repeat bottom center; }
+
+#menu li a {
+	color: #FFFDD0;
+	text-decoration: none;
+	display: block;
+	padding-top: 13px;
+	height: 37px;
+}
+
+#menu li a:hover { color: #E62020; /* standard red */ }
+
+#login-form { float: right; margin-top: 5px; }
+
+#login-form .form-fs {
+	margin: 0 auto;
+	padding: 0;
+}
+
+#login-form .form-fs legend { display: none; }
+
+#login-form .form-list {
+	margin: 0 auto;
+	padding: 0;
+}
+
+#login-form .form-list li {
+	float: left;
+	margin-right: 5px;
+	list-style: none;
+}
+
+#login-form .form-list label {
+	font: normal 12px verdana, arial, sans-serif;
+	color: #323232;
+}
+
+#login-form .form-list label {
+	color: #FFFDD0;
+	display: block;
+	text-align: left;
+}
+
+#login-form .form-list input {
+	border: 1px solid #000;
+	background: #FFF;
+	color: #323232;
+	padding: 2px 3px;
+	font: bold 12px verdana, arial, sans-serif;
+}
+
+#login-form .form-list input[type="submit"] { 
+	margin-top: 17px;
+	padding: 1px 3px;
+}
