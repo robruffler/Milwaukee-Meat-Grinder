@@ -9,6 +9,7 @@
     <title>${title}</title>
 	<link rel="stylesheet" type="text/css" href="/styles/base.css" />
 	<link rel="stylesheet" type="text/css" href="/styles/main.css" />
+	<link rel="stylesheet" type="text/css" href="/styles/content.css" />
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"><!----></script>
 	<script type="text/javascript" src="/scripts/fw.js"><!----></script>
 	<script type="text/javascript" src="/scripts/modules.js"><!----></script>

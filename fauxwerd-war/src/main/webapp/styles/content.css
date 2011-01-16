@@ -1,0 +1,17 @@
+.title {
+	border-bottom: 1px solid #323232;
+}
+
+.content-list {
+	width: 100%;
+}
+
+.content-list .heading {
+	background: #323232;
+	color: #FFFDD0;
+	font-weight: bold;
+}
+
+.content-list .alt-row {
+	background: #FFFDD0;
+}

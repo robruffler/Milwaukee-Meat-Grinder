@@ -1,7 +1,20 @@
 .seo { display: none; }
+.pop { color: #E62020;}
+.pizazz { color: #66cc66; }
+
 
 body {
 	background: transparent url(/images/header.gif) repeat-x top; /* standard grey */
+}
+
+a {
+	color: #000;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+a:hover {
+	color: #E62020;
 }
 
 #wrapper {
