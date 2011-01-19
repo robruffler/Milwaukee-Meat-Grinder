@@ -177,7 +177,7 @@ public class ContentServiceImpl implements ContentService {
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine pyEngine = mgr.getEngineByName("python");
         String pyScript = null;        
-        File pyScriptFile = new File("/Users/robruffler/fauxwerd/mmg-github/fauxwerd-war/src/main/python/parse.py");
+        File pyScriptFile = new File("src/main/python/parse.py");
         
         try {
         	pyScript = FileUtils.readFileToString(pyScriptFile);
