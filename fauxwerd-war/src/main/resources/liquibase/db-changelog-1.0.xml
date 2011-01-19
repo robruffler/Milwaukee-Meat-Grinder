@@ -186,5 +186,59 @@
             <where>sequence_name="CONTENT"</where>
         </delete>
     </changeSet>
-         
+    
+    <changeSet author="rob" id="30">
+        <addColumn tableName="content">
+            <column name="parsed_html_path" type="varchar(255)"/>
+        </addColumn>    
+    </changeSet>
+    
+    <changeSet author="rob" id="31">
+        <addColumn tableName="content">
+            <column name="title" type="varchar(255)"/>
+        </addColumn>    
+    </changeSet>
+    
+    <changeSet author="rob" id="32">
+        <addColumn tableName="content">
+            <column name="optlock" type="int">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>    
+    </changeSet>
+
+    <changeSet author="rob" id="33">
+        <addColumn tableName="site">
+            <column name="optlock" type="int">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>    
+    </changeSet>
+    
+    <changeSet author="rob" id="34">
+        <addColumn tableName="user">
+            <column name="optlock" type="int">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>    
+    </changeSet>
+    
+    <changeSet author="rob" id="35">
+        <addColumn tableName="user_content">
+            <column name="optlock" type="int">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>    
+    </changeSet>
+    
+    <changeSet author="rob" id="36">
+        <comment>Clearing tables to account for sites</comment>       
+        <delete tableName="site_content"/>
+        <delete tableName="user_content"/>
+        <delete tableName="site"/>        
+        <delete tableName="content"/>
+        <delete tableName="user"/>
+        <delete tableName="hibernate_sequences"/>
+    </changeSet>
+        
 </databaseChangeLog>
