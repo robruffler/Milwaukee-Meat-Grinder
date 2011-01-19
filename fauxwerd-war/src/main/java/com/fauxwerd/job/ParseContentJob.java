@@ -17,10 +17,7 @@ public class ParseContentJob {
     private ContentService contentService; 	
 
 	public void parse() {
-		if (log.isDebugEnabled()) {
-			log.debug("parsing ahoy!");
-		}
-		
+
 		contentService.parseContent();
 		
 	}

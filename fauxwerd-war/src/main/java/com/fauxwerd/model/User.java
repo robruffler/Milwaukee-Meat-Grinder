@@ -12,6 +12,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -22,7 +23,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
-//TODO implement equals and hashCode methods for all Entities for comparison when detatched
+import com.fauxwerd.util.HashCodeUtil;
+
 @Entity
 @Table(name = "user")
 public class User implements UserDetails {
@@ -30,6 +32,7 @@ public class User implements UserDetails {
 	private static final long serialVersionUID = 1251530774635471804L;
 
 	private Long id;	
+	private Integer version;
 	private String password;		
 	private String email;
 	private boolean enabled;	
@@ -59,7 +62,17 @@ public class User implements UserDetails {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+    @Version
+    @Column(name="optlock")
+	public Integer getVersion() {
+		return version;
+	}
 
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	
 	@NotNull
 	@Size(min=1, max=50)
 	public String getPassword() {
@@ -141,5 +154,24 @@ public class User implements UserDetails {
 	public String toString() {
 		return String.format("id = [%s], email = [%s], password = [%s]", this.id, this.email, this.password);
 	}
+	
+	public boolean equals(Object other) {
+		if (this == other) return true;
+		if (!(other instanceof User)) return false;
+		
+		final User user = (User)other;
+		if (!user.getEmail().equals( getEmail())) return false;
+		
+		return true;
+	}
+	
+	public int hashCode() {
+		int result = HashCodeUtil.SEED;
+
+		result = HashCodeUtil.hash(result, getEmail());
+		
+		return result;		
+	}
+	
 	
 }

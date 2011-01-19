@@ -39,6 +39,8 @@
         <prop key="hibernate.id.new_generator_mappings">true</prop>        
       </props>
     </property>
+    <property name="packagesToScan" value="com.fauxwerd.model"/>
+<!-- replacing this with packagesToScan    
     <property name="annotatedClasses">
       <list>
         <value>com.fauxwerd.model.Content</value>
@@ -47,6 +49,7 @@
         <value>com.fauxwerd.model.UserContent</value>
       </list>
     </property>
+ -->    
     <property name="configurationClass">
       <value>org.hibernate.cfg.AnnotationConfiguration</value>
     </property>        

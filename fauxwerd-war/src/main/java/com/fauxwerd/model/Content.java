@@ -14,17 +14,26 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fauxwerd.util.HashCodeUtil;
 
 @Entity
 @Table(name = "content")
 public class Content {
 	
 	private Long id;
-	private String url;	
+	private Integer version;
+	private String url;
+	private String title;
 	private ContentStatus status;
 	private String rawHtmlPath;	
+	private String parsedHtmlPath;
+	//TODO evaluate if this is a good idea
+	private String parsedHtml;
 	private List<UserContent> userContent = new ArrayList<UserContent>();	
 	private Site site;
 	
@@ -46,6 +55,16 @@ public class Content {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+    @Version
+    @Column(name="optlock")
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 
 	@NotNull
 	@Size(min = 9, max = 2000)
@@ -60,6 +79,14 @@ public class Content {
 		this.url = url;
 	}
 	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	@NotNull
 	@Enumerated
 	public ContentStatus getStatus() {
@@ -77,6 +104,24 @@ public class Content {
 
 	public void setRawHtmlPath(String rawHtmlPath) {
 		this.rawHtmlPath = rawHtmlPath;
+	}
+	
+	@Column(name = "parsed_html_path")
+	public String getParsedHtmlPath() {
+		return parsedHtmlPath;
+	}
+	
+	public void setParsedHtmlPath(String parsedHtmlPath) {
+		this.parsedHtmlPath = parsedHtmlPath;
+	}
+	
+	@Transient
+	public String getParsedHtml() {
+		return parsedHtml;
+	}
+
+	public void setParsedHtml(String parsedHtml) {
+		this.parsedHtml = parsedHtml;
 	}
 
 	@OneToMany(mappedBy = "content")
@@ -100,6 +145,24 @@ public class Content {
 
 	public void setSite(Site site) {
 		this.site = site;
+	}
+	
+	public boolean equals(Object other) {
+		if (this == other) return true;
+		if (!(other instanceof Content)) return false;
+		
+		final Content content = (Content)other;
+		if (!content.getUrl().equals( getUrl())) return false;
+		
+		return true;
+	}
+	
+	public int hashCode() {
+		int result = HashCodeUtil.SEED;
+
+		result = HashCodeUtil.hash(result, getUrl());
+		
+		return result;		
 	}
 		
 }

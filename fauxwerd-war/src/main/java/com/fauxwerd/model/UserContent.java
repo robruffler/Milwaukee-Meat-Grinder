@@ -1,7 +1,6 @@
 package com.fauxwerd.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,8 +8,14 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Version;
+
+import org.hibernate.annotations.Type;
+
+import org.joda.time.DateTime;
+
+import com.fauxwerd.util.HashCodeUtil;
 
 @Entity
 @Table(name = "user_content")
@@ -68,7 +73,8 @@ public class UserContent {
 	
 	
 	private Id id = new Id();
-	private Date dateAdded = new Date();		
+	private Integer version;
+	private DateTime dateAdded = new DateTime();
 	private User user;	
 	private Content content;
 	
@@ -88,9 +94,10 @@ public class UserContent {
 		content.getUserContent().add(this);
 	}
 	
+//TODO figure out how this is supposed to work
 //	@PrePersist
 //	protected void onCreate() {
-//		dateAdded = new Date();
+//		dateAdded = new PersistentDateTime();
 //	}	
 	
 	@EmbeddedId	
@@ -101,16 +108,27 @@ public class UserContent {
 	public void setId(Id id) {
 		this.id = id;
 	}
+	
+    @Version
+    @Column(name="optlock")
+	public Integer getVersion() {
+		return version;
+	}
 
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	
 	@Column(name = "date_added")
-	public Date getDateAdded() {
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	public DateTime getDateAdded() {
 		return dateAdded;
 	}
 
-	public void setDateAdded(Date dateAdded) {
+	public void setDateAdded(DateTime dateAdded) {
 		this.dateAdded = dateAdded;
 	}
-
+	
 	@ManyToOne
 	@JoinColumn(name = "user_id",
 				insertable = false,
@@ -136,5 +154,26 @@ public class UserContent {
 	public void setContent(Content content) {
 		this.content = content;
 	}
+
+	public boolean equals(Object other) {
+		if (this == other) return true;
+		if (!(other instanceof UserContent)) return false;
+		
+		final UserContent userContent = (UserContent)other;
+		if (!userContent.getId().equals( getId())) return false;
+		if (!userContent.getDateAdded().equals( getDateAdded())) return false;
+		
+		return true;
+	}
+	
+	public int hashCode() {
+		int result = HashCodeUtil.SEED;
+
+		result = HashCodeUtil.hash(result, getId());
+		result = HashCodeUtil.hash(result, getDateAdded());
+		
+		return result;		
+	}
+	
 	
 }

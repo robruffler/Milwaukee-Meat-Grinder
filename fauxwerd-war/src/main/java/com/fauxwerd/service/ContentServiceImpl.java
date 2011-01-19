@@ -11,6 +11,9 @@ import javax.annotation.Resource;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import org.apache.commons.io.FileUtils;
+import org.python.core.Py;
+import org.python.core.PySystemState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,10 +169,22 @@ public class ContentServiceImpl implements ContentService {
     @Transactional
     public List<Content> parseContent() {
 		List<Content> fetchedContent = listContentByStatus(ContentStatus.FETCHED);
-
+//TODO move this out of the parseContent method so it's only called once
+		PySystemState engineSys = new PySystemState();
+		engineSys.path.append(Py.newString("src/main/python"));
+		Py.setSystemState(engineSys);		
+		
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine pyEngine = mgr.getEngineByName("python");
-
+        String pyScript = null;        
+        File pyScriptFile = new File("/Users/robruffler/fauxwerd/mmg-github/fauxwerd-war/src/main/python/parse.py");
+        
+        try {
+        	pyScript = FileUtils.readFileToString(pyScriptFile);
+        } catch (IOException e) {
+        	if (log.isErrorEnabled()) log.error("", e);
+        }
+        
 		for (Content content : fetchedContent) {		
 
 			if (log.isDebugEnabled()) {
@@ -177,14 +192,31 @@ public class ContentServiceImpl implements ContentService {
 			}
 			
 	        try {
-//TODO implement actual html parsing	        	
-	        	pyEngine.eval("print \"Python - Hello, world!\"");
+	        	pyEngine.put("filepath", content.getRawHtmlPath());
 	        	
+	        	pyEngine.eval(pyScript);
+	        	
+//	        	if (log.isDebugEnabled()) log.debug(String.format("parsed = %s", pyEngine.get("strHtml")));
+	        	
+	        	String parsedHtml = (String)pyEngine.get("strHtml");
+	        	String title = (String)pyEngine.get("title");
+	        	
+	        	String dataDirectoryPath = siteProperties.get("dataStore");
+	        	
+				String siteDirectoryPath = content.getSite().getHostname();
+				siteDirectoryPath = siteDirectoryPath.replace('.', '_');
+	        	
+	        	File parsedFile = new File(dataDirectoryPath + "/" + siteDirectoryPath + "/" + content.getId().toString() + "-parsed.html");
+	        	
+	        	FileUtils.writeStringToFile(parsedFile, parsedHtml);
+	        	
+	        	content.setTitle(title);
+	        	content.setParsedHtmlPath(parsedFile.getAbsolutePath());
 				content.setStatus(ContentStatus.PARSED);
 				updateContent(content);
 				
 				if (log.isDebugEnabled()) {
-					log.debug(String.format("parsed to %s", "parsed file path goes here"));
+					log.debug(String.format("parsed to %s", parsedFile.getAbsolutePath()));
 				}
 				
 	        }

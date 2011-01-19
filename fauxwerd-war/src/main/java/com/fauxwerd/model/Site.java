@@ -7,18 +7,20 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+
+import com.fauxwerd.util.HashCodeUtil;
 
 @Entity
 @Table(name = "site")
 public class Site {
 	
 	private Long id;	
+	private Integer version;
 	private String hostname;	
 	private List<Content> content = new ArrayList<Content>();
 
@@ -37,7 +39,17 @@ public class Site {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+    @Version
+    @Column(name="optlock")
+	public Integer getVersion() {
+		return version;
+	}
 
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	
 	@NotNull
 	@Column(columnDefinition = "varchar(255)")
 	public String getHostname() {
@@ -56,4 +68,23 @@ public class Site {
 	public void setContent(List<Content> content) {
 		this.content = content;
 	}
+	
+	public boolean equals(Object other) {
+		if (this == other) return true;
+		if (!(other instanceof Site)) return false;
+		
+		final Site site = (Site)other;
+		if (!site.getHostname().equals( getHostname())) return false;
+		
+		return true;
+	}
+	
+	public int hashCode() {
+		int result = HashCodeUtil.SEED;
+
+		result = HashCodeUtil.hash(result, getHostname());
+		
+		return result;		
+	}
+	
 }
