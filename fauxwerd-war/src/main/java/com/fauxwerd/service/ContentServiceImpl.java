@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FileUtils;
 import org.python.core.Py;
@@ -17,10 +17,14 @@ import org.python.core.PySystemState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.ServletContextAware;
 
 import com.fauxwerd.dao.ContentDAO;
 import com.fauxwerd.model.Content;
@@ -29,11 +33,13 @@ import com.fauxwerd.model.Site;
 import com.fauxwerd.model.UserContent;
 
 @Service("contentService")
-public class ContentServiceImpl implements ContentService {
+public class ContentServiceImpl implements ContentService, ApplicationContextAware{
 	
 	final Logger log = LoggerFactory.getLogger(getClass());
 	
-    @Resource(name = "site")
+	private ApplicationContext appContext;
+	
+    @javax.annotation.Resource(name = "site")
     private Map<String, String> siteProperties;
 	
     @Autowired
@@ -177,9 +183,13 @@ public class ContentServiceImpl implements ContentService {
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine pyEngine = mgr.getEngineByName("python");
         String pyScript = null;        
-        File pyScriptFile = new File("src/main/python/parse.py");
+        
+        Resource res = appContext.getResource("classpath:parse.py");
+        
+//        File pyScriptFile = new File("src/main/python/parse.py");
         
         try {
+            File pyScriptFile = res.getFile();        	
         	pyScript = FileUtils.readFileToString(pyScriptFile);
         } catch (IOException e) {
         	if (log.isErrorEnabled()) log.error("", e);
@@ -231,6 +241,11 @@ public class ContentServiceImpl implements ContentService {
 		}
     	
 		return fetchedContent;
+    }
+    
+    //implement ApplicationContextAware
+    public void setApplicationContext(ApplicationContext appContext) {
+    	this.appContext = appContext;
     }
 }
 
