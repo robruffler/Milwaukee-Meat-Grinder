@@ -183,8 +183,8 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
         ScriptEngineManager mgr = new ScriptEngineManager();
         ScriptEngine pyEngine = mgr.getEngineByName("python");
         String pyScript = null;        
-        
-        Resource res = appContext.getResource("classpath:parse.py");
+                
+        Resource res = appContext.getResource("scripts/python/parse.py");
         
 //        File pyScriptFile = new File("src/main/python/parse.py");
         
