@@ -177,7 +177,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 		List<Content> fetchedContent = listContentByStatus(ContentStatus.FETCHED);
 //TODO move this out of the parseContent method so it's only called once
 		PySystemState engineSys = new PySystemState();
-		engineSys.path.append(Py.newString("src/main/python"));
+		engineSys.path.append(Py.newString("scripts/python"));
 		Py.setSystemState(engineSys);		
 		
         ScriptEngineManager mgr = new ScriptEngineManager();
