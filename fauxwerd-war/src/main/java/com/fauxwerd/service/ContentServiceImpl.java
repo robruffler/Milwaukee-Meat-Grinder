@@ -177,68 +177,80 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 		List<Content> fetchedContent = listContentByStatus(ContentStatus.FETCHED);
 //TODO move this out of the parseContent method so it's only called once
 		PySystemState engineSys = new PySystemState();
-		engineSys.path.append(Py.newString("src/main/webapp/scripts/python"));
-		Py.setSystemState(engineSys);		
-		
-        ScriptEngineManager mgr = new ScriptEngineManager();
-        ScriptEngine pyEngine = mgr.getEngineByName("python");
-        String pyScript = null;        
-                
-        Resource res = appContext.getResource("scripts/python/parse.py");
-        
-//        File pyScriptFile = new File("src/main/python/parse.py");
         
         try {
+
+            Resource pythonPathResource = appContext.getResource("scripts/python");		
+            engineSys.path.append(Py.newString(pythonPathResource.getFile().getAbsolutePath()));		
+//    		engineSys.path.append(Py.newString("src/main/webapp/scripts/python"));
+            
+
+    		if (log.isDebugEnabled()) log.debug(String.format("engineSys.path = %s", engineSys.path));
+    		
+    		Py.setSystemState(engineSys);		
+    		
+            ScriptEngineManager mgr = new ScriptEngineManager();
+            ScriptEngine pyEngine = mgr.getEngineByName("python");
+            String pyScript = null;        
+                    
+            Resource res = appContext.getResource("scripts/python/parse.py");
+            
+            
+//            File pyScriptFile = new File("src/main/python/parse.py");
+        	
+        	
             File pyScriptFile = res.getFile();        	
         	pyScript = FileUtils.readFileToString(pyScriptFile);
+
+    		for (Content content : fetchedContent) {		
+
+    			if (log.isDebugEnabled()) {
+    				log.debug(String.format("parsing %s", content.getRawHtmlPath()));
+    			}
+    			
+    	        try {
+    	        	pyEngine.put("filepath", content.getRawHtmlPath());
+    	        	
+    	        	pyEngine.eval(pyScript);
+    	        	
+//    	        	if (log.isDebugEnabled()) log.debug(String.format("parsed = %s", pyEngine.get("strHtml")));
+    	        	
+    	        	String parsedHtml = (String)pyEngine.get("strHtml");
+    	        	String title = (String)pyEngine.get("title");
+    	        	
+    	        	String dataDirectoryPath = siteProperties.get("dataStore");
+    	        	
+    				String siteDirectoryPath = content.getSite().getHostname();
+    				siteDirectoryPath = siteDirectoryPath.replace('.', '_');
+    	        	
+    	        	File parsedFile = new File(dataDirectoryPath + "/" + siteDirectoryPath + "/" + content.getId().toString() + "-parsed.html");
+    	        	
+    	        	FileUtils.writeStringToFile(parsedFile, parsedHtml);
+    	        	
+    	        	content.setTitle(title);
+    	        	content.setParsedHtmlPath(parsedFile.getAbsolutePath());
+    				content.setStatus(ContentStatus.PARSED);
+    				updateContent(content);
+    				
+    				if (log.isDebugEnabled()) {
+    					log.debug(String.format("parsed to %s", parsedFile.getAbsolutePath()));
+    				}
+    				
+    	        }
+    	        catch (Exception e) {
+    	        	if (log.isErrorEnabled()) {
+    	        		log.error("", e);
+    	        	}
+    				content.setStatus(ContentStatus.PARSE_ERROR);
+    				updateContent(content);
+    	        }
+    	        	        
+    		}
+        	
         } catch (IOException e) {
         	if (log.isErrorEnabled()) log.error("", e);
         }
         
-		for (Content content : fetchedContent) {		
-
-			if (log.isDebugEnabled()) {
-				log.debug(String.format("parsing %s", content.getRawHtmlPath()));
-			}
-			
-	        try {
-	        	pyEngine.put("filepath", content.getRawHtmlPath());
-	        	
-	        	pyEngine.eval(pyScript);
-	        	
-//	        	if (log.isDebugEnabled()) log.debug(String.format("parsed = %s", pyEngine.get("strHtml")));
-	        	
-	        	String parsedHtml = (String)pyEngine.get("strHtml");
-	        	String title = (String)pyEngine.get("title");
-	        	
-	        	String dataDirectoryPath = siteProperties.get("dataStore");
-	        	
-				String siteDirectoryPath = content.getSite().getHostname();
-				siteDirectoryPath = siteDirectoryPath.replace('.', '_');
-	        	
-	        	File parsedFile = new File(dataDirectoryPath + "/" + siteDirectoryPath + "/" + content.getId().toString() + "-parsed.html");
-	        	
-	        	FileUtils.writeStringToFile(parsedFile, parsedHtml);
-	        	
-	        	content.setTitle(title);
-	        	content.setParsedHtmlPath(parsedFile.getAbsolutePath());
-				content.setStatus(ContentStatus.PARSED);
-				updateContent(content);
-				
-				if (log.isDebugEnabled()) {
-					log.debug(String.format("parsed to %s", parsedFile.getAbsolutePath()));
-				}
-				
-	        }
-	        catch (Exception e) {
-	        	if (log.isErrorEnabled()) {
-	        		log.error("", e);
-	        	}
-				content.setStatus(ContentStatus.PARSE_ERROR);
-				updateContent(content);
-	        }
-	        	        
-		}
     	
 		return fetchedContent;
     }
