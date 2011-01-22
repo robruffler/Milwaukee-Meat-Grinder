@@ -165,6 +165,17 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 				if (log.isErrorEnabled()) {
 					log.error("", e);
 				}
+				//set content status to FETCH_ERROR				
+				content.setStatus(ContentStatus.FETCH_ERROR);
+				updateContent(content);								
+			}
+			catch (IllegalArgumentException e) {
+				if (log.isErrorEnabled()) {
+					log.error("", e);
+				}
+				//set content status to FETCH_ERROR				
+				content.setStatus(ContentStatus.FETCH_ERROR);
+				updateContent(content);								
 			}
 					
 		}
@@ -185,7 +196,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 //    		engineSys.path.append(Py.newString("src/main/webapp/scripts/python"));
             
 
-    		if (log.isDebugEnabled()) log.debug(String.format("engineSys.path = %s", engineSys.path));
+//    		if (log.isDebugEnabled()) log.debug(String.format("engineSys.path = %s", engineSys.path));
     		
     		Py.setSystemState(engineSys);		
     		

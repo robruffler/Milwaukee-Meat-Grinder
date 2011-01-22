@@ -1,6 +1,8 @@
 package com.fauxwerd.web.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
@@ -60,17 +62,32 @@ public class ContentController {
 	@RequestMapping(method=RequestMethod.POST)
 	public String addContent(HttpServletRequest req, HttpServletResponse res, Model model) {
 				
-		String url = req.getParameter("url");
+		String urlString = req.getParameter("url");
+		URL url = null;
 		String userIdString = req.getParameter("userId");
 		Long userId = null;
 				
 		try {
-			url = URLDecoder.decode(url, "utf-8");
+			urlString = URLDecoder.decode(urlString, "utf-8");
+			
+			//TODO improve this to work for twitter (e.g. http://twitter.com/#!/srcasm)
+			//drop any url fragments (#)
+			int fragmentIndex = urlString.indexOf('#');
+			if (fragmentIndex > 0) {
+				urlString = urlString.substring(0, fragmentIndex);
+			}
+			
+			url = new URL(urlString);
 			userId = Long.valueOf(userIdString);
 		}
 		catch (UnsupportedEncodingException e) {
 			if (log.isErrorEnabled()) {
 				log.error("", e);				
+			}
+		}
+		catch (MalformedURLException e) {
+			if (log.isErrorEnabled()) {
+				log.error("", e);
 			}
 		}
 		catch (NumberFormatException e) {
@@ -84,37 +101,23 @@ public class ContentController {
 		}
 
 		//TODO move most of this code related to writing to a file to a service to clean up this controller
-		
-		//determine Site
-		String urlMinusProtocol = null;
-		
-		if (url.startsWith("http://")) {
-			urlMinusProtocol = url.substring(7);
-		} 
-		else { urlMinusProtocol = url; }
-
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("urlMinusProtocol = %s", urlMinusProtocol));
-		}
-		
-		String [] urlParts = urlMinusProtocol.split("/");
-		
-		String siteUrl = urlParts[0];
+				
+		String siteHostname = url.getAuthority();
 		
 		if (log.isDebugEnabled()) {
-			log.debug(String.format("Site = %s", siteUrl));
+			log.debug(String.format("Site = %s", siteHostname));
 		}
 		
 		//check if Site has already been saved
 		Site site = null;
-		Site existingSite = contentService.getSiteByHostname(siteUrl);
+		Site existingSite = contentService.getSiteByHostname(siteHostname);
 		
 		if (existingSite != null) {
 			site = existingSite;
 		}
 		else {
 			site = new Site();
-			site.setHostname(siteUrl);
+			site.setHostname(siteHostname);
 			contentService.addSite(site);
 		}		
 		
@@ -123,7 +126,7 @@ public class ContentController {
 		//check if this content has been saved before
 		Content content = null;
 		UserContent userContent = null;
-		Content existingContent = contentService.getContentByUrl(url);
+		Content existingContent = contentService.getContentByUrl(url.toString());
 		
 		if (existingContent != null) {
 			content = existingContent;
@@ -153,7 +156,7 @@ public class ContentController {
 			}
 			
 			content = new Content();
-			content.setUrl(url);
+			content.setUrl(url.toString());
 			content.setSite(site);
 			content.setStatus(ContentStatus.SAVED);
 	
