@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<taglib xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-jsptaglibrary_2_1.xsd"
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        version="2.1">
+    <description>Customs tags for fauxwerd.com</description>
+    <tlib-version>1.0</tlib-version>
+    <short-name>fauxwerd</short-name>    
+    <uri>fauxwerd</uri>
+    <tag>
+        <name>content</name>
+        <tag-class>com.fauxwerd.web.tag.ContentTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>contentId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+<!-- keeping around as examples 
+  <tag>
+    <name>screen</name>
+    <tag-class>taglib.ScreenTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>parameter</name>
+    <tag-class>taglib.ParameterTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>value</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>direct</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+   </tag>
+  <tag>
+    <name>insert</name>
+    <tag-class>taglib.InsertTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>definition</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>parameter</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+ -->  
+</taglib>

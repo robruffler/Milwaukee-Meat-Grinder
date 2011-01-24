@@ -139,14 +139,12 @@ public class ContentController {
 			//check if this user has saved this content before
 			if (log.isDebugEnabled()) {
 				log.debug(String.format("Saving an existing piece of content, id = %s", content.getId()));
-				for (UserContent someUserContent : user.getUserContent()) {
-					log.debug(String.format("currently saved for this user: %s", someUserContent.getId()));
-				}
 			}
 						
 			for (UserContent someUserContent : user.getUserContent()) {
 				if (content.getUrl().equals(someUserContent.getContent().getUrl())) {
 					userContent = someUserContent;
+					if (log.isDebugEnabled()) log.debug(String.format("currently saved for this user: %s", someUserContent.getId()));
 				}
 			}
 		}

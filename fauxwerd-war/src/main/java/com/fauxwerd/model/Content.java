@@ -32,8 +32,6 @@ public class Content {
 	private ContentStatus status;
 	private String rawHtmlPath;	
 	private String parsedHtmlPath;
-	//TODO evaluate if this is a good idea
-	private String parsedHtml;
 	private List<UserContent> userContent = new ArrayList<UserContent>();	
 	private Site site;
 	
@@ -115,15 +113,6 @@ public class Content {
 		this.parsedHtmlPath = parsedHtmlPath;
 	}
 	
-	@Transient
-	public String getParsedHtml() {
-		return parsedHtml;
-	}
-
-	public void setParsedHtml(String parsedHtml) {
-		this.parsedHtml = parsedHtml;
-	}
-
 	@OneToMany(mappedBy = "content")
 	public List<UserContent> getUserContent() {
 		return userContent;

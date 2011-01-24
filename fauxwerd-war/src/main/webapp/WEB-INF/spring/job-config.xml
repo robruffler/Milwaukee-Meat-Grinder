@@ -26,7 +26,7 @@
     <bean id="parseContentTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="parseContentJobDetail" />
         <!--  execute every 15 minutes -->
-        <property name="cronExpression" value="30 * * * * ?"/>
+        <property name="cronExpression" value="15 * * * * ?"/>
     </bean>            
     
     <bean id="fetchContentJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">

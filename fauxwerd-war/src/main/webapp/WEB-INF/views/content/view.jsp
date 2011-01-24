@@ -5,6 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fw" uri="/WEB-INF/tlds/fauxwerd.tld" %>
 
 <jsp:include page="/WEB-INF/views/common/head.jsp">
     <jsp:param name="title" value="Fauxwerd.com" />
@@ -21,6 +22,12 @@
 
 <p>Status: ${content.status}</p>
 
-<p>Path to html: ${content.rawHtmlPath} </p>
+<p>Path to raw html: ${content.rawHtmlPath}</p>
+
+<p>Path to parsed html: ${content.parsedHtmlPath}</p>
+
+<p>Title: ${content.title}</p>
+
+<p>Content: <fw:content contentId="${content.id}"/>
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
