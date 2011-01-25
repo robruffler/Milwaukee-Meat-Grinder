@@ -23,7 +23,7 @@
 			if (u === '${u}') { 
 				$.ajax({
 					url: '/content',
-					data: {url: '${url}', userId: '${u}' },
+					data: {url: '${url}', userId: '${u}', title: '${t}' },
 					cache: false,
 					type: 'post',
 					success: function(d,t,x) {
@@ -34,9 +34,9 @@
 					}
 				});
 			} else if (u === null) {
-				parent.location = 'http://${env}/user/login?url=' + encodeURIComponent('${url}');
+				parent.location = 'http://${env}/user/login?url=' + encodeURIComponent('${url}')+'&t='+encodeURIComponent('${t}');
 			} else { 
-				parent.location = 'http://${env}/user/wrong-bookmark?url=' + encodeURIComponent('${url}');
+				parent.location = 'http://${env}/user/wrong-bookmark?url=' + encodeURIComponent('${url}')+'&t='+encodeURIComponent('${t}');
 			} 
 		});
 	</script>

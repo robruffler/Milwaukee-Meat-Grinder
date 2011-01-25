@@ -22,8 +22,10 @@ public class IformController {
 	public ModelAndView getIform(HttpServletRequest req, HttpServletResponse res, Model model) {
 		String url = req.getParameter("url");
 		String u = req.getParameter("u");
+		String t = req.getParameter("t");
 		model.addAttribute("url", url);
 		model.addAttribute("u", u);
+		model.addAttribute("t", t);
 		ModelAndView modelAndView = new ModelAndView("iform");
 		return modelAndView;
 	}

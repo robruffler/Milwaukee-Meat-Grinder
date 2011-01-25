@@ -20,24 +20,16 @@ Today is: <joda:format value="${now}" style="SM" />
 	<h1 class="title pop">Saved Articles</h1>
 	<table class="content-list">
 		<tr class="heading">
-			<td width="40">Status</td>
 			<td width="75">Date Added</td>
 			<td>Article</td>
 		</tr>
 		<c:forEach items="${user.userContent}" var="userContentItem" varStatus="status">
 			<tr <c:if test="${status.count % 2 == 0}">class="alt-row"</c:if>>
-			<c:set var="contentReady" value="${userContentItem.content.status eq 'FETCHED' || userContentItem.content.status eq 'PARSED'}" />
-			<c:set var="contentSaved" value="${userContentItem.content.status eq 'SAVED'}"/>
-				<td align="center">
-					<c:if test="${contentReady}"><img src="/images/fetched.png" alt="Ready" /></c:if>
-					<c:if test="${contentSaved}"><img src="/images/pending.png" alt="Pending" /></c:if>
-					<c:if test="${!contentReady && !contentSaved}"><img src="/images/error.png" alt="Error" /></c:if>
-				</td>
+			<c:set var="contentReady" value="${userContentItem.content.status eq 'PARSED'}" />
 				<td><joda:format value="${userContentItem.dateAdded}" style="S-" /></td>
 				<td>
-					<c:if test="${contentReady}"><a href="/content/${userContentItem.content.id}"></c:if>
-						${userContentItem.content.url}
-					<c:if test="${contentReady}"></a></c:if>
+					<c:if test="${contentReady}"><a href="/content/${userContentItem.content.id}"></c:if><c:choose><c:when test="${!empty userContentItem.content.title}">${userContentItem.content.title}</c:when><c:otherwise>${userContentItem.content.url}</c:otherwise></c:choose><c:if test="${contentReady}"></a></c:if>
+					 <span class="source">(<a href="${userContentItem.content.url}" title="Original Content">source</a>)</span>
 				</td>
 			</tr>
 		</c:forEach>

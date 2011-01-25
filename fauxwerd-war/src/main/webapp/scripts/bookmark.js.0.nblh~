@@ -3,7 +3,7 @@ var strippedh1 = h1.innerHTML.replace(/<\/?[^>]+(>|$)/g, "");
 var title = document.getElementsByTagName('title')[0];
 var cTitle = '';
 if (!h1 || h1 === 'undefined') {
-	cTitle = (!title || title === 'undefined') ? '' : title.innerHTML;
+	cTitle = (!title || title === 'undefined') ? false : title.innerHTML;
 } else {
 	if (!title || title === 'undefined') {
 		cTitle = strippedh1;
@@ -13,7 +13,7 @@ if (!h1 || h1 === 'undefined') {
 }
 FW.i = FW.d.createElement('iframe'); 
 var s=FW.i.style; 
-FW.i.src='http://'+FW.env+'/iform?u='+FW.u+'&url='+encodeURIComponent('http://'+FW.l.hostname + FW.l.pathname + FW.l.search)+'&t='+encodeURIComponent(cTitle);
+FW.i.src='http://'+FW.env+'/iform?u='+FW.u+'&url='+encodeURIComponent('http://'+FW.l.hostname + FW.l.pathname + FW.l.search)+'&title='+encodeURIComponent(cTitle);
 FW.i.id='fauxwerd';
 FW.i.width='600px';
 FW.i.height='150px';
