@@ -1,10 +1,10 @@
 var h1 = document.getElementsByTagName('h1')[0];
-var strippedh1 = h1.innerHTML.replace(/<\/?[^>]+(>|$)/g, "");
 var title = document.getElementsByTagName('title')[0];
 var cTitle = '';
 if (!h1 || h1 === 'undefined') {
 	cTitle = (!title || title === 'undefined') ? '' : title.innerHTML;
 } else {
+	var strippedh1 = h1.innerHTML.replace(/<\/?[^>]+(>|$)/g, "");
 	if (!title || title === 'undefined') {
 		cTitle = strippedh1;
 	} else {
