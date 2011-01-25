@@ -1,7 +1,7 @@
 import re,urllib
 import codecs
 import logging
-from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup, SoupStrainer
 
 # create logger
 logger = logging.getLogger("parse.py")
@@ -12,7 +12,6 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 
 # create formatter
-
 formatter = logging.Formatter("[%(asctime)s,%(msecs)03d] %(levelname)s: %(name)s - %(message)s", "%d %b %Y %H:%M:%S")
 
 # add formatter to ch
@@ -26,6 +25,9 @@ logger.debug("in parse.py")
 #filepath passed in by java
 filepath
 
+#siteHostname passed in by java
+siteHostname
+
 logger.debug("opening file %s" % filepath)
 
 fXml = open(filepath, 'r')
@@ -34,51 +36,38 @@ logger.debug("reading file %s" % filepath)
 
 data = fXml.read()
 
-logger.debug("souping data")
+logger.debug("straining soup for body")
 
-soup = BeautifulSoup(data)
+bodyTag = SoupStrainer('body')
 
-logger.debug("data souped - fetching h1")
+logger.debug("soup strained, souping data")
 
-h1 = soup.h1
+soup = BeautifulSoup(data, parseOnlyThese=bodyTag)
 
-logger.debug("h1 fetched - fetching titleTag")
-
-titleTag = soup.title
-
-logger.debug("titleTag fetched - determining content title")
-
-if h1 != None:
-    logger.debug("we have an h1!")
-    
-    #check if the contents of h1 are a string, if not, parse what's inside    
-    if h1.string != None:
-        title = '%s' % (h1.string)
-    else:
-        title = '%s' % (h1.next.renderContents().decode('utf-8'));
-    
-elif titleTag != None: 
-    logger.debug("no h1 here - but we have a title tag")
-    
-    title = '%s' % (titleTag.string)
-        
-else:
-    logger.debug("no titleTag here - wah wah wah");
-
-logger.debug("title = %s" % title)
-
-logger.debug("fetching body")
+logger.debug("data souped - fetching body")
 
 body = soup.body
 
-logger.debug("fetched body, rendering contents")
+logger.debug("fetched body, removing bad tags")
 
-next = body.renderContents().decode('utf-8')
+bannedTags = ['script', 'style', 'embed', 'object', 'input', 'textarea', 'select', 'noscript', 'iframe']
 
-logger.debug("contents rendered, converting to string")
+for tag in bannedTags:
+    tags = soup.findAll(tag)    
+    [banned.extract() for banned in tags]
+    logger.debug("removed %s %s tags" % (len(tags), tag));
+    
+logger.debug("fixing img tags");
+
+images = soup.findAll('img', src=re.compile("^/"))
+
+logger.debug("fixing %s img tags" % len(images));
+
+for img in images:
+    img['src'] = "http://%s%s" % (siteHostname, img['src'])
+            
+logger.debug("finishing up")
         
-strHtml = ''
-for element in next:
-    strHtml += '%s' % element
+strHtml = body.renderContents()
  
-logger.debug("parse.py all done!")
+logger.debug("all done!")

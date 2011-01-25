@@ -1,15 +1,19 @@
 package com.fauxwerd.service;
 
+import java.net.URL;
 import java.util.List;
 
 import com.fauxwerd.model.Content;
 import com.fauxwerd.model.ContentStatus;
 import com.fauxwerd.model.Site;
+import com.fauxwerd.model.User;
 import com.fauxwerd.model.UserContent;
 
 public interface ContentService {
 
 	public void addContent(Content content);
+	
+	public void addContent(URL url, User user, String title);
 	
 	public void addSite(Site site);
 	

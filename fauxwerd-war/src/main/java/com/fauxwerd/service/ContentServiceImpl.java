@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import com.fauxwerd.dao.ContentDAO;
 import com.fauxwerd.model.Content;
 import com.fauxwerd.model.ContentStatus;
 import com.fauxwerd.model.Site;
+import com.fauxwerd.model.User;
 import com.fauxwerd.model.UserContent;
 
 @Service("contentService")
@@ -48,6 +50,83 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
     @Transactional
     public void addContent(Content content) {
         contentDAO.addContent(content);
+    }
+    
+    @Transactional 
+    public void addContent(URL url, User user, String title) {
+		String siteHostname = url.getAuthority();
+		
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("Site = %s", siteHostname));
+		}
+		
+		//check if Site has already been saved
+		Site site = null;
+		Site existingSite = getSiteByHostname(siteHostname);
+		
+		if (existingSite != null) {
+			site = existingSite;
+		}
+		else {
+			site = new Site();
+			site.setHostname(siteHostname);
+			addSite(site);
+		}		
+				
+		//check if this content has been saved before
+		Content content = null;
+		UserContent userContent = null;
+		Content existingContent = getContentByUrl(url.toString());
+		
+		if (existingContent != null) {
+			content = existingContent;
+			
+			//TODO check if the content has been updated at the source and update record accordingly
+			//resetting status to saved will cause scheduled jobs to refetch content
+			content.setStatus(ContentStatus.SAVED);
+			updateContent(content);
+			
+			//check if this user has saved this content before
+			if (log.isDebugEnabled()) {
+				log.debug(String.format("Saving an existing piece of content, id = %s", content.getId()));
+			}
+						
+			for (UserContent someUserContent : user.getUserContent()) {
+				if (content.getUrl().equals(someUserContent.getContent().getUrl())) {
+					userContent = someUserContent;
+					if (log.isDebugEnabled()) log.debug(String.format("currently saved for this user: %s", someUserContent.getId()));
+				}
+			}
+		}
+		else {		
+			if (log.isDebugEnabled()) {
+				log.debug("adding new record to content table");
+			}
+			
+			content = new Content();
+			content.setUrl(url.toString());
+			content.setTitle(title);
+			content.setSite(site);
+			content.setStatus(ContentStatus.SAVED);
+	
+			addContent(content);
+		}
+		
+		if (userContent == null) {
+			if (log.isDebugEnabled()) {
+				log.debug("adding new user content record");
+			}			
+			userContent = new UserContent(user, content);					
+			addUserContent(userContent);
+		}
+		else {
+			if (log.isDebugEnabled()) {
+				log.debug("updating existing user content record");
+			}
+			//TODO update - this isn't actually updating anyting at the moment 			
+			updateUserContent(userContent);
+		}
+    	
     }
     
     @Transactional
@@ -193,10 +272,6 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 
             Resource pythonPathResource = appContext.getResource("scripts/python");		
             engineSys.path.append(Py.newString(pythonPathResource.getFile().getAbsolutePath()));		
-//    		engineSys.path.append(Py.newString("src/main/webapp/scripts/python"));
-            
-
-//    		if (log.isDebugEnabled()) log.debug(String.format("engineSys.path = %s", engineSys.path));
     		
     		Py.setSystemState(engineSys);		
     		
@@ -204,12 +279,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
             ScriptEngine pyEngine = mgr.getEngineByName("python");
             String pyScript = null;        
                     
-            Resource res = appContext.getResource("scripts/python/parse.py");
-            
-            
-//            File pyScriptFile = new File("src/main/python/parse.py");
-        	
-        	
+            Resource res = appContext.getResource("scripts/python/parse.py");        	
             File pyScriptFile = res.getFile();        	
         	pyScript = FileUtils.readFileToString(pyScriptFile);
 
@@ -221,13 +291,12 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
     			
     	        try {
     	        	pyEngine.put("filepath", content.getRawHtmlPath());
+    	        	pyEngine.put("siteHostname", content.getSite().getHostname());
     	        	
     	        	pyEngine.eval(pyScript);
-    	        	
-//    	        	if (log.isDebugEnabled()) log.debug(String.format("parsed = %s", pyEngine.get("strHtml")));
-    	        	
+    	        	    	        	
     	        	String parsedHtml = (String)pyEngine.get("strHtml");
-    	        	String title = (String)pyEngine.get("title");
+//    	        	String title = (String)pyEngine.get("title");
     	        	
     	        	String dataDirectoryPath = siteProperties.get("dataStore");
     	        	
@@ -238,7 +307,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
     	        	
     	        	FileUtils.writeStringToFile(parsedFile, parsedHtml);
     	        	
-    	        	content.setTitle(title);
+//    	        	content.setTitle(title);
     	        	content.setParsedHtmlPath(parsedFile.getAbsolutePath());
     				content.setStatus(ContentStatus.PARSED);
     				updateContent(content);
