@@ -1,14 +1,10 @@
-.title {
-	border-bottom: 1px solid #323232;
-}
-
 .content-list {
 	width: 100%;
 }
 
 .content-list .heading {
-	background: #323232;
-	color: #FFFDD0;
+	background: #efefef;
+	color: #262626;
 	font-weight: bold;
 }
 

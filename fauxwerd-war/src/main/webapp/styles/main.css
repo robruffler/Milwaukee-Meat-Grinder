@@ -1,10 +1,10 @@
 .seo { display: none; }
 .pop { color: #E62020;}
-.pizazz { color: #66cc66; }
+.pizazz { color: #09C; }
 
 
 body {
-	background: transparent url(/images/header.gif) repeat-x top; /* standard grey */
+	background: transparent url(/images/header.gif) repeat-x top; 
 }
 
 a {
@@ -17,6 +17,25 @@ a:hover {
 	color: #E62020;
 }
 
+#bookmarklet {
+	display: inline-block;
+	background: transparent url(/images/bookmarklet.png) no-repeat center;
+	width: 99px;
+	height: 32px;
+	position: relative;
+	top: 10px;
+}
+
+.instructions {
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+	margin: 0 auto;
+	width: 550px;
+}
+
+#instructions-ie { display: none; }
+
 #wrapper {
 	margin: 0 auto;
 	display: block;
@@ -25,45 +44,49 @@ a:hover {
 
 #header {
 	display: block;
-	font: bold 18px  verdana, arial, sans-serif;
-	color: #FFFDD0; /* standard cream */
-	height: 50px;
+	font: bold 18px  verdana, arial, sans-serif; 
+	height: 100px;
 	text-align: center;
 	margin: 0 auto 10px;
+	position: relative;
 }
 
 #site-logo {
 	display: block;
+	margin: 0 auto;
+	text-align: center;
 	background: transparent url(/images/logo.png) no-repeat center;
-	width: 204px;
-	height: 50px;
-	float: left;
+	width: 580px;
+	height: 89px;
+	position: relative;
+	top: 5px;
 }
 
 #menu { 
-	float: right;
+	position: absolute;
 	margin: 0 auto;
 	padding: 0;
+	top: 5px;
+	right: 5px;
+	text-align: left;
+	text-transform: uppercase;
 }
 
 #menu li { 
-	float: left;
-	margin-right: 30px;
 	list-style: none;
-	height: 50px;
 }
-
-#menu li:hover { background: transparent url(/images/selected.png) no-repeat bottom center; }
 
 #menu li a {
-	color: #FFFDD0;
+	color: #6b4c4c;
 	text-decoration: none;
 	display: block;
-	padding-top: 13px;
-	height: 37px;
 }
 
-#menu li a:hover { color: #E62020; /* standard red */ }
+#menu li .lesser {
+	color: #b6bac0;
+}
+
+#menu li a:hover { color: #262626;}
 
 #login-form { float: right; margin-top: 5px; }
 

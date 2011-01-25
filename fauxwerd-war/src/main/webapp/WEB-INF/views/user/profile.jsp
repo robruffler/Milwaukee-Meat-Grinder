@@ -17,7 +17,7 @@
 Today is: <joda:format value="${now}" style="SM" />
 <jsp:include page="/WEB-INF/views/common/bookmark.jsp" />
 <c:if test="${fn:length(user.userContent) >= 1}">
-	<h1 class="title pop">Saved Articles</h1>
+	<h1 class="title pizazz">Saved Articles</h1>
 	<table class="content-list">
 		<tr class="heading">
 			<td width="75">Date Added</td>

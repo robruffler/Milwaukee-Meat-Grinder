@@ -5,8 +5,10 @@
 <section id="wrapper">
 	<header id="header">
 		<a href="/" id="site-logo"><span class="seo">fauxwerd</span></a>
+		<ul id="menu">
 		<sec:authorize ifAnyGranted="ROLE_ANONYMOUS">
-			<form id="login-form" action="j_spring_security_check" method="post">
+			<li><a href="/user/login">Login</a></li>
+			<!--form id="login-form" action="j_spring_security_check" method="post">
 				<fieldset class="form-fs">
 					<legend>Log in</legend>
 					<ul class="form-list">
@@ -24,12 +26,11 @@
 						</li>
 					</ul>
 				</fieldset>
-			</form>
+			</form-->
 		</sec:authorize>
 		<sec:authorize ifNotGranted="ROLE_ANONYMOUS">
-			<ul id="menu">
 				<li><a href="/user/profile">Profile</a></li>
-				<li><a href="<spring:url value="/user/logout" htmlEscape="true" />">Logout</a></li>
-			</ul>
+				<li><a href="<spring:url value="/user/logout" htmlEscape="true" />" class="lesser">Logout</a></li>
 		</sec:authorize>
+		</ul>
 	</header>
