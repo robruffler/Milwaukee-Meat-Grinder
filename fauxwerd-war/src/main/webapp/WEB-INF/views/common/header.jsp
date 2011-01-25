@@ -19,7 +19,7 @@
 							<input name="j_password" id="password" type="password" />
 						</li>
 						<li>
-							<input type="hidden" name="_spring_security_remember_me" value="false" />
+							<input type="hidden" name="_spring_security_remember_me" value="true" />
 							<input type="submit" value="Log in" />
 						</li>
 					</ul>

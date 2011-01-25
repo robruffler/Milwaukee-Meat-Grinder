@@ -64,6 +64,7 @@ public class ContentController {
 				
 		try {
 			urlString = URLDecoder.decode(urlString, "utf-8");
+			title = URLDecoder.decode(title, "utf-8");
 			
 			//TODO improve this to work for twitter (e.g. http://twitter.com/#!/srcasm)
 			//drop any url fragments (#)
