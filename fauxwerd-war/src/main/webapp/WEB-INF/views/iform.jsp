@@ -1,4 +1,6 @@
-<%@page contentType="text/html" pageEncoding="windows-1252"%>
+<%@ page 
+      contentType="text/html;charset=UTF-8"
+      pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
@@ -24,6 +26,7 @@
 				$.ajax({
 					url: '/content',
 					data: {url: '${url}', userId: '${u}', title: '${t}' },
+					contentType: 'application/x-www-form-urlencoded;charset=utf-8',
 					cache: false,
 					type: 'post',
 					success: function(d,t,x) {
@@ -34,9 +37,9 @@
 					}
 				});
 			} else if (u === null) {
-				parent.location = 'http://${env}/user/login?url=' + encodeURIComponent('${url}')+'&t='+encodeURIComponent('${t}');
+				parent.location = 'http://${env}/user/login?url=${url}&t=${t}';
 			} else { 
-				parent.location = 'http://${env}/user/wrong-bookmark?url=' + encodeURIComponent('${url}')+'&t='+encodeURIComponent('${t}');
+				parent.location = 'http://${env}/user/wrong-bookmark?url=${url}&t=${t}';
 			} 
 		});
 	</script>
