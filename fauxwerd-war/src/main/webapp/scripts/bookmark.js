@@ -13,7 +13,7 @@ if (!h1 || h1 === 'undefined') {
 }
 FW.i = FW.d.createElement('iframe'); 
 var s=FW.i.style; 
-FW.i.src='http://'+FW.env+'/iform?u='+FW.u+'&url='+encodeURIComponent('http://'+FW.l.hostname + FW.l.pathname + FW.l.search)+'&t='+encodeURIComponent(cTitle.replace(/'/g, "%27"));
+FW.i.src='http://'+FW.env+'/iform?u='+FW.u+'&url='+encodeURIComponent('http://'+FW.l.hostname + FW.l.pathname + FW.l.search)+'&t='+escape(cTitle);
 FW.i.id='fauxwerd';
 FW.i.width='600px';
 FW.i.height='150px';
