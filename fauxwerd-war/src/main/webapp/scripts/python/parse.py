@@ -65,7 +65,39 @@ logger.debug("fixing %s img tags" % len(images));
 
 for img in images:
     img['src'] = "http://%s%s" % (siteHostname, img['src'])
-            
+
+logger.debug("fixing href tags");
+
+hrefs = soup.findAll('a', href=re.compile("^/"))
+
+logger.debug("fixing %s href tags" % len(hrefs));
+
+for href in hrefs:
+    href['href'] = "http://%s%s" % (siteHostname, href['href'])
+
+    
+logger.debug("filtering some divs");
+
+divs = soup.findAll('div', id=re.compile("^nav|^header|^footer|^disqus|^dsq|^fb|^link|^menu|twitter-iframe|^upnext|^right_sidebar|^article_tools|^enlarge"))
+
+logger.debug("removing %s div tags" % len(divs));
+
+for div in divs:
+    div.extract()        
+
+logger.debug("filtering some more divs by class");
+
+bannedDivClasses = ['entry-info', 'widget-area']
+
+for bannedDivClass in bannedDivClasses:
+    
+    divsByClass = soup.findAll('div', {'class': bannedDivClass})
+
+    logger.debug("removing %s more div tags" % len(divsByClass))
+
+    for divByClass in divsByClass:
+        divByClass.extract()        
+
 logger.debug("finishing up")
         
 strHtml = body.renderContents()
