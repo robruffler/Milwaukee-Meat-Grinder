@@ -83,6 +83,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 			
 			//TODO check if the content has been updated at the source and update record accordingly
 			//resetting status to saved will cause scheduled jobs to refetch content
+			content.setTitle(title);
 			content.setStatus(ContentStatus.SAVED);
 			updateContent(content);
 			

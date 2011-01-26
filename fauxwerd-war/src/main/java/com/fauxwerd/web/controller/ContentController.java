@@ -55,7 +55,9 @@ public class ContentController {
 	
 	@RequestMapping(method=RequestMethod.POST)
 	public String addContent(HttpServletRequest req, HttpServletResponse res, Model model) {
-				
+
+		if (log.isDebugEnabled()) log.debug(String.format("character encoding = %s", req.getCharacterEncoding()));
+		
 		String urlString = req.getParameter("url");
 		URL url = null;
 		String userIdString = req.getParameter("userId");
