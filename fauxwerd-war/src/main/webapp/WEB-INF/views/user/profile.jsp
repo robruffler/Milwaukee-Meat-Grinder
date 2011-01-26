@@ -14,6 +14,7 @@
 </jsp:include>
 
 <% pageContext.setAttribute("now", new org.joda.time.DateTime()); %>
+<%= response.getCharacterEncoding() %>
 Today is: <joda:format value="${now}" style="SM" />
 <jsp:include page="/WEB-INF/views/common/bookmark.jsp" />
 <c:if test="${fn:length(user.userContent) >= 1}">
