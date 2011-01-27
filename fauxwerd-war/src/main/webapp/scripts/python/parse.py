@@ -103,3 +103,6 @@ logger.debug("finishing up")
 strHtml = body.renderContents()
  
 logger.debug("all done!")
+
+#this prevents duplicate log messages when this script is called in a loop
+logger.removeHandler(ch)
