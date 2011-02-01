@@ -53,5 +53,12 @@ fw.utils = {
 			document.cookie = encodeURIComponent(name) + "=null; expires=-1";
 			return true;
 		}
+	},
+	trim: function(str) {
+		return str.replace(/^\s+|\s+$/g,"");
+	},
+	strip: function(str) {
+		// strip html tags
+		return str.replace(/<\/?[^>]+(>|$)/g, "");
 	}
 };
