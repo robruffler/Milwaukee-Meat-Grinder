@@ -8,7 +8,7 @@ if (!h1 || h1 === 'undefined') {
 	if (!title || title === 'undefined') {
 		cTitle = strippedh1;
 	} else {
-		cTitle = (title.innerHTML.indexOf(strippedh1) >= 0) ? strippedh1 : title.innerHTML;
+		cTitle = (title.innerHTML.indexOf(strippedh1) >= 0) ? strippedh1 : title.innerHTML.replace(/<\/?[^>]+(>|$)/g, "");
 	}
 }
 FW.i = FW.d.createElement('iframe'); 
