@@ -17,7 +17,6 @@
 	</c:otherwise>
 </c:choose>
 <style type="text/css">html, body {background: transparent;}</style>
-${t}
 <div id="response"><!-- --></div>
 	
 	<script type="text/javascript">
