@@ -13,6 +13,9 @@ import javax.script.ScriptEngineManager;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FileUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.python.core.Py;
 import org.python.core.PySystemState;
 import org.slf4j.Logger;
@@ -198,6 +201,11 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 				String siteDirectoryPath = content.getSite().getHostname();
 				siteDirectoryPath = siteDirectoryPath.replace('.', '_');
 				
+	        	File file = new File(dataDirectoryPath + "/" + siteDirectoryPath + "/" + content.getId().toString() + "-raw.html");
+	        	
+	        	FileUtils.writeStringToFile(file, rawHtml, "utf-8");
+				
+/*				
 				//check if data directory exists
 				File dataDirectory = new File(dataDirectoryPath);
 				
@@ -222,7 +230,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 				BufferedWriter bw = new BufferedWriter(fw);
 				bw.write(rawHtml);
 				bw.close();
-
+*/
 				content.setRawHtmlPath(file.getAbsolutePath());
 				content.setStatus(ContentStatus.FETCHED);
 				updateContent(content);
@@ -264,7 +272,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
     }
     
     @Transactional
-    public List<Content> parseContent() {
+    public List<Content> parseContentX() {
 		List<Content> fetchedContent = listContentByStatus(ContentStatus.FETCHED);
 //TODO move this out of the parseContent method so it's only called once
 		PySystemState engineSys = new PySystemState();
@@ -306,7 +314,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
     	        	
     	        	File parsedFile = new File(dataDirectoryPath + "/" + siteDirectoryPath + "/" + content.getId().toString() + "-parsed.html");
     	        	
-    	        	FileUtils.writeStringToFile(parsedFile, parsedHtml);
+    	        	FileUtils.writeStringToFile(parsedFile, parsedHtml, "utf-8");
     	        	
 //    	        	content.setTitle(title);
     	        	content.setParsedHtmlPath(parsedFile.getAbsolutePath());
@@ -334,6 +342,88 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
         
     	
 		return fetchedContent;
+    }
+    
+    @Transactional
+    public List<Content> parseContent() {
+		List<Content> fetchedContent = listContentByStatus(ContentStatus.FETCHED);
+		
+		for (Content content : fetchedContent) {		
+
+			if (log.isDebugEnabled()) {
+				log.debug(String.format("parsing %s", content.getRawHtmlPath()));
+			}
+
+			try {
+				File file = new File(content.getRawHtmlPath());
+						
+				Document doc = Jsoup.parse(file, "UTF-8");
+				
+				Element body = doc.body();
+
+				// remove banned tags
+				String[] bannedTags = {"script", "style", "embed", "object", "input", "textarea", "select", "noscript", "iframe"};
+				
+				for (String bannedTag : bannedTags) {
+					List<Element> tags = body.getElementsByTag(bannedTag);
+
+					if (log.isDebugEnabled()) log.debug(String.format("removing %s %s tags", tags.size(), bannedTag));									
+
+					for (Element tag : tags) {						
+						tag.remove();						
+					}
+				}
+
+				// fix relative image refs				
+				List<Element> imgs = body.select("img[src~=^/.]");
+				
+				if (log.isDebugEnabled()) log.debug(String.format("fixing %s img tags", imgs.size()));
+				
+				for (Element img : imgs) {
+					img.attr("src", String.format("http://%s%s", content.getSite().getHostname(), img.attr("src")));
+				}
+				
+				// fix relative hrefs
+				List<Element> hrefs = body.select("a[href~=^/.]");
+				
+				if (log.isDebugEnabled()) log.debug(String.format("fixing %s href tags", imgs.size()));
+				
+				for (Element href : hrefs) {
+					href.attr("href", String.format("http://%s$s", content.getSite().getHostname(), href.attr("href")));
+				}
+				
+				String parsedHtml = body.html();
+				
+				if (log.isDebugEnabled()) log.debug(String.format("parsedHtml = %s", parsedHtml));				
+				
+	        	String dataDirectoryPath = siteProperties.get("dataStore");
+	        	
+				String siteDirectoryPath = content.getSite().getHostname();
+				siteDirectoryPath = siteDirectoryPath.replace('.', '_');
+	        	
+	        	File parsedFile = new File(dataDirectoryPath + "/" + siteDirectoryPath + "/" + content.getId().toString() + "-parsed.html");
+	        	
+	        	FileUtils.writeStringToFile(parsedFile, parsedHtml, "utf-8");
+	        	
+	        	content.setParsedHtmlPath(parsedFile.getAbsolutePath());
+				content.setStatus(ContentStatus.PARSED);
+				updateContent(content);
+				
+				if (log.isDebugEnabled()) {
+					log.debug(String.format("parsed to %s", parsedFile.getAbsolutePath()));
+				}
+								
+			} catch (IOException e) {
+				if (log.isErrorEnabled()) log.error(null, e);
+				
+				content.setStatus(ContentStatus.PARSE_ERROR);
+				updateContent(content);
+				
+			}
+
+		}
+		
+		return fetchedContent;    	
     }
     
     //implement ApplicationContextAware
