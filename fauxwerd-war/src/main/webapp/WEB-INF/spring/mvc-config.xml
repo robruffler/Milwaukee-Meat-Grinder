@@ -10,8 +10,9 @@
 	<mvc:annotation-driven />
 
 	<!-- Forwards requests to the "/" resource to the "index" view -->	 
+<!-- Handling this in HomepageController now
 	<mvc:view-controller path="/" view-name="index"/>
-	
+ -->	
 	<mvc:view-controller path="/user/login" view-name="user/login"/>
 	
 	<!-- Configures Handler Interceptors -->	
@@ -19,9 +20,9 @@
 		<!-- Changes the locale when a 'locale' request parameter is sent; e.g. /?locale=de -->
 		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
 		<!-- Needed for lazily loaded hibernate items -->
-    <bean class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
-      <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>		
+        <bean class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+            <property name="sessionFactory" ref="sessionFactory"/>
+        </bean>		
 	</mvc:interceptors>
 	
 	<!-- Saves a locale change using a cookie -->
@@ -31,10 +32,10 @@
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/views/"/>
 		<property name="suffix" value=".jsp"/>
-    <property name="exposedContextBeanNames">
-      <list>
-         <value>site</value>
-      </list>
-    </property>		
+        <property name="exposedContextBeanNames">
+	        <list>
+	            <value>site</value>
+	        </list>
+        </property>		
 	</bean>
 </beans>

@@ -30,7 +30,8 @@ siteHostname
 
 logger.debug("opening file %s" % filepath)
 
-fXml = open(filepath, 'r')
+#fXml = open(filepath, 'r')
+fXml = codecs.open( filepath, "r", "utf-8" )
 
 logger.debug("reading file %s" % filepath)
 
@@ -44,7 +45,9 @@ logger.debug("soup strained, souping data")
 
 soup = BeautifulSoup(data, parseOnlyThese=bodyTag)
 
-logger.debug("data souped - fetching body")
+logger.debug("%s" % soup)
+
+logger.debug("data souped - original encoding = %s - fetching body" % soup.originalEncoding)
 
 body = soup.body
 
@@ -101,6 +104,8 @@ for bannedDivClass in bannedDivClasses:
 logger.debug("finishing up")
         
 strHtml = body.renderContents()
+
+#logger.debug("%s" % strHtml)
  
 logger.debug("all done!")
 

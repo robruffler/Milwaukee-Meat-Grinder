@@ -218,6 +218,13 @@
       <version>4.0.2.GA</version>
     </dependency>   
 
+    <!-- JSoup -->
+	<dependency>
+	   <groupId>org.jsoup</groupId>
+	   <artifactId>jsoup</artifactId>
+	   <version>1.4.1</version>
+	</dependency>    
+
     <!-- Jython -->
 	<dependency>
 	   <groupId>org.python</groupId>
