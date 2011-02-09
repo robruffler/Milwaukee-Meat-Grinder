@@ -13,7 +13,7 @@
     <context:component-scan base-package="com.fauxwerd.dao" />
     <context:component-scan base-package="com.fauxwerd.job" />
     <context:component-scan base-package="com.fauxwerd.service" />
-	<context:component-scan base-package="com.fauxwerd.web.controller" />
+	<context:component-scan base-package="com.fauxwerd.web.controller" />	
 
 	<!-- Application Message Bundle -->
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
@@ -46,5 +46,6 @@
 		<entry key="hostname" value="${hostname}"/>
 		<entry key="port" value="${port}"/>
 		<entry key="dataStore" value="${dataStore}"/>
-	</util:map>  
+	</util:map> 
+	
 </beans>

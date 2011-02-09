@@ -1,8 +1,6 @@
 package com.fauxwerd.service;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -10,12 +8,13 @@ import java.util.Map;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.Elements;
 import org.python.core.Py;
 import org.python.core.PySystemState;
 import org.slf4j.Logger;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.ServletContextAware;
 
 import com.fauxwerd.dao.ContentDAO;
 import com.fauxwerd.model.Content;
@@ -36,6 +34,7 @@ import com.fauxwerd.model.ContentStatus;
 import com.fauxwerd.model.Site;
 import com.fauxwerd.model.User;
 import com.fauxwerd.model.UserContent;
+import com.fauxwerd.util.ParseUtil;
 
 @Service("contentService")
 public class ContentServiceImpl implements ContentService, ApplicationContextAware{
@@ -270,80 +269,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
     	    	
     	return savedContent;
     }
-    
-    @Transactional
-    public List<Content> parseContentX() {
-		List<Content> fetchedContent = listContentByStatus(ContentStatus.FETCHED);
-//TODO move this out of the parseContent method so it's only called once
-		PySystemState engineSys = new PySystemState();
         
-        try {
-
-            Resource pythonPathResource = appContext.getResource("scripts/python");		
-            engineSys.path.append(Py.newString(pythonPathResource.getFile().getAbsolutePath()));		
-    		
-    		Py.setSystemState(engineSys);		
-    		
-            ScriptEngineManager mgr = new ScriptEngineManager();
-            ScriptEngine pyEngine = mgr.getEngineByName("python");
-            String pyScript = null;        
-                    
-            Resource res = appContext.getResource("scripts/python/parse.py");        	
-            File pyScriptFile = res.getFile();        	
-        	pyScript = FileUtils.readFileToString(pyScriptFile);
-
-    		for (Content content : fetchedContent) {		
-
-    			if (log.isDebugEnabled()) {
-    				log.debug(String.format("parsing %s", content.getRawHtmlPath()));
-    			}
-    			
-    	        try {
-    	        	pyEngine.put("filepath", content.getRawHtmlPath());
-    	        	pyEngine.put("siteHostname", content.getSite().getHostname());
-    	        	
-    	        	pyEngine.eval(pyScript);
-    	        	    	        	
-    	        	String parsedHtml = (String)pyEngine.get("strHtml");
-//    	        	String title = (String)pyEngine.get("title");
-    	        	
-    	        	String dataDirectoryPath = siteProperties.get("dataStore");
-    	        	
-    				String siteDirectoryPath = content.getSite().getHostname();
-    				siteDirectoryPath = siteDirectoryPath.replace('.', '_');
-    	        	
-    	        	File parsedFile = new File(dataDirectoryPath + "/" + siteDirectoryPath + "/" + content.getId().toString() + "-parsed.html");
-    	        	
-    	        	FileUtils.writeStringToFile(parsedFile, parsedHtml, "utf-8");
-    	        	
-//    	        	content.setTitle(title);
-    	        	content.setParsedHtmlPath(parsedFile.getAbsolutePath());
-    				content.setStatus(ContentStatus.PARSED);
-    				updateContent(content);
-    				
-    				if (log.isDebugEnabled()) {
-    					log.debug(String.format("parsed to %s", parsedFile.getAbsolutePath()));
-    				}
-    				
-    	        }
-    	        catch (Exception e) {
-    	        	if (log.isErrorEnabled()) {
-    	        		log.error("", e);
-    	        	}
-    				content.setStatus(ContentStatus.PARSE_ERROR);
-    				updateContent(content);
-    	        }
-    	        	        
-    		}
-        	
-        } catch (IOException e) {
-        	if (log.isErrorEnabled()) log.error("", e);
-        }
-        
-    	
-		return fetchedContent;
-    }
-    
     @Transactional
     public List<Content> parseContent() {
 		List<Content> fetchedContent = listContentByStatus(ContentStatus.FETCHED);
@@ -353,48 +279,70 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 			if (log.isDebugEnabled()) {
 				log.debug(String.format("parsing %s", content.getRawHtmlPath()));
 			}
-
+			
 			try {
 				File file = new File(content.getRawHtmlPath());
 						
 				Document doc = Jsoup.parse(file, "UTF-8");
-				
-				Element body = doc.body();
 
+				//remove all script tags
+				doc.select("script").remove();
+				
+				ParseUtil.prepDocument(doc);
+				
+//				if (log.isDebugEnabled()) log.debug(String.format("doc = %s", doc));
+											
+//				Element body = doc.body();
+				
+				Element body = ParseUtil.grabArticle(doc);
+				
+				Element title = ParseUtil.getArticleTitle(doc);
+												
+				if (log.isDebugEnabled()) log.debug(String.format("title = %s", title));
+				
 				// remove banned tags
-				String[] bannedTags = {"script", "style", "embed", "object", "input", "textarea", "select", "noscript", "iframe"};
+//				String[] bannedTags = {"script", "style", "embed", "object", "input", "textarea", "select", "noscript", "iframe"};
+//				
+//				for (String bannedTag : bannedTags) {
+//					List<Element> tags = body.getElementsByTag(bannedTag);
+//
+//					if (log.isDebugEnabled()) log.debug(String.format("removing %s %s tags", tags.size(), bannedTag));									
+//
+//					for (Element tag : tags) {						
+//						tag.remove();						
+//					}
+//				}
+//
+//				// fix relative image refs				
+//				List<Element> imgs = body.select("img[src~=^/.]");
+//				
+//				if (log.isDebugEnabled()) log.debug(String.format("fixing %s img tags", imgs.size()));
+//				
+//				for (Element img : imgs) {
+//					img.attr("src", String.format("http://%s%s", content.getSite().getHostname(), img.attr("src")));
+//				}
+//				
+//				// fix relative hrefs
+//				List<Element> hrefs = body.select("a[href~=^/.]");
+//				
+//				if (log.isDebugEnabled()) log.debug(String.format("fixing %s href tags", imgs.size()));
+//				
+//				for (Element href : hrefs) {
+//					href.attr("href", String.format("http://%s$s", content.getSite().getHostname(), href.attr("href")));
+//				}
 				
-				for (String bannedTag : bannedTags) {
-					List<Element> tags = body.getElementsByTag(bannedTag);
-
-					if (log.isDebugEnabled()) log.debug(String.format("removing %s %s tags", tags.size(), bannedTag));									
-
-					for (Element tag : tags) {						
-						tag.remove();						
-					}
+				String parsedHtml = body != null ? body.html() : null;
+				
+				if (parsedHtml == null) {
+					Element articleContent = new Element(Tag.valueOf("body"), "");
+					articleContent.attr("id", "fauxwerd-content");
+					articleContent.html("sorry couldn't parse");
+//					nextPageLink = null;
+					parsedHtml = articleContent.html();
 				}
-
-				// fix relative image refs				
-				List<Element> imgs = body.select("img[src~=^/.]");
 				
-				if (log.isDebugEnabled()) log.debug(String.format("fixing %s img tags", imgs.size()));
-				
-				for (Element img : imgs) {
-					img.attr("src", String.format("http://%s%s", content.getSite().getHostname(), img.attr("src")));
-				}
-				
-				// fix relative hrefs
-				List<Element> hrefs = body.select("a[href~=^/.]");
-				
-				if (log.isDebugEnabled()) log.debug(String.format("fixing %s href tags", imgs.size()));
-				
-				for (Element href : hrefs) {
-					href.attr("href", String.format("http://%s$s", content.getSite().getHostname(), href.attr("href")));
-				}
-				
-				String parsedHtml = body.html();
-				
-				if (log.isDebugEnabled()) log.debug(String.format("parsedHtml = %s", parsedHtml));				
+								
+//				if (log.isDebugEnabled()) log.debug(String.format("parsedHtml = %s", parsedHtml));				
 				
 	        	String dataDirectoryPath = siteProperties.get("dataStore");
 	        	
