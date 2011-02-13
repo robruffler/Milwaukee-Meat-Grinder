@@ -256,6 +256,15 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 			try {				
 				File file = new File(content.getRawHtmlPath());
 				
+				Long filesize = FileUtils.sizeOf(file);
+				
+				if (filesize.intValue() == 0) {
+					if (log.isErrorEnabled()) log.error("raw html file is empty");					
+					content.setStatus(ContentStatus.PARSE_ERROR);
+					updateContent(content);
+					return null;
+				}
+				
 				String baseUrl = ParseUtil.findBaseUrl(content.getUrl());
 				
 				if (log.isDebugEnabled()) log.debug(String.format("baseUrl = %s", baseUrl));
