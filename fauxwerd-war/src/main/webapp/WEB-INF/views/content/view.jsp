@@ -14,20 +14,10 @@
     <jsp:param name="title" value="${index.title}"/>
 </jsp:include>
 
-<h1>Content ${content.id}</h1>
+<h1>${content.title}</h1>
 
-<p>Site Hostname: ${content.site.hostname}</p>
+<p><a href="${content.url}">View this article on ${content.site.hostname}</a></p>
 
-<p>Url: ${content.url}</p>
-
-<p>Status: ${content.status}</p>
-
-<p>Path to raw html: ${content.rawHtmlPath}</p>
-
-<p>Path to parsed html: ${content.parsedHtmlPath}</p>
-
-<p>Title: ${content.title}</p>
-
-<p>Content: <fw:content contentId="${content.id}"/>
+<fw:content contentId="${content.id}"/>
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />

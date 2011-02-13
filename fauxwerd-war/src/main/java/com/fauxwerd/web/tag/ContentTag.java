@@ -40,7 +40,7 @@ public class ContentTag extends TagSupport {
 			
 			Content content = contentService.getContentById(id);
 						
-			String parsedHtml = FileUtils.readFileToString(new File(content.getParsedHtmlPath()));
+			String parsedHtml = FileUtils.readFileToString(new File(content.getParsedHtmlPath()),"UTF8");
 						
 			pageContext.getOut().print(parsedHtml);
 		} catch (Exception e) {

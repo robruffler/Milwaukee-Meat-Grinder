@@ -1,28 +1,27 @@
 package com.fauxwerd.service;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
-import org.jsoup.select.Elements;
-import org.python.core.Py;
-import org.python.core.PySystemState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -194,7 +193,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 			
 			try {
 				rawHtml = restTemplate.getForObject(content.getUrl(), String.class);
-				
+												
 				String dataDirectoryPath = siteProperties.get("dataStore");			
 
 				String siteDirectoryPath = content.getSite().getHostname();
@@ -204,32 +203,6 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 	        	
 	        	FileUtils.writeStringToFile(file, rawHtml, "utf-8");
 				
-/*				
-				//check if data directory exists
-				File dataDirectory = new File(dataDirectoryPath);
-				
-				if (!dataDirectory.exists()) {
-					dataDirectory.mkdir();
-				}
-				
-				//check if site directory exists
-				File siteDirectory = new File(dataDirectory, siteDirectoryPath);
-				
-				if (!siteDirectory.exists()) {
-					siteDirectory.mkdir();
-				}				
-				
-				File file = new File(siteDirectory, content.getId().toString() + "-raw.html");
-								
-				if (!file.exists()) {
-					file.createNewFile();
-				}
-								
-				FileWriter fw = new FileWriter(file);
-				BufferedWriter bw = new BufferedWriter(fw);
-				bw.write(rawHtml);
-				bw.close();
-*/
 				content.setRawHtmlPath(file.getAbsolutePath());
 				content.setStatus(ContentStatus.FETCHED);
 				updateContent(content);
@@ -280,39 +253,28 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 				log.debug(String.format("parsing %s", content.getRawHtmlPath()));
 			}
 			
-			try {
+			try {				
 				File file = new File(content.getRawHtmlPath());
-						
-				Document doc = Jsoup.parse(file, "UTF-8");
-
+				
+				String baseUrl = ParseUtil.findBaseUrl(content.getUrl());
+				
+				if (log.isDebugEnabled()) log.debug(String.format("baseUrl = %s", baseUrl));
+				
+				Document doc = Jsoup.parse(file, "UTF-8", baseUrl);
+				
 				//remove all script tags
 				doc.select("script").remove();
 				
 				ParseUtil.prepDocument(doc);
-				
-//				if (log.isDebugEnabled()) log.debug(String.format("doc = %s", doc));
-											
-//				Element body = doc.body();
-				
+								
 				Element body = ParseUtil.grabArticle(doc);
-				
+
+				//TODO this isn't currently used for anything, but should be
 				Element title = ParseUtil.getArticleTitle(doc);
 												
 				if (log.isDebugEnabled()) log.debug(String.format("title = %s", title));
-				
-				// remove banned tags
-//				String[] bannedTags = {"script", "style", "embed", "object", "input", "textarea", "select", "noscript", "iframe"};
-//				
-//				for (String bannedTag : bannedTags) {
-//					List<Element> tags = body.getElementsByTag(bannedTag);
-//
-//					if (log.isDebugEnabled()) log.debug(String.format("removing %s %s tags", tags.size(), bannedTag));									
-//
-//					for (Element tag : tags) {						
-//						tag.remove();						
-//					}
-//				}
-//
+
+				//TODO this is commented out b/c I don't think we need it anymore - leaving until this is verified				
 //				// fix relative image refs				
 //				List<Element> imgs = body.select("img[src~=^/.]");
 //				
@@ -340,19 +302,16 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 //					nextPageLink = null;
 					parsedHtml = articleContent.html();
 				}
-				
-								
-//				if (log.isDebugEnabled()) log.debug(String.format("parsedHtml = %s", parsedHtml));				
-				
-	        	String dataDirectoryPath = siteProperties.get("dataStore");
+																
+				String dataDirectoryPath = siteProperties.get("dataStore");
 	        	
 				String siteDirectoryPath = content.getSite().getHostname();
 				siteDirectoryPath = siteDirectoryPath.replace('.', '_');
 	        	
 	        	File parsedFile = new File(dataDirectoryPath + "/" + siteDirectoryPath + "/" + content.getId().toString() + "-parsed.html");
-	        	
-	        	FileUtils.writeStringToFile(parsedFile, parsedHtml, "utf-8");
-	        	
+	        		        		        	
+	        	FileUtils.writeStringToFile(parsedFile, parsedHtml, "utf8");
+	        		        	
 	        	content.setParsedHtmlPath(parsedFile.getAbsolutePath());
 				content.setStatus(ContentStatus.PARSED);
 				updateContent(content);
@@ -373,7 +332,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 		
 		return fetchedContent;    	
     }
-    
+        
     //implement ApplicationContextAware
     public void setApplicationContext(ApplicationContext appContext) {
     	this.appContext = appContext;
