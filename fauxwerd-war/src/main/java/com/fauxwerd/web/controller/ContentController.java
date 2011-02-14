@@ -63,10 +63,15 @@ public class ContentController {
 		String userIdString = req.getParameter("userId");
 		Long userId = null;
 		String title = req.getParameter("title");
+			
+		if (log.isDebugEnabled()) log.debug(String.format("title = %s", title));
 				
 		try {
+			
 			urlString = URLDecoder.decode(urlString, "utf-8");
 			title = URLDecoder.decode(title, "utf-8");
+			
+			if (log.isDebugEnabled()) log.debug(String.format("title after decode = %s", title));
 			
 			//TODO improve this to work for twitter (e.g. http://twitter.com/#!/srcasm)
 			//drop any url fragments (#)
