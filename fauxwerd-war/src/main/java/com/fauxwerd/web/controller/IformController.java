@@ -23,6 +23,9 @@ public class IformController {
 		String url = req.getParameter("url");
 		String u = req.getParameter("u");
 		String t = req.getParameter("t");
+		
+		if (log.isDebugEnabled()) log.debug(String.format("t = %s", t));
+		
 		model.addAttribute("url", url);
 		model.addAttribute("u", u);
 		model.addAttribute("t", t);
