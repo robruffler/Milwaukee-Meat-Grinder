@@ -1081,13 +1081,18 @@ public class ParseUtil {
             	if (log.isDebugEnabled()) log.debug(String.format("splitSegment.length = %s", splitSegment.length));
             	
             	if (splitSegment.length > 1) {
-            		possibleType = segment.split("\\.")[1];
+            		possibleType = splitSegment[1];
             	}
 
                 /* If the type isn't alpha-only, it's probably not actually a file extension. */
                 //TODO vet this regex
                 if(!possibleType.matches("[^a-zA-Z]")) {
-                    segment = segment.split("\\.")[0];                    
+                	splitSegment = segment.split("\\.");
+                	
+                	if (splitSegment.length > 1) {
+                        segment = splitSegment[0];
+                	}                	
+                    
                 }
             }
             
