@@ -1077,7 +1077,7 @@ public class ParseUtil {
             
             // Split off and save anything that looks like a file type.
             if (segment.indexOf(".") != -1) {
-                possibleType = segment.split(".")[1];
+                possibleType = segment.split("\\.")[1];
 
                 /* If the type isn't alpha-only, it's probably not actually a file extension. */
                 //TODO vet this regex
