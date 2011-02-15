@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Entities;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
@@ -1077,11 +1076,17 @@ public class ParseUtil {
             
             // Split off and save anything that looks like a file type.
             if (segment.indexOf(".") != -1) {
-                possibleType = segment.split("\\.")[1];
+            	String[] splitSegment = segment.split("\\.");
+            	
+            	if (log.isDebugEnabled()) log.debug(String.format("splitSegment.length = %s", splitSegment.length));
+            	
+            	if (splitSegment.length > 1) {
+            		possibleType = segment.split("\\.")[1];
+            	}
 
                 /* If the type isn't alpha-only, it's probably not actually a file extension. */
                 //TODO vet this regex
-                if(!possibleType.matches("/[^a-zA-Z]/")) {
+                if(!possibleType.matches("[^a-zA-Z]")) {
                     segment = segment.split(".")[0];                    
                 }
             }
