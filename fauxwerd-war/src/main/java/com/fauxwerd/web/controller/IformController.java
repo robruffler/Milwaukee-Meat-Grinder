@@ -25,7 +25,8 @@ public class IformController {
 		String t = req.getParameter("t");
 		
 		if (log.isDebugEnabled()) log.debug(String.format("t = %s", t));
-		
+		if (log.isDebugEnabled()) log.debug(String.format("req.getQueryString() = %s", req.getQueryString()));
+				
 		model.addAttribute("url", url);
 		model.addAttribute("u", u);
 		model.addAttribute("t", t);
