@@ -1,14 +1,9 @@
 package com.fauxwerd.service;
 
-import java.io.Closeable;
+
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -265,7 +260,9 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 					return null;
 				}
 				
-				String baseUrl = ParseUtil.findBaseUrl(content.getUrl());
+				if (log.isDebugEnabled()) log.debug(String.format("finding base url for [%s]", content.getUrl()));
+				
+				String baseUrl = ParseUtil.findBaseUrl(content.getUrl());							
 				
 				if (log.isDebugEnabled()) log.debug(String.format("baseUrl = %s", baseUrl));
 				

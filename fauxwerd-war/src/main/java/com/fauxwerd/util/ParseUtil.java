@@ -1073,6 +1073,8 @@ public class ParseUtil {
         for (int i = 0; i < urlSlashes.size(); i++) {
             String segment = urlSlashes.get(i);
 
+            if (log.isDebugEnabled()) log.debug(String.format("url segment = %s", segment));
+            
             // Split off and save anything that looks like a file type.
             if (segment.indexOf(".") != -1) {
                 possibleType = segment.split(".")[1];
