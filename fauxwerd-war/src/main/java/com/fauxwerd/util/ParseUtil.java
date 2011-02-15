@@ -1087,7 +1087,7 @@ public class ParseUtil {
                 /* If the type isn't alpha-only, it's probably not actually a file extension. */
                 //TODO vet this regex
                 if(!possibleType.matches("[^a-zA-Z]")) {
-                    segment = segment.split(".")[0];                    
+                    segment = segment.split("\\.")[0];                    
                 }
             }
             
