@@ -180,6 +180,13 @@
       <artifactId>hibernate-core</artifactId>
       <version>${org.hibernate.version}</version>
     </dependency>
+    
+    <!-- Jackson Mapper -->
+	<dependency>
+	   <groupId>org.codehaus.jackson</groupId>
+	   <artifactId>jackson-mapper-asl</artifactId>
+	   <version>1.6.4</version>
+	</dependency>    
 
     <!-- Logging -->    
     <dependency>
