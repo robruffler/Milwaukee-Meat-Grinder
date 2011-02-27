@@ -31,7 +31,7 @@
 				cache: false,
 				type: 'post',
 				success: function(d,t,x) {
-					location.href = 'http://' + fw.env + '/user/profile';
+					location.href = 'http://' + fw.env + '/profile';
 				},
 				error: function(x,t,er) {
 					fw.modules.error({msg: "<div id='error'>Oh, dear. We seem to be having some server issues. Give it a few and try again.</div>"});

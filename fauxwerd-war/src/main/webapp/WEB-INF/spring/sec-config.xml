@@ -17,7 +17,8 @@
   <!-- path-type switches intercept urls to check pattern as regex -->                         
 	<http access-denied-page="/" path-type="regex">
     <!-- in case of multiple roles, use comma delimited list -->
-    <intercept-url pattern="/user/profile.*" access="ROLE_USER" />
+    <intercept-url pattern="/profile.*" access="ROLE_USER" />
+    <intercept-url pattern="/home.*" access="ROLE_USER" />
     
     <!-- static files that do not require authentication -->
     <intercept-url pattern="/images.*" filters="none" />
@@ -27,9 +28,9 @@
     <!-- all other url patterns allow anonymous access -->
 		<intercept-url pattern="/.*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 
-		<form-login login-page="/user/login" authentication-failure-url="/user/login?login_error=1"/>
+		<form-login login-page="/login" authentication-failure-url="/login?login_error=1"/>
 		<!-- <http-basic /> -->
-		<logout logout-success-url="/" logout-url="/user/logout" />
+		<logout logout-success-url="/" logout-url="/logout" />
 		<!-- look into putting a different value into the remember-me key -->
 		<remember-me key="myAppKey"/>
 		

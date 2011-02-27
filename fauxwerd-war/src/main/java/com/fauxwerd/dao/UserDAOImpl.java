@@ -33,4 +33,10 @@ public class UserDAOImpl implements UserDAO {
 		return (User) sessionFactory.getCurrentSession().get(User.class, userId);		
 	}	
 	
+	@SuppressWarnings("unchecked")
+	public List<User> listUsers() {
+        return sessionFactory.getCurrentSession().createQuery("from User")
+        .list();		
+	}
+	
 }

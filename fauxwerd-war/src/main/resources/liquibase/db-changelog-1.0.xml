@@ -240,5 +240,13 @@
         <delete tableName="user"/>
         <delete tableName="hibernate_sequences"/>
     </changeSet>
+
+    <changeSet author="rob" id="37">
+        <addColumn tableName="user">
+            <column name="full_name" type="varchar(128)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>    
+    </changeSet>
         
 </databaseChangeLog>

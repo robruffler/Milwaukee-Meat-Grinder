@@ -7,7 +7,7 @@
 		<a href="/" id="site-logo"><span class="seo">fauxwerd</span></a>
 		<ul id="menu">
 		<sec:authorize ifAnyGranted="ROLE_ANONYMOUS">
-			<li><a href="/user/login">Login</a></li>
+			<li><a href="/login">Login</a></li>
 			<!--form id="login-form" action="j_spring_security_check" method="post">
 				<fieldset class="form-fs">
 					<legend>Log in</legend>
@@ -29,8 +29,8 @@
 			</form-->
 		</sec:authorize>
 		<sec:authorize ifNotGranted="ROLE_ANONYMOUS">
-				<li><a href="/user/profile">Profile</a></li>
-				<li><a href="<spring:url value="/user/logout" htmlEscape="true" />" class="lesser">Logout</a></li>
+				<li><a href="/profile">Profile</a></li>
+				<li><a href="<spring:url value="/logout" htmlEscape="true" />" class="lesser">Logout</a></li>
 		</sec:authorize>
 		</ul>
 	</header>

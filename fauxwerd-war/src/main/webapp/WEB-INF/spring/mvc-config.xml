@@ -13,7 +13,7 @@
 <!-- Handling this in HomepageController now
 	<mvc:view-controller path="/" view-name="index"/>
  -->	
-	<mvc:view-controller path="/user/login" view-name="user/login"/>
+	<mvc:view-controller path="/login" view-name="user/login"/>
 	
 	<!-- Configures Handler Interceptors -->	
 	<mvc:interceptors>

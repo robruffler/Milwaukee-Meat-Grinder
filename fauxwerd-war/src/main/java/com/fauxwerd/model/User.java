@@ -37,14 +37,16 @@ public class User implements UserDetails {
 	private String email;
 	private boolean enabled;	
 	private List<UserContent> userContent = new ArrayList<UserContent>();
+	private String fullName;
 	
 	//empty constructor required by hibernate
 	public User() { }
 	
-	public User(String password, String email, boolean enabled) {		
+	public User(String password, String email, boolean enabled, String fullName) {		
 		this.password = password;
 		this.email = email;
 		this.enabled = enabled;		
+		this.fullName = fullName;
 	}	
 
 	@Id 
@@ -83,9 +85,8 @@ public class User implements UserDetails {
 		this.password = password;
 	}
 
-	@NotNull
+
 	@Pattern(regexp="(\\w+)@(\\w+\\.)(\\w+)(\\.\\w+)*")
-	@Size(min=5, max=256)
 //	TODO re-enable NaturalId (breaks hbm2ddl on mysql)
 //	@NaturalId(mutable = true)
 	@Column(columnDefinition="varchar(256)")	
@@ -115,7 +116,18 @@ public class User implements UserDetails {
 	public void setUserContent(List<UserContent> userContent) {
 		this.userContent = userContent;
 	}
-		
+	
+	@NotNull	
+	@Size(min=1, max=128)
+	@Column(name="full_name")	
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
 	//required by interface, returning email address instead
 	@Transient
 	public String getUsername() {
@@ -152,7 +164,7 @@ public class User implements UserDetails {
 	}
 	
 	public String toString() {
-		return String.format("id = [%s], email = [%s], password = [%s]", this.id, this.email, this.password);
+		return String.format("id = [%s], email = [%s], password = [%s], fullName = [%s]", this.id, this.email, this.password, this.fullName);
 	}
 	
 	public boolean equals(Object other) {

@@ -18,8 +18,11 @@
 		  <section>  
 		    <form:form modelAttribute="user" action="register" method="post">
 		        <form:errors/>
-		        <fieldset>    
-		        <legend>Account Fields</legend>
+    
+                <p> 
+                  <form:label for="fullName" path="fullName" cssErrorClass="error">full name</form:label><br/>
+                  <form:input path="fullName" /> <form:errors path="fullName" cssClass="error"/>
+                </p>
 		        <p> 
 		          <form:label for="email" path="email" cssErrorClass="error">email</form:label><br/>
 		          <form:input path="email" /> <form:errors path="email" cssClass="error"/>
@@ -31,7 +34,7 @@
 		        <p> 
 		          <input type="submit" value="register" />
 		        </p>
-		      </fieldset>
+
 		    </form:form>
       </section>      
     </article>

@@ -13,29 +13,9 @@
 	<jsp:param name="title" value="${index.title}"/>
 </jsp:include>
 
-<% pageContext.setAttribute("now", new org.joda.time.DateTime()); %>
-<%= response.getCharacterEncoding() %>
-Today is: <joda:format value="${now}" style="SM" />
-<jsp:include page="/WEB-INF/views/common/bookmark.jsp" />
-<c:if test="${fn:length(user.userContent) >= 1}">
-	<h1 class="title pizazz">Saved Articles</h1>
-	<table class="content-list">
-		<tr class="heading">
-			<td width="75">Date Added</td>
-			<td>Article</td>
-		</tr>
-		<c:forEach items="${user.userContent}" var="userContentItem" varStatus="status">
-			<tr <c:if test="${status.count % 2 == 0}">class="alt-row"</c:if>>
-			<c:set var="contentReady" value="${userContentItem.content.status eq 'PARSED'}" />
-				<td><joda:format value="${userContentItem.dateAdded}" style="S-" /></td>
-				<td>
-					<c:if test="${contentReady}"><a href="/content/${userContentItem.content.id}"></c:if><c:choose><c:when test="${!empty userContentItem.content.title}">${userContentItem.content.title}</c:when><c:otherwise>${userContentItem.content.url}</c:otherwise></c:choose><c:if test="${contentReady}"></a></c:if>
-					 <span class="source">(<a href="${userContentItem.content.url}" title="Original Content">source</a>)</span>
-				</td>
-			</tr>
-		</c:forEach>
-	</table>
-</c:if>
+
+<div>Settings for ${user.fullName}</div>
+<div>Profile settings to go here.</div>
 
 <script type="text/javascript">
 	$(document).ready(function() {

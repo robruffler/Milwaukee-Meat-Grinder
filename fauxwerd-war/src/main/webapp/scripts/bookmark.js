@@ -3,6 +3,7 @@ function fw_trim(str) {return str.replace(/^\s+|\s+$/g,"");}
 var h1 = document.getElementsByTagName('h1')[0];
 var title = document.getElementsByTagName('title')[0];
 var cTitle = '';
+/*
 if (!h1 || h1 === 'undefined') {
 	cTitle = (!title || title === 'undefined') ? '' : title.innerHTML;
 } else {
@@ -13,6 +14,10 @@ if (!h1 || h1 === 'undefined') {
 		cTitle = (title.innerHTML.indexOf(strippedh1) >= 0) ? strippedh1 : title.innerHTML;
 	}
 }
+*/
+alert("before");
+cTitle = getArticleTitle();
+alert("after");
 FW.i = FW.d.createElement('iframe'); 
 var s=FW.i.style; 
 FW.i.src='http://'+FW.env+'/iform?u='+FW.u+'&url='+encodeURIComponent('http://'+FW.l.hostname + FW.l.pathname + FW.l.search)+'&t='+encodeURIComponent(fw_trim(fw_trim(cTitle.replace(/'/g, '%27'))));
@@ -27,3 +32,71 @@ FW.i.setAttribute('frameBorder','0px');
 FW.i.setAttribute('allowTransparency',true);
 FW.b.appendChild(FW.i); 
 fauxwerdBeGone(1);
+
+function getArticleTitle() {
+    var curTitle = "",
+        origTitle = "";
+    
+    try {
+        curTitle = origTitle = document.title;
+
+        alert("in: curTitle = " + curTitle);
+        
+        if(typeof curTitle !== "string") { /* If they had an element with id "title" in their HTML */
+            curTitle = origTitle = getInnerText(document.getElementsByTagName('title')[0]);             
+        }
+    }
+    catch(e) {}
+    
+    if(curTitle.match(/ [\|\-] /))
+    {
+        curTitle = origTitle.replace(/(.*)[\|\-] .*/gi,'$1');
+        
+        if(curTitle.split(' ').length < 3) {
+            curTitle = origTitle.replace(/[^\|\-]*[\|\-](.*)/gi,'$1');
+        }
+    }
+    else if(curTitle.indexOf(': ') !== -1)
+    {
+        curTitle = origTitle.replace(/.*:(.*)/gi, '$1');
+
+        if(curTitle.split(' ').length < 3) {
+            curTitle = origTitle.replace(/[^:]*[:](.*)/gi,'$1');
+        }
+    }
+    else if(curTitle.length > 150 || curTitle.length < 15)
+    {
+        var hOnes = document.getElementsByTagName('h1');
+        if(hOnes.length === 1)
+        {
+            curTitle = getInnerText(hOnes[0]);
+        }
+    }
+    curTitle = curTitle.replace( /^\s+|\s+$/g, "" );
+
+    if(curTitle.split(' ').length <= 4) {
+        curTitle = origTitle;
+    }
+        
+    return curTitle;
+}
+
+function getInnerText(e, normalizeSpaces) {
+    var textContent    = "";
+
+    if(typeof(e.textContent) === "undefined" && typeof(e.innerText) === "undefined") {
+        return "";
+    }
+
+    normalizeSpaces = (typeof normalizeSpaces === 'undefined') ? true : normalizeSpaces;
+
+    if (navigator.appName === "Microsoft Internet Explorer") {
+        textContent = e.innerText.replace( /^\s+|\s+$/g, "" ); }
+    else {
+        textContent = e.textContent.replace( /^\s+|\s+$/g, "" ); }
+
+    if(normalizeSpaces) {
+        return textContent.replace( /\s{2,}/g, " "); }
+    else {
+        return textContent; }
+}

@@ -1,12 +1,16 @@
 package com.fauxwerd.dao;
 
+import java.util.List;
+
 import com.fauxwerd.model.User;
 
 public interface UserDAO {
 
-	void saveUser(User entity);
+	public void saveUser(User entity);
 	
-	User getUser(String email);
+	public User getUser(String email);
 	
-	User getUserById(Long userId);
+	public User getUserById(Long userId);
+	
+	public List<User> listUsers();	
 }

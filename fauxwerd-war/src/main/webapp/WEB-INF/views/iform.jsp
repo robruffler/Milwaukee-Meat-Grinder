@@ -37,9 +37,9 @@
 					}
 				});
 			} else if (u === null) {
-				parent.location = 'http://${env}/user/login?url=${url}&t=${t}';
+				parent.location = 'http://${env}/login?url=${url}&t=${t}';
 			} else { 
-				parent.location = 'http://${env}/user/wrong-bookmark?url=${url}&t=${t}';
+				parent.location = 'http://${env}/wrong-bookmark?url=${url}&t=${t}';
 			} 
 		});
 	</script>

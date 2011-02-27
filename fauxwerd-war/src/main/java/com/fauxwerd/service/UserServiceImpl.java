@@ -3,6 +3,7 @@ package com.fauxwerd.service;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +73,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public UserDetails loadUserByUsername(String arg0) throws UsernameNotFoundException, DataAccessException {
 		User temp = getUser(arg0);
 		return temp;
+	}
+	
+	@Transactional
+	public List<User> listUsers() {
+		return userDAO.listUsers();
 	}
 		
 }

@@ -3,6 +3,8 @@ package com.fauxwerd.web.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import java.io.UnsupportedEncodingException;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DefaultMessageCodesResolver;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,7 +33,7 @@ import com.fauxwerd.model.User;
 import com.fauxwerd.service.UserService;
 
 @Controller
-@RequestMapping(value = "/user")
+//@RequestMapping(value = "/user")
 public class UserController {
 
     final Logger log = LoggerFactory.getLogger(getClass());
@@ -85,7 +88,7 @@ public class UserController {
 				
 		autoLogin(req, res, user.getEmail(), unhashedPassword);
 						
-		return new ModelAndView("redirect:/user/profile", "user", user);
+		return new ModelAndView("redirect:/home", "user", user);
 	}
 	
 	@RequestMapping(value = "/profile")
@@ -97,6 +100,32 @@ public class UserController {
 		user = userService.getUserById(user.getId());
 		
 		return new ModelAndView("user/profile", "user", user);
+	}
+	
+	@RequestMapping(value = "/users")
+	public ModelAndView listUsers() {
+		List<User> otherUsers = userService.listUsers();
+		return new ModelAndView("user/list", "otherUsers", otherUsers);		
+	}
+	
+	@RequestMapping(value = "/user/{userIdString}")
+	public ModelAndView userPage(@PathVariable("userIdString") String userIdString) {
+		Long userId = null;
+
+		try {
+			userId = Long.valueOf(userIdString);
+		}
+		catch (NumberFormatException e) {
+			if(log.isErrorEnabled()) {
+				log.error("", e);
+			}
+		}
+		
+		if (log.isDebugEnabled()) log.debug(String.format("userId = %s", userId));
+		
+		User user = userService.getUserById(userId);
+		
+		return new ModelAndView("user/content", "user", user);
 	}
 	
 	@RequestMapping(value = "wrong-bookmark", method = RequestMethod.GET)
