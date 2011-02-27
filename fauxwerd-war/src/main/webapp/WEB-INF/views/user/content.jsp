@@ -28,7 +28,7 @@
                 <td><joda:format value="${userContentItem.dateAdded}" style="S-" /></td>
                 <td>
                     <c:if test="${contentReady}"><a href="/content/${userContentItem.content.id}"></c:if><c:choose><c:when test="${!empty userContentItem.content.title}">${userContentItem.content.title}</c:when><c:otherwise>${userContentItem.content.url}</c:otherwise></c:choose><c:if test="${contentReady}"></a></c:if>
-                     <span class="source">(<a href="${userContentItem.content.url}" title="Original Content">source</a>)</span>
+                     <span class="source">(<a href="${userContentItem.content.url}" title="Original Content">${userContentItem.content.site.hostname}</a>)</span>
                 </td>
             </tr>
         </c:forEach>
