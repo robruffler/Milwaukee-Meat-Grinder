@@ -15,9 +15,8 @@ if (!h1 || h1 === 'undefined') {
 	}
 }
 */
-alert("before");
+
 cTitle = getArticleTitle();
-alert("after");
 FW.i = FW.d.createElement('iframe'); 
 var s=FW.i.style; 
 FW.i.src='http://'+FW.env+'/iform?u='+FW.u+'&url='+encodeURIComponent('http://'+FW.l.hostname + FW.l.pathname + FW.l.search)+'&t='+encodeURIComponent(fw_trim(fw_trim(cTitle.replace(/'/g, '%27'))));
@@ -39,8 +38,6 @@ function getArticleTitle() {
     
     try {
         curTitle = origTitle = document.title;
-
-        alert("in: curTitle = " + curTitle);
         
         if(typeof curTitle !== "string") { /* If they had an element with id "title" in their HTML */
             curTitle = origTitle = getInnerText(document.getElementsByTagName('title')[0]);             
