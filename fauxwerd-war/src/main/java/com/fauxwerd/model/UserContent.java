@@ -19,7 +19,7 @@ import com.fauxwerd.util.HashCodeUtil;
 
 @Entity
 @Table(name = "user_content")
-public class UserContent {
+public class UserContent implements Comparable<UserContent> {
 	
 	@Embeddable
 	public static class Id implements Serializable {
@@ -75,6 +75,7 @@ public class UserContent {
 	private Id id = new Id();
 	private Integer version;
 	private DateTime dateAdded = new DateTime();
+	private DateTime dateUpdated;
 	private User user;	
 	private Content content;
 	
@@ -129,6 +130,16 @@ public class UserContent {
 		this.dateAdded = dateAdded;
 	}
 	
+	@Column(name = "date_updated")
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	public DateTime getDateUpdated() {
+		return dateUpdated;
+	}
+
+	public void setDateUpdated(DateTime dateUpdated) {
+		this.dateUpdated = dateUpdated;
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "user_id",
 				insertable = false,
@@ -173,6 +184,38 @@ public class UserContent {
 		result = HashCodeUtil.hash(result, getDateAdded());
 		
 		return result;		
+	}
+	//natural sort order sorts by most recent dateUpdated, falling back to dateCreated if updated is null
+	@Override
+	public int compareTo(UserContent o) {
+		int comparison = 0;
+		
+		//check if this item has a dateUpdated
+		if (this.getDateUpdated() != null) {
+			//check if object we're comparing to has an dateUpdated
+			if (o.getDateUpdated() != null) {
+				//compare dateUpdated fields
+				comparison = this.getDateUpdated().compareTo(o.getDateUpdated());
+				
+			}
+			else {
+				//compare this dateUpdated to that dateAdded
+				comparison = this.getDateUpdated().compareTo(o.getDateAdded());
+			}
+		}
+		else {
+			//check if object we're comparing to has an dateUpdated
+			if (o.getDateUpdated() != null) {
+				//compare this dateAdded to that dateUpdated
+				comparison = this.getDateAdded().compareTo(o.getDateUpdated());
+			}
+			else {
+				//compare dateAdded fields
+				comparison = this.getDateAdded().compareTo(o.getDateAdded());
+			}			
+		}
+		//negating comparison to sort in descending order
+		return -comparison;
 	}
 	
 	

@@ -2,11 +2,14 @@ package com.fauxwerd.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -18,7 +21,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Loader;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,7 +42,7 @@ public class User implements UserDetails {
 	private String password;		
 	private String email;
 	private boolean enabled;	
-	private List<UserContent> userContent = new ArrayList<UserContent>();
+	private SortedSet<UserContent> userContent = new TreeSet<UserContent>();
 	private String fullName;
 	
 	//empty constructor required by hibernate
@@ -108,12 +114,12 @@ public class User implements UserDetails {
 	}
 
 	@OneToMany(mappedBy = "user")
-	@OrderBy("dateAdded desc")
-	public List<UserContent> getUserContent() {
+	@Sort(type = SortType.NATURAL)
+	public SortedSet<UserContent> getUserContent() {	
 		return userContent;
 	}
 
-	public void setUserContent(List<UserContent> userContent) {
+	public void setUserContent(SortedSet<UserContent> userContent) {
 		this.userContent = userContent;
 	}
 	

@@ -19,13 +19,22 @@
     <h1 class="title pizazz">Saved Articles</h1>
     <table class="content-list">
         <tr class="heading">
-            <td width="75">Date Added</td>
+            <td width="105">Saved At</td>
             <td>Article</td>
         </tr>
         <c:forEach items="${user.userContent}" var="userContentItem" varStatus="status">
             <tr <c:if test="${status.count % 2 == 0}">class="alt-row"</c:if>>
             <c:set var="contentReady" value="${userContentItem.content.status eq 'PARSED'}" />
-                <td><joda:format value="${userContentItem.dateAdded}" style="S-" /></td>
+                <td>
+                    <c:choose>
+                        <c:when test="${not empty userContentItem.dateUpdated}">
+                            <joda:format value="${userContentItem.dateUpdated}" style="SS" />
+                        </c:when>
+                        <c:otherwise>
+                            <joda:format value="${userContentItem.dateAdded}" style="SS" />
+                        </c:otherwise>
+                    </c:choose>                
+                </td>
                 <td>
                     <c:if test="${contentReady}"><a href="/content/${userContentItem.content.id}"></c:if><c:choose><c:when test="${!empty userContentItem.content.title}">${userContentItem.content.title}</c:when><c:otherwise>${userContentItem.content.url}</c:otherwise></c:choose><c:if test="${contentReady}"></a></c:if>
                      <span class="source">(<a href="${userContentItem.content.url}" title="Original Content">${userContentItem.content.site.hostname}</a>)</span>

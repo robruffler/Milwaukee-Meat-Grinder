@@ -248,5 +248,23 @@
             </column>
         </addColumn>    
     </changeSet>
-        
+
+    <changeSet author="rob" id="38">
+        <addColumn tableName="user_content">
+            <column name="date_updated" type="datetime"/>
+        </addColumn>    
+    </changeSet>
+    
+    <changeSet author="rob" id="39">
+        <addColumn tableName="content">
+            <column name="date_added" type="datetime"/>
+        </addColumn>    
+    </changeSet>
+    
+    <changeSet author="rob" id="40">
+        <addColumn tableName="content">
+            <column name="date_updated" type="datetime"/>
+        </addColumn>    
+    </changeSet>
+    
 </databaseChangeLog>

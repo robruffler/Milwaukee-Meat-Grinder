@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -81,6 +82,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 			//resetting status to saved will cause scheduled jobs to refetch content
 			content.setTitle(title);
 			content.setStatus(ContentStatus.SAVED);
+			content.setDateUpdated(new DateTime());
 			updateContent(content);
 			
 			//check if this user has saved this content before
@@ -120,7 +122,8 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 			if (log.isDebugEnabled()) {
 				log.debug("updating existing user content record");
 			}
-			//TODO update - this isn't actually updating anyting at the moment 			
+			//TODO update - this isn't actually updating anyting at the moment
+			userContent.setDateUpdated(new DateTime());
 			updateUserContent(userContent);
 		}
     	

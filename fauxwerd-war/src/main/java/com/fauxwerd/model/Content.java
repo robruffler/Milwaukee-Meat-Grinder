@@ -14,10 +14,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
-import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 import com.fauxwerd.util.HashCodeUtil;
 
@@ -34,7 +36,9 @@ public class Content {
 	private String parsedHtmlPath;
 	private List<UserContent> userContent = new ArrayList<UserContent>();	
 	private Site site;
-	
+	private DateTime dateAdded = new DateTime();
+	private DateTime dateUpdated;
+		
 	//empty constructor required by hibernate
 	public Content() { }
 
@@ -136,6 +140,26 @@ public class Content {
 		this.site = site;
 	}
 	
+	@Column(name = "date_added")
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	public DateTime getDateAdded() {
+		return dateAdded;
+	}
+
+	public void setDateAdded(DateTime dateAdded) {
+		this.dateAdded = dateAdded;
+	}
+	
+	@Column(name = "date_updated")
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	public DateTime getDateUpdated() {
+		return dateUpdated;
+	}
+
+	public void setDateUpdated(DateTime dateUpdated) {
+		this.dateUpdated = dateUpdated;
+	}
+		
 	public boolean equals(Object other) {
 		if (this == other) return true;
 		if (!(other instanceof Content)) return false;
