@@ -9,9 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
@@ -21,8 +19,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.Loader;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.springframework.security.core.GrantedAuthority;
@@ -91,8 +87,7 @@ public class User implements UserDetails {
 		this.password = password;
 	}
 
-
-	@Pattern(regexp="(\\w+)@(\\w+\\.)(\\w+)(\\.\\w+)*")
+	@Pattern(regexp="^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$", flags={Pattern.Flag.CASE_INSENSITIVE})
 //	TODO re-enable NaturalId (breaks hbm2ddl on mysql)
 //	@NaturalId(mutable = true)
 	@Column(columnDefinition="varchar(256)")	
