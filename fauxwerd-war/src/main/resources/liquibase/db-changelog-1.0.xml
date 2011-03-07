@@ -332,7 +332,10 @@
     <changeSet author="rob" id="47">
         <addForeignKeyConstraint constraintName="fk_user_invite" 
           baseTableName="user" baseColumnNames="invite_id" 
-          referencedTableName="invite" referencedColumnNames="invite_id"/>      
+          referencedTableName="invite" referencedColumnNames="invite_id"/> 
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+        </modifySql>
     </changeSet>
     
     <changeSet author="rob" id="48">
