@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -726,29 +727,38 @@ public class ParseUtil {
 //        if (log.isDebugEnabled()) log.debug(String.format("[%s] tagsList.outerHtml() = %s", tagString, tagsList.outerHtml()));
         
 
-        for (int i=curTagsLength-1; i >= 0; i--) {
-//        	if (log.isDebugEnabled()) log.debug(String.format("\n[%s] ------------------------ %s --------------------------", tagString, i));
-
-        	Element scoredTag = tagsList.get(i);        	
+        ListIterator<Element> litr = tagsList.listIterator(tagsList.size());
+        
+//        for (int i=curTagsLength-1; i >= 0; i--) {
+        while (litr.hasPrevious()) {
+//        	Element scoredTag = tagsList.get(i);
+        	Element scoredTag = litr.previous();
         	initializeNode(scoredTag);
+        	
+//        	if (log.isDebugEnabled()) log.debug(String.format("\n[%s] ----------------------- %s ---------------------------", tagString, scoredTag.attr("count")));        	
         	        	
             float weight = getClassWeight(scoredTag);
             float contentScore = getScore(scoredTag);
             
 //        	if (log.isDebugEnabled()) log.debug(String.format("contentScore = %s, classWeight = %s", contentScore, weight));                        
-//            if (log.isDebugEnabled()) log.debug(String.format("\n----------\nCleaning Conditionally with score %s: %s (%s:%s)\n----------", 
-//            		scoredTag.getScore(), scoredTag.outerHtml() , scoredTag.className(), scoredTag.id()));            
+//            if (log.isDebugEnabled()) log.debug(String.format("\n----------\nCleaning Conditionally [%s] with score %s: %s (%s:%s)\n----------", 
+//            		scoredTag.attr("count"), getScore(scoredTag), scoredTag.outerHtml() , scoredTag.className(), scoredTag.id()));            
 
             if(weight+contentScore < 0) {
             	//TODO look into this further, tagsList.empty() was added b/c remove() didn't seem to work
-            	if (tagsList.get(i).parent() != null) {
-//	            	if (log.isDebugEnabled()) log.debug(String.format("removing tag: %s", tagsList.get(i).outerHtml()));
-	            	tagsList.get(i).remove();
-	            	tagsList.empty();
+//            	if (tagsList.get(i).parent() != null) {
+            	if (scoredTag.parent() != null) {
+//	            	if (log.isDebugEnabled()) log.debug(String.format("removing tag[%s]: %s", scoredTag.attr("count"), scoredTag.outerHtml()));
+	            	scoredTag.remove();
+//            		litr.remove();
+//	            	tagsList.get(i).remove();
+//	            	tagsList.empty();
             	} else {
             		//hack
-//            		if (log.isDebugEnabled()) log.debug(String.format("clearing tag: %s", tagsList.get(i).outerHtml()));
-            		tagsList.get(i).empty();
+//            		if (log.isDebugEnabled()) log.debug(String.format("clearing tag[%s]: %s", scoredTag.attr("count"), scoredTag.outerHtml()));
+//            		litr.remove();
+	            	scoredTag.empty();
+//            		tagsList.get(i).empty();
             	}
             } else if (getCharCount(scoredTag,",") < 10) {
                 /**
@@ -790,19 +800,23 @@ public class ParseUtil {
 
                 if(toRemove) {
                 	//TODO figure out if this null check is ok or if there is another way around this
-                	if (tagsList.get(i).parent() != null) {
-                		tagsList.get(i).remove();
-//                		if (log.isDebugEnabled()) log.debug(String.format("removing tag: %s", tagsList.get(i).outerHtml()));
+                	if (scoredTag.parent() != null) {
+//                		tagsList.get(i).remove();
+//                		litr.remove();
+    	            	scoredTag.remove();
+//                		if (log.isDebugEnabled()) log.debug(String.format("removing tag[%s]: %s", scoredTag.attr("count"), scoredTag.outerHtml()));
                 	}   
                 	else {
                 		//hack
-//                		if (log.isDebugEnabled()) log.debug(String.format("clearing tag: %s", tagsList.get(i).outerHtml()));
-                		tagsList.get(i).empty();
+//                		if (log.isDebugEnabled()) log.debug(String.format("clearing tag[%s]: %s", scoredTag.attr("count"), scoredTag.outerHtml()));
+//                		tagsList.get(i).empty();
+//                		litr.remove();
+    	            	scoredTag.empty();
                 	}
                 }
             }
             
-//            if (log.isDebugEnabled()) log.debug(String.format("------- [%s] > [%s] tagsList.outerHtml() = %s", i, tagString, tagsList.outerHtml()));            
+//            if (log.isDebugEnabled()) log.debug(String.format("------- [%s] > [%s] tagsList.outerHtml() = %s", scoredTag.attr("count"), tagString, tagsList.outerHtml()));            
         }
         
 //        if (log.isDebugEnabled()) log.debug(String.format("after > [%s] tagsList.size() = %s", tagString, tagsList.size()));
