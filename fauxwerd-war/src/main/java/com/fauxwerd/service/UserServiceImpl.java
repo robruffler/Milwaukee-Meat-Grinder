@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fauxwerd.dao.UserDAO;
+import com.fauxwerd.model.Invite;
+import com.fauxwerd.model.InviteStatus;
+import com.fauxwerd.model.Role;
 import com.fauxwerd.model.User;
 
 @Service("userService")
@@ -54,6 +58,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			user.fullyEnable();
 						
 			userDAO.saveUser(user);
+			
+			user.getInvite().setStatus(InviteStatus.USED);
+			user.getInvite().setDateUpdated(new DateTime());
+			
+			userDAO.updateInvite(user.getInvite());
 		}
 		return "success";
 	}
@@ -76,8 +85,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 	
 	@Transactional
+	public Role getRole(String name) {
+		return userDAO.getRole(name);
+	}
+	
+	@Transactional
 	public List<User> listUsers() {
 		return userDAO.listUsers();
+	}
+	
+	@Transactional
+	public void addInvite(Invite invite) {
+		userDAO.addInvite(invite);
+	}
+	
+	@Transactional
+	public void updateInvite(Invite invite) {
+		userDAO.updateInvite(invite);
+	}
+	
+	@Transactional
+	public Invite getInvite(String code) {
+		return userDAO.getInvite(code);
 	}
 		
 }

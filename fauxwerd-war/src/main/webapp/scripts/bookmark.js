@@ -40,39 +40,44 @@ function getArticleTitle() {
         curTitle = origTitle = document.title;
         
         if(typeof curTitle !== "string") { /* If they had an element with id "title" in their HTML */
-            curTitle = origTitle = getInnerText(document.getElementsByTagName('title')[0]);             
+            curTitle = origTitle = getInnerText(document.getElementsByTagName('title')[0]);
         }
+//        alert('2. curTitle = ' + curTitle);
     }
     catch(e) {}
     
-    if(curTitle.match(/ [\|\-] /))
-    {
-        curTitle = origTitle.replace(/(.*)[\|\-] .*/gi,'$1');
-        
+    if(curTitle.match(/ [|\-] /)) {
+        curTitle = origTitle.replace(/(.*)[|\-] .*/gi,'$1');
+        alert('3. curTitle = ' + curTitle);
         if(curTitle.split(' ').length < 3) {
-            curTitle = origTitle.replace(/[^\|\-]*[\|\-](.*)/gi,'$1');
+            curTitle = origTitle.replace(/[^|\-]*[|\-](.*)/gi,'$1');
+//            alert('4. curTitle = ' + curTitle);
         }
     }
-    else if(curTitle.indexOf(': ') !== -1)
-    {
+/* This seems broken to me    
+    else if(curTitle.indexOf(': ') !== -1) {
         curTitle = origTitle.replace(/.*:(.*)/gi, '$1');
+        alert('5. curTitle = ' + curTitle);
 
         if(curTitle.split(' ').length < 3) {
             curTitle = origTitle.replace(/[^:]*[:](.*)/gi,'$1');
+            alert('6. curTitle = ' + curTitle);
         }
     }
-    else if(curTitle.length > 150 || curTitle.length < 15)
-    {
+*/    
+    else if(curTitle.length > 150 || curTitle.length < 15) {
         var hOnes = document.getElementsByTagName('h1');
-        if(hOnes.length === 1)
-        {
+        if(hOnes.length === 1) {
             curTitle = getInnerText(hOnes[0]);
+//            alert('7. curTitle = ' + curTitle);
         }
     }
     curTitle = curTitle.replace( /^\s+|\s+$/g, "" );
+//    alert('8. curTitle = ' + curTitle);
 
     if(curTitle.split(' ').length <= 4) {
         curTitle = origTitle;
+//        alert('9. curTitle = ' + curTitle);
     }
         
     return curTitle;

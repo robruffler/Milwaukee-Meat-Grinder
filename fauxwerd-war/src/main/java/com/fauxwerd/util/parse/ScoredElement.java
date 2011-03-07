@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 public class ScoredElement extends Element {
 	
 	private float score = -1;
+	private ScoredElement scoredParentNode;
 		
 	public ScoredElement(Tag tag, String baseUri) {
 		super(tag, baseUri);
@@ -20,6 +21,14 @@ public class ScoredElement extends Element {
 		this.score = score;
 		this.setParentNode(element.parent());
 	}
+	    
+    public final ScoredElement scoredParent() {
+    	if (scoredParentNode == null) {
+    		scoredParentNode = new ScoredElement(super.parent(), -1);
+    	}
+        return scoredParentNode;
+    }
+	
 
 	public float getScore() {
 		return score;

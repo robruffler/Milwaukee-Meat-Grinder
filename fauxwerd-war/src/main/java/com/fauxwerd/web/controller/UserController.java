@@ -3,6 +3,7 @@ package com.fauxwerd.web.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -26,14 +27,17 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.ui.Model;
 
+import com.fauxwerd.model.Invite;
+import com.fauxwerd.model.InviteStatus;
+import com.fauxwerd.model.Role;
 import com.fauxwerd.model.User;
 import com.fauxwerd.service.UserService;
 
 @Controller
-//@RequestMapping(value = "/user")
 public class UserController {
 
     final Logger log = LoggerFactory.getLogger(getClass());
@@ -47,9 +51,19 @@ public class UserController {
 	private ProviderManager authenticationManager;
         
     @RequestMapping(value = "/register")
-    public ModelAndView register() {
+    public ModelAndView register(@RequestParam String code) {
+    	if (log.isDebugEnabled()) log.debug(String.format("code = %s", code));
+    	if (code == null || code.isEmpty()) return new ModelAndView("redirect:/");
+
+    	Invite invite = userService.getInvite(code);
+    	if (invite == null || invite.getStatus() != InviteStatus.ACTIVE) return new ModelAndView("redirect:/");
+    	
+    	ModelAndView modelAndView = new ModelAndView("user/register");    	
     	User user = new User();
-    	return new ModelAndView("user/register", "user", user);
+    	modelAndView.addObject(user);
+    	modelAndView.addObject(invite);
+    	
+    	return modelAndView;
     }
     
 	@RequestMapping(value = "register", method = RequestMethod.POST)	
@@ -58,10 +72,13 @@ public class UserController {
 			return new ModelAndView("user/register", "user", user);
 		}
 		
-		if (log.isDebugEnabled()) {
-			log.debug(String.format("User = %s", user));
-		}
-		
+    	Invite invite = userService.getInvite(user.getInvite().getCode());
+    	if (invite == null || invite.getStatus() != InviteStatus.ACTIVE) return new ModelAndView("redirect:/");
+
+    	//this seems weird, but the version of invite that is currently set in the user object is transient
+    	//so we need to replace it with the persistent one from the db, need to revisit
+    	user.setInvite(invite);
+    	
 		//check if user already exists
 		User existingUser = userService.getUser(user.getEmail());
 		
@@ -79,6 +96,10 @@ public class UserController {
 		}
 		
 		String unhashedPassword = user.getPassword(); 
+		
+		List<Role> roles = new ArrayList<Role>();
+		roles.add(userService.getRole("ROLE_USER"));
+		user.setRoles(roles);
 		
 		userService.createUser(user);
 		

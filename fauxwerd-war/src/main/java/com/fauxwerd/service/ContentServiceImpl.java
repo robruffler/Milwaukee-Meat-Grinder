@@ -263,25 +263,27 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 					return null;
 				}
 				
-				if (log.isDebugEnabled()) log.debug(String.format("finding base url for [%s]", content.getUrl()));
+//				if (log.isDebugEnabled()) log.debug(String.format("finding base url for [%s]", content.getUrl()));
 				
 				String baseUrl = ParseUtil.findBaseUrl(content.getUrl());							
 				
-				if (log.isDebugEnabled()) log.debug(String.format("baseUrl = %s", baseUrl));
+//				if (log.isDebugEnabled()) log.debug(String.format("baseUrl = %s", baseUrl));
 				
 				Document doc = Jsoup.parse(file, "UTF-8", baseUrl);
-				
+								
 				//remove all script tags
 				doc.select("script").remove();
 				
-				ParseUtil.prepDocument(doc);
+				ParseUtil.prepDocument(doc);				
 								
 				Element body = ParseUtil.grabArticle(doc);
+				
+//				if (log.isDebugEnabled()) log.debug(String.format("body = %s", body));
 
-				//TODO this isn't currently used for anything, but should be
-				Element title = ParseUtil.getArticleTitle(doc);
+				//TODO this isn't currently used for anything, we're passing the title in from js
+//				Element title = ParseUtil.getArticleTitle(doc);
 												
-				if (log.isDebugEnabled()) log.debug(String.format("title = %s", title));
+//				if (log.isDebugEnabled()) log.debug(String.format("title = %s", title));
 
 				//TODO this is commented out b/c I don't think we need it anymore - leaving until this is verified				
 //				// fix relative image refs				

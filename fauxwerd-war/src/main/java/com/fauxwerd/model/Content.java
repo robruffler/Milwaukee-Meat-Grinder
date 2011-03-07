@@ -34,6 +34,8 @@ public class Content {
 	private ContentStatus status;
 	private String rawHtmlPath;	
 	private String parsedHtmlPath;
+//	private Long upVotes;
+//	private Long downVotes;
 	private List<UserContent> userContent = new ArrayList<UserContent>();	
 	private Site site;
 	private DateTime dateAdded = new DateTime();
@@ -117,6 +119,24 @@ public class Content {
 		this.parsedHtmlPath = parsedHtmlPath;
 	}
 	
+//	@Column(name = "up_votes")
+//	public Long getUpVotes() {
+//		return upVotes;
+//	}
+//
+//	public void setUpVotes(Long upVotes) {
+//		this.upVotes = upVotes;
+//	}
+//
+//	@Column(name = "down_votes")
+//	public Long getDownVotes() {
+//		return downVotes;
+//	}
+//
+//	public void setDownVotes(Long downVotes) {
+//		this.downVotes = downVotes;
+//	}
+
 	@OneToMany(mappedBy = "content")
 	public List<UserContent> getUserContent() {
 		return userContent;

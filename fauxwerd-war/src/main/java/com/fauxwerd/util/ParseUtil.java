@@ -9,18 +9,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fauxwerd.util.parse.Link;
-import com.fauxwerd.util.parse.ScoredElement;
 
 /*
  * Number of html parsing utility methods based on readability js
@@ -74,15 +76,18 @@ public class ParseUtil {
      * @param Element
      * @return void
     **/
-    public static void initializeNode(ScoredElement scoredElement) {
-    	scoredElement.setScore(0);
+    public static void initializeNode(Element element) {
+    	float score = 0;
+//    	element.setScore(0);
     	
-    	if (scoredElement.tagName().equalsIgnoreCase("DIV")) scoredElement.incrementScore(5);
-    	if (scoredElement.tagName().equalsIgnoreCase("BLOCKQUOTE")) scoredElement.incrementScore(3);
-    	if (scoredElement.tagName().equalsIgnoreCase("FORM")) scoredElement.incrementScore(-3);
-    	if (scoredElement.tagName().equalsIgnoreCase("TH")) scoredElement.incrementScore(-5);
+    	if (element.tagName().equalsIgnoreCase("DIV")) score = score + 5;
+    	if (element.tagName().equalsIgnoreCase("BLOCKQUOTE")) score = score + 3;
+    	if (element.tagName().equalsIgnoreCase("FORM")) score = score -3;
+    	if (element.tagName().equalsIgnoreCase("TH")) score = score -5;
        
-        scoredElement.incrementScore(getClassWeight(scoredElement));        
+        score += getClassWeight(element);        
+        
+        element.attr("_fscore", String.valueOf(score));
     }	
     
     /**
@@ -120,7 +125,20 @@ public class ParseUtil {
         }
         
         return weight;
-    }    
+    }
+    
+    /**
+     * Convenience method to return an elements score
+     */
+    public static float getScore(Element e) {
+    	float score = -1;
+    	
+    	if (e.attr("_fscore") != null && !e.attr("_fscore").isEmpty()) {
+    		score = Float.valueOf(e.attr("_fscore"));
+    	}
+    	
+    	return score;
+    }
 	
     /**
      * Prepare the HTML document for readability to scrape it.
@@ -217,13 +235,14 @@ public class ParseUtil {
         	curTitle = origTitle = document.getElementsByTag("title").get(0).text();             
         }
         
-        if(curTitle.matches(" [\\|\\-] ")) {
-            curTitle = origTitle.replaceAll("(.*)[\\|\\-] .*","$1"); //global replace case insensitive
+        if(curTitle.matches(" [|\\-] ")) {
+            curTitle = origTitle.replaceAll("(.*)[|\\-] .*","$1"); //global replace case insensitive
             
             if(curTitle.split(" ").length < 3) {
-                curTitle = origTitle.replaceAll("[^\\|\\-]*[\\|\\-](.*)","$1"); //global replace case insensitive
+                curTitle = origTitle.replaceAll("[^|\\-]*[|\\-](.*)","$1"); //global replace case insensitive
             }
         }
+/* this doesn't seem right to me, tends to clip real parts of title        
         else if(curTitle.indexOf(": ") != -1) {
             curTitle = origTitle.replaceAll(".*:(.*)", "$1"); //global replace case insensitive
 
@@ -231,6 +250,7 @@ public class ParseUtil {
                 curTitle = origTitle.replaceAll("[^:]*[:](.*)","$1"); //global replace case insensitive
             }
         }
+*/        
         else if(curTitle.length() > 150 || curTitle.length() < 15) {
             Elements hOnes = document.getElementsByTag("h1");
             if(hOnes.size() == 1) {
@@ -257,7 +277,7 @@ public class ParseUtil {
      * @param page a document to run upon. Needs to be a full document, complete with body.
      * @return Element
     **/
-    public static Element grabArticle(Document page) {		    	
+    public static Element grabArticle(Document page) {    	
         boolean stripUnlikelyCandidates = flagIsActive(FLAG_STRIP_UNLIKELYS);
 //TOOD revisit how this can be implemented
 //        boolean isPaging = (page != null) ? true: false;
@@ -269,7 +289,9 @@ public class ParseUtil {
         String pageCacheHtml = page.html();
 
         Elements allElements = page.getAllElements();
-
+        
+//        if (log.isDebugEnabled()) log.debug(String.format("allElements.size() = %s", allElements.size()));        
+        
         /**
          * First, node prepping. Trash nodes that look cruddy (like ones with the class name "comment", etc), and turn divs
          * into P tags where they have been used inappropriately (as in, where they contain no other block level elements.)
@@ -277,27 +299,34 @@ public class ParseUtil {
          * Note: Assignment from index for performance. See http://www.peachpit.com/articles/article.aspx?p=31567&seqNum=5
          * TODO: Shouldn't this be a reverse traversal?
         **/
-        Elements nodesToScore = new Elements();
+        Elements nodesToScore = new Elements();        
         
-        for(Element node : allElements) {
+        int count = 0;
+        for(Element node : allElements) {        	
+        	//this is for debugging purposes only
+        	node.attr("count", String.format("%s", count));
         	
             /* Remove unlikely candidates */
             if (stripUnlikelyCandidates) {
                 String unlikelyMatchString = node.className() + node.id();
-                	
+
+//                if (log.isDebugEnabled()) log.debug(String.format("unlikelyMatchString = %s", unlikelyMatchString));
+                
                 if ((
                 		REGEX.get("unlikelyCandidates").matcher(unlikelyMatchString).find() &&
-                		REGEX.get("okMaybeItsACandidate").matcher(unlikelyMatchString).find() &&
+                		!REGEX.get("okMaybeItsACandidate").matcher(unlikelyMatchString).find() &&
                 		!node.tagName().equalsIgnoreCase("BODY")
                     )
                 ) {
                 	node.remove(); 
+//                	if (log.isDebugEnabled()) log.debug(String.format("removed unlikely candidate node = %s", node));
                 	continue;
                 }               
             }
             
             if (node.tagName().equalsIgnoreCase("P") || node.tagName().equalsIgnoreCase("TD") || node.tagName().equalsIgnoreCase("PRE")) {
             	nodesToScore.add(node);
+//            	if (log.isDebugEnabled()) log.debug(String.format("added node for scoring = %s, with count = %s", node, count));
             }
 
             /* Turn all divs that don't have children block level elements into p's */
@@ -305,29 +334,36 @@ public class ParseUtil {
             	
             	if(!REGEX.get("divToPElements").matcher(node.html()).find()) {
                     Element newNode = new Element(Tag.valueOf("p"), "");
-                    newNode.html(node.html());                                                            
-//                    if (log.isDebugEnabled()) log.debug(String.format("replacing %s with %s", node, newNode));
+                    newNode.html(node.html());
+                    newNode.attr("count", String.format("%s", count));
+//                    if (log.isDebugEnabled()) log.debug(String.format("replacing %s with %s, with id %s", node, newNode, id));
                     node.replaceWith(newNode);
                     nodesToScore.add(newNode);
                 }
-//                else
-//                {
-//                    /* EXPERIMENTAL */
-//                	for(int i = 0; i < node.childNodes().size(); i++) {
-//                    for(int i = 0, il = node.childNodes.length; i < il; i+=1) {
-//                        Node childNode = node.childNode(i);
-//
-//                        if(childNode. === 3) { // Node.TEXT_NODE
-//                            var p = document.createElement('p');
-//                            p.innerHTML = childNode.nodeValue;
-//                            p.style.display = 'inline';
-//                            p.className = 'readability-styled';
-//                            childNode.parentNode.replaceChild(p, childNode);
-//                        }
-//                    }
-//                }
+                else {
+                    /* EXPERIMENTAL */
+                	for(int i = 0; i < node.childNodes().size(); i++) {
+                        Node childNode = node.childNode(i);
+                        //TODO should we only wrap in a P tag if it's not empty, seems like
+                        if (childNode instanceof TextNode && !((TextNode) childNode).isBlank()) {
+//                        	if(!((TextNode) childNode).isBlank() && log.isDebugEnabled()) log.debug(String.format("childNode is TextNode = %s", childNode));
+                        	
+                        	TextNode tChildNode  = (TextNode)childNode;                        	
+                            Element p = page.createElement("p");                            
+                            p.html(tChildNode.text()); //= childNode.nodeValue;
+//                            p.style.display = 'inline'; //unnecessary
+                            Set<String> classNames = new HashSet<String>();
+                            classNames.add("readability-styled");
+                            p.classNames(classNames); //= 'readability-styled';
+                            childNode.replaceWith(p);
+                        }
+                    }
+                }
             } 
+        	count++;
         }
+        
+//        if (log.isDebugEnabled()) log.debug(String.format("nodesToScore.size() = %s", nodesToScore.size()));        
                 
         /**
          * Loop through all paragraphs, and assign a score to them based on how content-y they look.
@@ -335,33 +371,41 @@ public class ParseUtil {
          *
          * A score is determined by things like number of commas, class names, etc. Maybe eventually link density.
         **/
-        List<ScoredElement> candidates = new ArrayList<ScoredElement>();
-        for (Element nodeToScore : nodesToScore) {
-        	//TODO revisit if this is a good idea, may need to change how we create/initialize new ScoredElements
-            ScoredElement parentNode = nodeToScore.parent() != null ? new ScoredElement(nodeToScore.parent(),-1) : null;
-            ScoredElement grandParentNode = (parentNode != null && parentNode.parent() != null) ? new ScoredElement(parentNode.parent(),-1) : null;
+        Elements candidates = new Elements();
+        for (Element nodeToScore : nodesToScore) {        	
+            Element parentNode = nodeToScore.parent() != null ? nodeToScore.parent() : null;
+            Element grandParentNode = (parentNode != null && parentNode.parent() != null) ? parentNode.parent() : null;
             String innerText = nodeToScore.text();
             
             if(parentNode == null || parentNode.tagName() == null) {
+//            	if (log.isDebugEnabled()) log.debug(String.format("no parent node, continuing - nodeToScore = %s", nodeToScore));
                 continue;
             }
             
             /* If this paragraph is less than 25 characters, don't even count it. */
             if(innerText.length() < 25) {
+//            	if (log.isDebugEnabled()) log.debug(String.format("text length < 25, continuing - nodeToScore = %s", nodeToScore));
                 continue; 
             }            
             
+//            if (log.isDebugEnabled()) log.debug(String.format("\n----------\nnodeToScore[%s] = %s, parentScore[%s] = %s, grandparentScore[%s] = %s", nodeToScore.attr("count"), nodeToScore/*.outerHtml().substring(0, 20)*/, 
+//            		nodeToScore.parent() != null ? nodeToScore.parent().attr("count") : -1,
+//            		nodeToScore.parent() != null ? nodeToScore.parent().attr("_fscore") : -1,
+//            		(nodeToScore.parent() != null && nodeToScore.parent().parent() != null) ? nodeToScore.parent().parent().attr("count") : -1,
+//            		(nodeToScore.parent() != null && nodeToScore.parent().parent() != null) ? nodeToScore.parent().parent().attr("_fscore") : -1));
+            
             /* Initialize readability data for the parent. */
-            if (parentNode.getScore() < 0) {
-            	//TODO confirm if we need to use the returned Element instead                        	
+            if (getScore(parentNode) < 0) {                        	
             	initializeNode(parentNode);            	
             	candidates.add(parentNode);
+//            	if (log.isDebugEnabled()) log.debug(String.format("adding parent node to candidates - parentNode[%s] = %s", parentNode.attr("count"), parentNode/*.outerHtml().substring(0, 20)*/));
             }
 
             /* Initialize readability data for the grandparent. */
-            if (grandParentNode != null && grandParentNode.getScore() < 0) {
+            if (grandParentNode != null && getScore(grandParentNode) < 0) {
             	initializeNode(grandParentNode);
             	candidates.add(grandParentNode);
+//            	if (log.isDebugEnabled()) log.debug(String.format("adding grandparent node to candidates - grandParentNode[%s] = %s", grandParentNode.attr("count"), grandParentNode/*.outerHtml().substring(0, 20)*/));
             }
 
             int contentScore = 0;
@@ -376,11 +420,15 @@ public class ParseUtil {
             contentScore += Math.min(Math.floor(innerText.length() / 100), 3);
             
             /* Add the score to the parent. The grandparent gets half. */
-            parentNode.incrementScore(contentScore);
+            parentNode.attr("_fscore", String.valueOf(getScore(parentNode) + contentScore));
 
+//            if (log.isDebugEnabled()) log.debug(String.format("parentNode[%s].getScore() = %s", parentNode.attr("count"), parentNode.attr("_fscore")));
+            
             if(grandParentNode != null) {
-                grandParentNode.incrementScore(contentScore/2);             
-            }
+//                grandParentNode.incrementScore(contentScore/2);
+            	grandParentNode.attr("_fscore", String.valueOf(getScore(grandParentNode) + (contentScore/2)));            	
+//            	if (log.isDebugEnabled()) log.debug(String.format("grandParentNode[%s].getScore() = %s", grandParentNode.attr("count"), grandParentNode.attr("_fscore")));
+            }        
         }
 
 //        if (log.isDebugEnabled()) log.debug(String.format("candidates.size() = %s", candidates.size()));
@@ -389,30 +437,32 @@ public class ParseUtil {
          * After we've calculated scores, loop through all of the possible candidate nodes we found
          * and find the one with the highest score.
         **/
-        ScoredElement topCandidate = null;
-        for(ScoredElement candidate : candidates) {
+        Element topCandidate = null;
+        for(Element candidate : candidates) {
             /**
              * Scale the final candidates score based on link density. Good content should have a
              * relatively small link density (5% or less) and be mostly unaffected by this operation.
             **/        	
-            candidate.setScore(candidate.getScore() * (1 - getLinkDensity(candidate)));
+//            candidate.setScore(candidate.getScore() * (1 - getLinkDensity(candidate)));
+        	candidate.attr("_fscore", String.valueOf(getScore(candidate) * (1 - getLinkDensity(candidate))));
 
-//            if (log.isDebugEnabled()) log.debug(String.format("\n----------\nCandidate with score %s: %s (%s:%s)\n----------", 
-//            		candidate.getScore(), candidate.outerHtml() , candidate.className(), candidate.id()));
+//            if (log.isDebugEnabled()) log.debug(String.format("\n----------\nCandidate[%s] with score %s: %s (%s:%s)\n----------", 
+//            		candidate.attr("count"), candidate.attr("_fscore"), candidate.outerHtml() , candidate.className(), candidate.id()));
 
-            if(topCandidate == null || candidate.getScore() > topCandidate.getScore()) {
+            if(topCandidate == null || getScore(candidate) > getScore(topCandidate)) {
                 topCandidate = candidate; 
             }
         }
 
-//        if (log.isDebugEnabled()) log.debug(String.format("topCandidate = %s", topCandidate));
-        
+//        if (log.isDebugEnabled()) log.debug(String.format("topCandidate[%s] = %s", topCandidate.attr("count"), topCandidate));
+
+        //TODO need to revisit this, looks broken
         /**
          * If we still have no top candidate, just use the body as a last resort.
          * We also have to copy the body node so it is something we can modify.
          **/
         if (topCandidate == null || topCandidate.tagName().equalsIgnoreCase("BODY")) {
-            topCandidate = new ScoredElement(Tag.valueOf("DIV"), "");
+        	topCandidate = page.createElement("DIV");
             topCandidate.html(page.html());
             page.html("");
             page.appendChild(topCandidate);
@@ -424,37 +474,35 @@ public class ParseUtil {
          * Things like preambles, content split by ads that we removed, etc.
         **/
 //TODO check it
-//        ScoredElement articleContent = new ScoredElement(Tag.valueOf("DIV"), "");
-        
-//        if (log.isDebugEnabled()) log.debug(String.format("topCandidate = %s", topCandidate));
-        
-        ScoredElement articleContent = new ScoredElement(page.createElement("DIV"), -1);
+        Element articleContent = page.createElement("DIV");
         if (isPaging) {
             articleContent.attr("id", "readability-content");
         }
-        float siblingScoreThreshold = (float)Math.max(10, topCandidate.getScore() * 0.2);
+        float siblingScoreThreshold = (float)Math.max(10, getScore(topCandidate) * 0.2);
 
         Elements siblingNodes = (topCandidate != null && topCandidate.parent() != null) ? topCandidate.siblingElements() : new Elements();
+        
+//        if (log.isDebugEnabled()) log.debug(String.format("siblingNodes.size() = %s, siblingScoreThreshold = %s", siblingNodes.size(), siblingScoreThreshold));
                 
         for(int s=0; s < siblingNodes.size(); s++) {
-        	ScoredElement siblingNode = new ScoredElement(siblingNodes.get(s), -1);
+        	Element siblingNode = siblingNodes.get(s);
         	initializeNode(siblingNode);
         	        	
         	boolean append = false;
-
-//            if (log.isDebugEnabled()) log.debug(String.format("Looking at sibling node: %s (%s:%s) with score %s", siblingNode, siblingNode.className(), siblingNode.id(), siblingNode.getScore()));
+        	
+//            if (log.isDebugEnabled()) log.debug(String.format("Looking at sibling node: %s (%s:%s) with score %s", siblingNode, siblingNode.className(), siblingNode.id(), siblingNode.attr("_fscore")));
 
             if(siblingNode.html().equals(topCandidate.html())) {
                 append = true;
             }
 
             float contentBonus = 0;
-            /* Give a bonus if sibling nodes and top candidates have the example same classname */
+            /* Give a bonus if sibling nodes and top candidates have the exact same classname */
             if(siblingNode.className().equals(topCandidate.className()) && !topCandidate.className().equals("")) {
-                contentBonus += topCandidate.getScore() * 0.2;
+                contentBonus += getScore(topCandidate) * 0.2;
             }
             //TODO check if the score we have for sibling node at this point is sufficient (only using intialize)
-            if((siblingNode.getScore() + contentBonus) >= siblingScoreThreshold) {
+            if((getScore(siblingNode) + contentBonus) >= siblingScoreThreshold) {
                 append = true;
             }
             
@@ -474,17 +522,17 @@ public class ParseUtil {
             }
 
             if(append) {
-//                if(log.isDebugEnabled()) log.debug(String.format("Appending node: %s", siblingNode));
+//                if(log.isDebugEnabled()) log.debug(String.format("Appending node[%s]: %s", siblingNode.attr("count"), siblingNode));
 
-                ScoredElement nodeToAppend = null;
+                Element nodeToAppend = null;
                 if(!siblingNode.tagName().equalsIgnoreCase("DIV") && !siblingNode.tagName().equalsIgnoreCase("P")) {
                     /* We have a node that isn't a common block level element, like a form or td tag. Turn it into a div so it doesn't get filtered out later by accident. */                    
-//                    if (log.isDebugEnabled()) log.debug(String.format("Altering siblingNode of %s  to div.", siblingNode.tagName()));
-                    nodeToAppend = new ScoredElement(Tag.valueOf("DIV"), "");
+//                    if (log.isDebugEnabled()) log.debug(String.format("Altering siblingNode[%s] from %s to div.", siblingNode.attr("count"), siblingNode.tagName()));
+                    nodeToAppend = page.createElement("DIV");
                     nodeToAppend.attr("id", siblingNode.id());
                     nodeToAppend.html(siblingNode.html());
                 } else {
-                    nodeToAppend = new ScoredElement(siblingNode, 0);
+                    nodeToAppend = siblingNode;
                 }
                 
                 /* To ensure a node does not interfere with readability styles, remove its classnames */
@@ -681,11 +729,11 @@ public class ParseUtil {
         for (int i=curTagsLength-1; i >= 0; i--) {
 //        	if (log.isDebugEnabled()) log.debug(String.format("\n[%s] ------------------------ %s --------------------------", tagString, i));
 
-        	ScoredElement scoredTag = new ScoredElement(tagsList.get(i), -1);
+        	Element scoredTag = tagsList.get(i);        	
         	initializeNode(scoredTag);
         	        	
             float weight = getClassWeight(scoredTag);
-            float contentScore = scoredTag.getScore();
+            float contentScore = getScore(scoredTag);
             
 //        	if (log.isDebugEnabled()) log.debug(String.format("contentScore = %s, classWeight = %s", contentScore, weight));                        
 //            if (log.isDebugEnabled()) log.debug(String.format("\n----------\nCleaning Conditionally with score %s: %s (%s:%s)\n----------", 
@@ -1072,13 +1120,13 @@ public class ParseUtil {
         for (int i = 0; i < urlSlashes.size(); i++) {
             String segment = urlSlashes.get(i);
 
-            if (log.isDebugEnabled()) log.debug(String.format("url segment = %s", segment));
+//            if (log.isDebugEnabled()) log.debug(String.format("url segment = %s", segment));
             
             // Split off and save anything that looks like a file type.
             if (segment.indexOf(".") != -1) {
             	String[] splitSegment = segment.split("\\.");
             	
-            	if (log.isDebugEnabled()) log.debug(String.format("splitSegment.length = %s", splitSegment.length));
+//            	if (log.isDebugEnabled()) log.debug(String.format("splitSegment.length = %s", splitSegment.length));
             	
             	if (splitSegment.length > 1) {
             		possibleType = splitSegment[1];

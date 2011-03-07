@@ -32,6 +32,7 @@
 		          <form:password path="password" /> <form:errors path="password" cssClass="error"/>
 		        </p>
 		        <p> 
+                  <form:hidden path="invite" value="${invite.code}"/> 		          
 		          <input type="submit" value="register" />
 		        </p>
 

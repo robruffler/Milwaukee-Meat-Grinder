@@ -15,10 +15,11 @@
   </global-method-security>
 
   <!-- path-type switches intercept urls to check pattern as regex -->                         
-	<http access-denied-page="/" path-type="regex">
+	<http access-denied-page="/app/" path-type="regex">
     <!-- in case of multiple roles, use comma delimited list -->
     <intercept-url pattern="/profile.*" access="ROLE_USER" />
     <intercept-url pattern="/home.*" access="ROLE_USER" />
+    <intercept-url pattern="/admin.*" access="ROLE_ADMIN" />
     
     <!-- static files that do not require authentication -->
     <intercept-url pattern="/images.*" filters="none" />

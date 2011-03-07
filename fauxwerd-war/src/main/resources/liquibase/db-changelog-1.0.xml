@@ -267,4 +267,81 @@
         </addColumn>    
     </changeSet>
     
+    <changeSet author="rob" id="41">
+        <createTable tableName="role">
+            <column name="role_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+              <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="optlock" type="int">
+                <constraints nullable="false" />
+            </column>            
+        </createTable>    
+    </changeSet>
+
+    <changeSet author="rob" id="42">
+        <createTable tableName="user_role">
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="role_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>            
+        </createTable>    
+    </changeSet>
+    
+    <changeSet author="rob" id="43">
+        <addForeignKeyConstraint constraintName="fk_user_role_user" 
+          baseTableName="user_role" baseColumnNames="user_id" 
+          referencedTableName="user" referencedColumnNames="user_id"/>      
+    </changeSet>    
+
+    <changeSet author="rob" id="44">
+        <addForeignKeyConstraint constraintName="fk_user_role_role" 
+          baseTableName="user_role" baseColumnNames="role_id" 
+          referencedTableName="role" referencedColumnNames="role_id"/>      
+    </changeSet>    
+    
+    <changeSet author="rob" id="45">
+        <createTable tableName="invite">
+            <column name="invite_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="varchar(40)">
+              <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="status" type="int">
+                <constraints nullable="false" />
+            </column>            
+            <column name="date_added" type="datetime"/>
+            <column name="date_updated" type="datetime"/>
+            <column name="optlock" type="int">
+                <constraints nullable="false" />
+            </column>            
+        </createTable>    
+    </changeSet>
+    
+    <changeSet author="rob" id="46">
+        <addColumn tableName="user">
+            <column name="invite_id" type="bigint"/>
+        </addColumn>    
+    </changeSet>
+    
+    <changeSet author="rob" id="47">
+        <addForeignKeyConstraint constraintName="fk_user_invite" 
+          baseTableName="user" baseColumnNames="invite_id" 
+          referencedTableName="invite" referencedColumnNames="invite_id"/>      
+    </changeSet>
+    
+    <changeSet author="rob" id="48">
+        <sql>
+	        insert into role (role_id, name, optlock) values (1, 'ROLE_USER', 1);
+	        insert into role (role_id, name, optlock) values (2, 'ROLE_ADMIN', 1);
+	        insert into user_role (user_id, role_id) values (1, 1);
+	        insert into user_role (user_id, role_id) values (1, 2);
+        </sql>
+    </changeSet>    
+            
 </databaseChangeLog>

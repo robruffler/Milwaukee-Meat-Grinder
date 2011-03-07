@@ -7,9 +7,14 @@ import java.util.TreeSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
@@ -37,9 +42,11 @@ public class User implements UserDetails {
 	private Integer version;
 	private String password;		
 	private String email;
-	private boolean enabled;	
+	private boolean enabled;
+	private List<Role> roles = new ArrayList<Role>();
 	private SortedSet<UserContent> userContent = new TreeSet<UserContent>();
 	private String fullName;
+	private Invite invite;
 	
 	//empty constructor required by hibernate
 	public User() { }
@@ -56,7 +63,8 @@ public class User implements UserDetails {
 	@TableGenerator(
 			name = "USER_TABLE_GEN",
 			pkColumnValue = "USER",
-			allocationSize = 5
+			allocationSize = 5,
+			initialValue = 1000
 	)
 	@Column(name = "user_id")	
 	public Long getId() {
@@ -107,6 +115,20 @@ public class User implements UserDetails {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "user_role",
+				joinColumns = { @JoinColumn(name = "user_id")},
+				inverseJoinColumns = { @JoinColumn(name = "role_id")})
+	@org.hibernate.annotations.ForeignKey(name = "FK_USER_ROLE_USER",
+											inverseName = "FK_USER_ROLE_ROLE")					
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
 
 	@OneToMany(mappedBy = "user")
 	@Sort(type = SortType.NATURAL)
@@ -127,6 +149,16 @@ public class User implements UserDetails {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	@OneToOne
+	@JoinColumn(name = "invite_id")
+	public Invite getInvite() {
+		return invite;
+	}
+
+	public void setInvite(Invite invite) {
+		this.invite = invite;
 	}
 
 	//required by interface, returning email address instead
@@ -151,11 +183,13 @@ public class User implements UserDetails {
 		return enabled;
 	}
 
-	//currently only one user role so we're always returning ROLE_USER
 	@Transient	
 	public List<GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+
+		for (Role role : getRoles()) {		
+			authorities.add(new GrantedAuthorityImpl(role.getName()));
+		}
 
 		return authorities;
 	}
