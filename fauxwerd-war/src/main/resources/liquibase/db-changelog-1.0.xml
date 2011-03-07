@@ -328,14 +328,11 @@
             <column name="invite_id" type="bigint"/>
         </addColumn>    
     </changeSet>
-    
+<!-- commenting these out until we revisit database table engine issues     
     <changeSet author="rob" id="47">
         <addForeignKeyConstraint constraintName="fk_user_invite" 
           baseTableName="user" baseColumnNames="invite_id" 
           referencedTableName="invite" referencedColumnNames="invite_id"/> 
-        <modifySql dbms="mysql">
-            <append value=" engine innodb"/>
-        </modifySql>
     </changeSet>
     
     <changeSet author="rob" id="48">
@@ -346,5 +343,5 @@
 	        insert into user_role (user_id, role_id) values (1, 2);
         </sql>
     </changeSet>    
-            
+-->
 </databaseChangeLog>

@@ -48,7 +48,7 @@ function getArticleTitle() {
     
     if(curTitle.match(/ [|\-] /)) {
         curTitle = origTitle.replace(/(.*)[|\-] .*/gi,'$1');
-        alert('3. curTitle = ' + curTitle);
+//        alert('3. curTitle = ' + curTitle);
         if(curTitle.split(' ').length < 3) {
             curTitle = origTitle.replace(/[^|\-]*[|\-](.*)/gi,'$1');
 //            alert('4. curTitle = ' + curTitle);
