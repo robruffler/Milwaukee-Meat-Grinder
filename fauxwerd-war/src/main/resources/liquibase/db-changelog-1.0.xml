@@ -328,20 +328,11 @@
             <column name="invite_id" type="bigint"/>
         </addColumn>    
     </changeSet>
-<!-- commenting these out until we revisit database table engine issues     
+     
     <changeSet author="rob" id="47">
         <addForeignKeyConstraint constraintName="fk_user_invite" 
           baseTableName="user" baseColumnNames="invite_id" 
           referencedTableName="invite" referencedColumnNames="invite_id"/> 
     </changeSet>
     
-    <changeSet author="rob" id="48">
-        <sql>
-	        insert into role (role_id, name, optlock) values (1, 'ROLE_USER', 1);
-	        insert into role (role_id, name, optlock) values (2, 'ROLE_ADMIN', 1);
-	        insert into user_role (user_id, role_id) values (1, 1);
-	        insert into user_role (user_id, role_id) values (1, 2);
-        </sql>
-    </changeSet>    
--->
 </databaseChangeLog>
