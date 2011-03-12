@@ -60,8 +60,17 @@ public class ContentController {
 		String userIdString = req.getParameter("userId");
 		Long userId = null;
 		String title = req.getParameter("title");
-							
-		try {			
+			
+		if (log.isDebugEnabled()) log.debug(String.format("title = %s", title));
+		if (log.isDebugEnabled()) log.debug(String.format("urlString = %s", urlString));
+				
+		try {
+			urlString = URLDecoder.decode(urlString, "utf-8");
+			title = URLDecoder.decode(title, "utf-8");
+			
+			if (log.isDebugEnabled()) log.debug(String.format("title after decode = %s", title));
+			if (log.isDebugEnabled()) log.debug(String.format("urlString after decode = %s", urlString));
+			
 			//drop any url fragments (#) that aren't ajax crawlable			
 			if (!(urlString.indexOf("#!") > 0) && urlString.indexOf('#') > 0) {			
 				urlString = urlString.substring(0, urlString.indexOf('#'));
@@ -69,6 +78,11 @@ public class ContentController {
 			
 			url = new URL(urlString);
 			userId = Long.valueOf(userIdString);
+		}
+		catch (UnsupportedEncodingException e) {
+			if (log.isErrorEnabled()) {
+				log.error("", e);				
+			}
 		}
 		catch (MalformedURLException e) {
 			if (log.isErrorEnabled()) {
