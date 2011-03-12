@@ -18,6 +18,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -181,17 +186,50 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 		
 		for (Content content : savedContent) {
 			
+			String urlString = content.getUrl();
+
+			if (urlString.indexOf("#!") > 0) {
+				String ajaxCrawlable = "?_escaped_fragment_=";
+				String [] splitUrl = urlString.split("#!");
+				urlString = splitUrl[0] + ajaxCrawlable + splitUrl[1];
+			
+				if (log.isDebugEnabled()) log.debug(String.format("ajax url = %s", urlString));
+			}
+						
 			if (log.isDebugEnabled()) {
-				log.debug(String.format("fetching %s", content.getUrl()));
+				log.debug(String.format("fetching %s", urlString));
 			}
 			
 			RestTemplate restTemplate = new RestTemplate();
-
 			String rawHtml = null;
 			
 			try {
-				rawHtml = restTemplate.getForObject(content.getUrl(), String.class);
-												
+				//TODO probably don't need to set headers, but keeping in case we do
+				HttpHeaders headers = new HttpHeaders();
+				headers.set("Accept", "text/html,application/xhtml+xml,application/xml;");
+				
+				HttpEntity<String> requestEntity = new HttpEntity<String>(headers);				
+				ResponseEntity<String> response = restTemplate.exchange(urlString, 
+																		HttpMethod.GET,
+																		requestEntity,
+																		String.class);
+
+				if(log.isDebugEnabled()) log.debug(String.format("response.getStatusCode() = %s", response.getStatusCode()));
+
+				if (response.getStatusCode() == HttpStatus.MOVED_PERMANENTLY) {
+					if(log.isDebugEnabled()) log.debug(String.format("moved permanently"));
+					
+					response = restTemplate.exchange(response.getHeaders().getLocation(), 
+														HttpMethod.GET, 
+														requestEntity, 
+														String.class);					
+					
+					if(log.isDebugEnabled()) log.debug(String.format("2nd response [%s] = %s", response.getStatusCode(), response.getBody()));
+														
+				}
+				
+				rawHtml = response.getBody();
+				
 				String dataDirectoryPath = siteProperties.get("dataStore");			
 
 				String siteDirectoryPath = content.getSite().getHostname();

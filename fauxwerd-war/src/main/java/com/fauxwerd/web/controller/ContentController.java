@@ -54,39 +54,21 @@ public class ContentController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public String addContent(HttpServletRequest req, HttpServletResponse res, Model model) {
-
-		if (log.isDebugEnabled()) log.debug(String.format("character encoding = %s", req.getCharacterEncoding()));
-		
+	public String addContent(HttpServletRequest req, HttpServletResponse res, Model model) {		
 		String urlString = req.getParameter("url");
 		URL url = null;
 		String userIdString = req.getParameter("userId");
 		Long userId = null;
 		String title = req.getParameter("title");
-			
-		if (log.isDebugEnabled()) log.debug(String.format("title = %s", title));
-				
-		try {
-			
-			urlString = URLDecoder.decode(urlString, "utf-8");
-			title = URLDecoder.decode(title, "utf-8");
-			
-			if (log.isDebugEnabled()) log.debug(String.format("title after decode = %s", title));
-			
-			//TODO improve this to work for twitter (e.g. http://twitter.com/#!/srcasm)
-			//drop any url fragments (#)
-			int fragmentIndex = urlString.indexOf('#');
-			if (fragmentIndex > 0) {
-				urlString = urlString.substring(0, fragmentIndex);
+							
+		try {			
+			//drop any url fragments (#) that aren't ajax crawlable			
+			if (!(urlString.indexOf("#!") > 0) && urlString.indexOf('#') > 0) {			
+				urlString = urlString.substring(0, urlString.indexOf('#'));
 			}
 			
 			url = new URL(urlString);
 			userId = Long.valueOf(userIdString);
-		}
-		catch (UnsupportedEncodingException e) {
-			if (log.isErrorEnabled()) {
-				log.error("", e);				
-			}
 		}
 		catch (MalformedURLException e) {
 			if (log.isErrorEnabled()) {
