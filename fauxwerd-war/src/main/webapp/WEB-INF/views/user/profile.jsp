@@ -14,8 +14,24 @@
 </jsp:include>
 
 
-<div>Settings for ${user.fullName}</div>
-<div>Profile settings to go here.</div>
+<h1>Settings for ${user.fullName}</h1>
+<div>You are following:</div>
+<div>
+    <ul>
+    <c:forEach items="${user.following}" var="userFollow">
+        <li>${userFollow.follow.fullName} <a href="/unfollow/${userFollow.follow.id}">unfollow</a></li>
+    </c:forEach>
+    </ul>
+</div>
+
+<div>You are followed by:</div>
+<div>
+    <ul>
+    <c:forEach items="${user.followers}" var="userFollow">
+        <li>${userFollow.user.fullName}</li>
+    </c:forEach>
+    </ul>
+</div>
 
 <script type="text/javascript">
 	$(document).ready(function() {

@@ -19,6 +19,7 @@
     <!-- in case of multiple roles, use comma delimited list -->
     <intercept-url pattern="/profile.*" access="ROLE_USER" />
     <intercept-url pattern="/home.*" access="ROLE_USER" />
+    <intercept-url pattern="/follow.*" access="ROLE_USER" />
     <intercept-url pattern="/admin.*" access="ROLE_ADMIN" />
     
     <!-- static files that do not require authentication -->

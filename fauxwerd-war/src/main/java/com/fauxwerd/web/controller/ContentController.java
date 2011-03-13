@@ -19,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fauxwerd.model.Activity;
+import com.fauxwerd.model.ActivityType;
 import com.fauxwerd.model.Content;
 import com.fauxwerd.model.User;
+import com.fauxwerd.service.ActivityService;
 import com.fauxwerd.service.ContentService;
 import com.fauxwerd.service.UserService;
 
@@ -34,6 +37,8 @@ public class ContentController {
     private ContentService contentService; 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ActivityService activityService;
 	
 	@RequestMapping(value="/{contentIdString}", method=RequestMethod.GET)
 	public ModelAndView getContent(@PathVariable("contentIdString") String contentIdString) {
@@ -101,7 +106,13 @@ public class ContentController {
 		
 		User user = userService.getUserById(userId);
 		
-		contentService.addContent(url, user, title);
+		Content content = contentService.addContent(url, user, title);
+		
+		Activity activity = new Activity(user, ActivityType.SAVED, content);
+		
+		if (log.isDebugEnabled()) log.debug(String.format("activity.getContent().getId() = %s", activity.getContent().getId()));
+		
+		activityService.saveOrUpdateActivity(activity);
 						
 		return "content/saved";
 	}

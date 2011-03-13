@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -47,6 +48,8 @@ public class User implements UserDetails {
 	private SortedSet<UserContent> userContent = new TreeSet<UserContent>();
 	private String fullName;
 	private Invite invite;
+	private List<UserFollow> following = new ArrayList<UserFollow>();
+	private List<UserFollow> followers = new ArrayList<UserFollow>();
 	
 	//empty constructor required by hibernate
 	public User() { }
@@ -150,7 +153,7 @@ public class User implements UserDetails {
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
-
+	
 	@OneToOne
 	@JoinColumn(name = "invite_id")
 	public Invite getInvite() {
@@ -159,6 +162,24 @@ public class User implements UserDetails {
 
 	public void setInvite(Invite invite) {
 		this.invite = invite;
+	}
+	
+	@OneToMany(mappedBy = "user")	
+	public List<UserFollow> getFollowing() {
+		return following;
+	}
+
+	public void setFollowing(List<UserFollow> following) {
+		this.following = following;
+	}
+	
+	@OneToMany(mappedBy = "follow")
+	public List<UserFollow> getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(List<UserFollow> followers) {
+		this.followers = followers;
 	}
 
 	//required by interface, returning email address instead

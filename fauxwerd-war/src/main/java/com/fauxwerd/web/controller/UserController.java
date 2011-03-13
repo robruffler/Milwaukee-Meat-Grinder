@@ -123,12 +123,19 @@ public class UserController {
 		return new ModelAndView("user/profile", "user", user);
 	}
 	
-	@RequestMapping(value = "/users")
+	@RequestMapping(value = "/users-all")
 	public ModelAndView listUsers() {
 		List<User> otherUsers = userService.listUsers();
 		return new ModelAndView("user/list", "otherUsers", otherUsers);		
 	}
 	
+	@RequestMapping(value = "/users")
+	public ModelAndView listUsersToFollow() {
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<User> otherUsers = userService.listUsersExcept(user);
+		return new ModelAndView("user/list", "otherUsers", otherUsers);		
+	}
+		
 	@RequestMapping(value = "/user/{userIdString}")
 	public ModelAndView userPage(@PathVariable("userIdString") String userIdString) {
 		Long userId = null;
@@ -148,6 +155,49 @@ public class UserController {
 		
 		return new ModelAndView("user/content", "user", user);
 	}
+	
+	@RequestMapping(value = "/follow/{userIdString}")
+	public ModelAndView follow(@PathVariable("userIdString") String userIdString) {
+		Long userId = null;
+
+		try {
+			userId = Long.valueOf(userIdString);
+		}
+		catch (NumberFormatException e) {
+			if(log.isErrorEnabled()) {
+				log.error("", e);
+			}
+		}	
+		
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User toFollow = userService.getUserById(userId);
+		
+		userService.followUser(user, toFollow);
+		
+		return new ModelAndView("redirect:/home", "user", user);
+	}
+	
+	@RequestMapping(value = "/unfollow/{userIdString}")
+	public ModelAndView unfollow(@PathVariable("userIdString") String userIdString) {
+		Long userId = null;
+
+		try {
+			userId = Long.valueOf(userIdString);
+		}
+		catch (NumberFormatException e) {
+			if(log.isErrorEnabled()) {
+				log.error("", e);
+			}
+		}	
+		
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User toUnfollow = userService.getUserById(userId);
+		
+		userService.unfollowUser(user, toUnfollow);
+		
+		return new ModelAndView("redirect:/home", "user", user);
+	}
+	
 	
 	@RequestMapping(value = "wrong-bookmark", method = RequestMethod.GET)
 	public ModelAndView wrongBookmark(HttpServletRequest req, HttpServletResponse res, Model model) {

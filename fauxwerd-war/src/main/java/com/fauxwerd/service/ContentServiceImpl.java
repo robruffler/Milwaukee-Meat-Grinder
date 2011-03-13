@@ -1,6 +1,5 @@
 package com.fauxwerd.service;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -55,7 +54,7 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
     }
     
     @Transactional 
-    public void addContent(URL url, User user, String title) {
+    public Content addContent(URL url, User user, String title) {
 		String siteHostname = url.getAuthority();
 		
 		if (log.isDebugEnabled()) {
@@ -131,7 +130,8 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 			userContent.setDateUpdated(new DateTime());
 			updateUserContent(userContent);
 		}
-    	
+		
+		return content;    	
     }
     
     @Transactional

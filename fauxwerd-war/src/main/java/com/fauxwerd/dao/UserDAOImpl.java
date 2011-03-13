@@ -1,17 +1,23 @@
 package com.fauxwerd.dao;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.fauxwerd.model.Invite;
 import com.fauxwerd.model.Role;
 import com.fauxwerd.model.User;
+import com.fauxwerd.model.UserFollow;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
+	
+	private static final Logger log = LoggerFactory.getLogger(UserDAO.class);
 	
 	@Autowired
 	SessionFactory sessionFactory;
@@ -20,7 +26,11 @@ public class UserDAOImpl implements UserDAO {
 	public void saveUser(User entity) {
 		sessionFactory.getCurrentSession().save(entity);
 	}
-
+	
+	public void saveOrUpdateUser(User user) {
+		sessionFactory.getCurrentSession().saveOrUpdate(user);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public User getUser(String email) {
 		List<User> users = sessionFactory.getCurrentSession().createQuery("select h from User h where email='" + email + "'").list();
@@ -47,6 +57,13 @@ public class UserDAOImpl implements UserDAO {
         .list();		
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<User> listUsersExcept(User user) {
+		return sessionFactory.getCurrentSession().createQuery("from User as user where user.id != ?")
+		.setLong(0, user.getId())
+		.list();
+	}
+	
 	public void addInvite(Invite invite) {
 		sessionFactory.getCurrentSession().save(invite);
 	}
@@ -60,5 +77,35 @@ public class UserDAOImpl implements UserDAO {
 		.setString(0, code)
 		.uniqueResult();		
 	}
+
+	public void saveOrUpdateUserFollow(UserFollow userFollow) {
+		sessionFactory.getCurrentSession().saveOrUpdate(userFollow);
+	}
 	
+	public void followUser(User user, User toFollow) {
+		//reattach objects
+		sessionFactory.getCurrentSession().update(user);
+		sessionFactory.getCurrentSession().update(toFollow);
+		
+		saveOrUpdateUserFollow(new UserFollow(user, toFollow));
+	}
+	
+	public void unfollowUser(User user, User toUnfollow) {
+		//reattach objects
+		sessionFactory.getCurrentSession().update(user);
+		sessionFactory.getCurrentSession().update(toUnfollow);
+
+		if (log.isDebugEnabled()) log.debug(String.format("unfollowing %s", toUnfollow.getFullName()));
+		
+		Iterator<UserFollow> iter = user.getFollowing().iterator(); 
+			
+		while (iter.hasNext()) {
+			UserFollow followee = iter.next();
+			if (followee.getFollow().equals(toUnfollow)) {
+				sessionFactory.getCurrentSession().delete(followee);
+				if (log.isDebugEnabled()) log.debug(String.format("removed %s from list of followees", toUnfollow.getFullName()));
+			}
+		}
+			
+	}
 }

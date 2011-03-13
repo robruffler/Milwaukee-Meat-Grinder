@@ -335,4 +335,66 @@
           referencedTableName="invite" referencedColumnNames="invite_id"/> 
     </changeSet>
     
+    <changeSet author="rob" id="48">
+        <createTable tableName="user_follow">
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="follow_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="date_added" type="datetime"/>
+            <column name="date_updated" type="datetime"/>
+            <column name="optlock" type="int">
+                <constraints nullable="false" />
+            </column>            
+        </createTable>    
+    </changeSet>    
+
+    <changeSet author="rob" id="49">
+        <createTable tableName="activity">
+            <column name="activity_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="type" type="int">
+                <constraints nullable="false" />
+            </column>        
+            <column name="content_id" type="bigint">
+                <constraints nullable="false" />
+            </column>    
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" />
+            </column>                
+            <column name="date_added" type="datetime"/>
+            <column name="date_updated" type="datetime"/>
+            <column name="optlock" type="int">
+                <constraints nullable="false" />
+            </column>            
+        </createTable>    
+    </changeSet>
+    
+    <changeSet author="rob" id="50">
+        <addForeignKeyConstraint constraintName="fk_user_follow_user" 
+          baseTableName="user_follow" baseColumnNames="user_id" 
+          referencedTableName="user" referencedColumnNames="user_id"/> 
+    </changeSet>
+
+    <changeSet author="rob" id="51">
+        <addForeignKeyConstraint constraintName="fk_user_follow_follow" 
+          baseTableName="user_follow" baseColumnNames="follow_id" 
+          referencedTableName="user" referencedColumnNames="user_id"/> 
+    </changeSet>
+
+    <changeSet author="rob" id="52">
+        <addForeignKeyConstraint constraintName="fk_activity_user" 
+          baseTableName="activity" baseColumnNames="user_id" 
+          referencedTableName="user" referencedColumnNames="user_id"/> 
+    </changeSet>
+
+    <changeSet author="rob" id="53">
+        <addForeignKeyConstraint constraintName="fk_activity_content" 
+          baseTableName="activity" baseColumnNames="content_id" 
+          referencedTableName="content" referencedColumnNames="content_id"/> 
+    </changeSet>
+        
 </databaseChangeLog>

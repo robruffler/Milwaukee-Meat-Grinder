@@ -13,7 +13,7 @@ public interface ContentService {
 
 	public void addContent(Content content);
 	
-	public void addContent(URL url, User user, String title);
+	public Content addContent(URL url, User user, String title);
 	
 	public void addSite(Site site);
 	

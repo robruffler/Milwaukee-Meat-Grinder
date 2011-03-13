@@ -13,21 +13,17 @@
     <jsp:param name="title" value="${index.title}"/>
 </jsp:include>
 
-<c:if test="${fn:length(otherUsers) >= 1}">
-    <h1 class="title pizazz">Fauxwerd Users</h1>
+<c:if test="${fn:length(activityFeed) >= 1}">
+    <h1 class="title pizazz">Recent Activity</h1>
     <table class="content-list">
         <tr class="heading">
-            <td width="150">Name</td>
-            <td>Articles Saved</td>
-            <td>Followers</td>
-            <td>Follow?</td>
+            <td width="150">User</td>
+            <td>Activity</td>
         </tr>
-        <c:forEach items="${otherUsers}" var="user" varStatus="status">
+        <c:forEach items="${activityFeed}" var="activity" varStatus="status">
             <tr <c:if test="${status.count % 2 == 0}">class="alt-row"</c:if>>
-                <td><a href="/user/${user.id}">${user.fullName}</a></td>
-                <td>${fn:length(user.userContent)}</td>
-                <td>${fn:length(user.followers)}</td>
-                <td><a href="/follow/${user.id}">follow</a></td>
+                <td><a href="/user/${activity.user.id}">${activity.user.fullName}</a></td>
+                <td>${activity.type} <a href="/content/${activity.content.id}">${activity.content.title}</a> from <a href="${activity.content.url}">${activity.content.site.hostname}</a></td>
             </tr>
         </c:forEach>
     </table>

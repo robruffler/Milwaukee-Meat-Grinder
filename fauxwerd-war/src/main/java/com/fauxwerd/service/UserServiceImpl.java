@@ -25,7 +25,7 @@ import com.fauxwerd.model.User;
 @Service("userService")
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    final Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 	
 	@Autowired
 	private UserDAO userDAO;
@@ -95,6 +95,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 	
 	@Transactional
+	public List<User> listUsersExcept(User user) {
+		return userDAO.listUsersExcept(user);
+	}
+	
+	@Transactional
 	public void addInvite(Invite invite) {
 		userDAO.addInvite(invite);
 	}
@@ -107,6 +112,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Transactional
 	public Invite getInvite(String code) {
 		return userDAO.getInvite(code);
+	}
+	
+	@Transactional
+	public void followUser(User user, User toFollow) {
+		userDAO.followUser(user, toFollow);
+	}
+	
+	@Transactional
+	public void unfollowUser(User user, User toUnfollow) {
+		userDAO.unfollowUser(user, toUnfollow);
 	}
 		
 }

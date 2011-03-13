@@ -15,7 +15,8 @@
 
 <% pageContext.setAttribute("now", new org.joda.time.DateTime()); %>
 <p>Welcome ${user.fullName}, today is: <joda:format value="${now}" style="SM" /></p>
-<p><a href="/users">See what your friends are reading</a></p>
+<p><a href="/users">Find people to follow</a></p>
+<p><a href="/activity">See what your friends are doing</a></p>
 <jsp:include page="/WEB-INF/views/common/bookmark.jsp" />
 <c:if test="${fn:length(user.userContent) >= 1}">
     <h1 class="title pizazz">Saved Articles</h1>

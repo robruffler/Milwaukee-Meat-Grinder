@@ -23,9 +23,15 @@ public interface UserService {
 	
 	public List<User> listUsers();
 	
+	public List<User> listUsersExcept(User user);
+	
 	public void addInvite(Invite invite);
 	
 	public void updateInvite(Invite invite);
 	
 	public Invite getInvite(String code);
+	
+	public void followUser(User user, User toFollow);
+	
+	public void unfollowUser(User user, User toUnfollow);
 }
