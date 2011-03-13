@@ -29,7 +29,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 	
 	@SuppressWarnings("unchecked")
 	public List<Activity> listAllActivity() {
-		return sessionFactory.getCurrentSession().createQuery("from Activity").list();
+		return sessionFactory.getCurrentSession().createQuery("from Activity as activity order by activity.dateAdded desc").list();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -40,7 +40,7 @@ public class ActivityDAOImpl implements ActivityDAO {
 			for (UserFollow userFollow : user.getFollowing()) {
 				following.add(userFollow.getFollow());
 			}						
-			Query q = sessionFactory.getCurrentSession().createQuery("from Activity as activity where activity.user in (:following)");
+			Query q = sessionFactory.getCurrentSession().createQuery("from Activity as activity where activity.user in (:following) order by activity.dateAdded desc");
 			q.setParameterList("following", following);
 			activityFeed = q.list();
 		}

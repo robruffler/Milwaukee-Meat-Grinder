@@ -17,13 +17,13 @@
     <h1 class="title pizazz">Recent Activity</h1>
     <table class="content-list">
         <tr class="heading">
-            <td width="150">User</td>
+            <td width="125">User</td>
             <td>Activity</td>
         </tr>
         <c:forEach items="${activityFeed}" var="activity" varStatus="status">
             <tr <c:if test="${status.count % 2 == 0}">class="alt-row"</c:if>>
                 <td><a href="/user/${activity.user.id}">${activity.user.fullName}</a></td>
-                <td>${activity.type} <a href="/content/${activity.content.id}">${activity.content.title}</a> from <a href="${activity.content.url}">${activity.content.site.hostname}</a></td>
+                <td>${activity.type} <a href="/content/${activity.content.id}">${activity.content.title}</a> from <a href="${activity.content.url}">${activity.content.site.hostname}</a> at <joda:format value="${activity.dateAdded}" style="SM" /></td>
             </tr>
         </c:forEach>
     </table>
