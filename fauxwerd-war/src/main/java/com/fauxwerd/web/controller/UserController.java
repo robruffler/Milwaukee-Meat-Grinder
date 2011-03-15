@@ -172,6 +172,9 @@ public class UserController {
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User toFollow = userService.getUserById(userId);
 		
+		if (log.isDebugEnabled()) log.debug(String.format("user = %s", user));
+		if (log.isDebugEnabled()) log.debug(String.format("toFollow = %s", toFollow));
+		
 		userService.followUser(user, toFollow);
 		
 		return new ModelAndView("redirect:/home", "user", user);

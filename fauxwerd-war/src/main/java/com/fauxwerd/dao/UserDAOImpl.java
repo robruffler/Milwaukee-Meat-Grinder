@@ -84,16 +84,19 @@ public class UserDAOImpl implements UserDAO {
 	
 	public void followUser(User user, User toFollow) {
 		//reattach objects
-		sessionFactory.getCurrentSession().update(user);
-		sessionFactory.getCurrentSession().update(toFollow);
+		sessionFactory.getCurrentSession().merge(user);
+		sessionFactory.getCurrentSession().merge(toFollow);
 		
+		if (log.isDebugEnabled()) log.debug(String.format("user = %s", user));
+		if (log.isDebugEnabled()) log.debug(String.format("toFollow = %s", toFollow));
+				
 		saveOrUpdateUserFollow(new UserFollow(user, toFollow));
 	}
 	
 	public void unfollowUser(User user, User toUnfollow) {
 		//reattach objects
-		sessionFactory.getCurrentSession().update(user);
-		sessionFactory.getCurrentSession().update(toUnfollow);
+		sessionFactory.getCurrentSession().merge(user);
+		sessionFactory.getCurrentSession().merge(toUnfollow);
 
 		if (log.isDebugEnabled()) log.debug(String.format("unfollowing %s", toUnfollow.getFullName()));
 		
