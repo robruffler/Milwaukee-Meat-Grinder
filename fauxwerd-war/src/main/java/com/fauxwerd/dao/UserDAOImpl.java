@@ -87,6 +87,10 @@ public class UserDAOImpl implements UserDAO {
 		sessionFactory.getCurrentSession().merge(user);
 		sessionFactory.getCurrentSession().merge(toFollow);
 		
+		//init lazy-loaded collections
+		user.getFollowing().size();
+		toFollow.getFollowers().size();
+		
 		if (log.isDebugEnabled()) log.debug(String.format("user = %s", user));
 		if (log.isDebugEnabled()) log.debug(String.format("toFollow = %s", toFollow));
 				
@@ -98,6 +102,10 @@ public class UserDAOImpl implements UserDAO {
 		sessionFactory.getCurrentSession().merge(user);
 		sessionFactory.getCurrentSession().merge(toUnfollow);
 
+		//init lazy-loaded collections
+		user.getFollowing().size();
+		toUnfollow.getFollowers().size();
+				
 		if (log.isDebugEnabled()) log.debug(String.format("unfollowing %s", toUnfollow.getFullName()));
 		
 		Iterator<UserFollow> iter = user.getFollowing().iterator(); 
