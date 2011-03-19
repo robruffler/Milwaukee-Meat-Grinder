@@ -31,6 +31,7 @@ import com.fauxwerd.dao.ContentDAO;
 import com.fauxwerd.model.Content;
 import com.fauxwerd.model.ContentStatus;
 import com.fauxwerd.model.Site;
+import com.fauxwerd.model.Topic;
 import com.fauxwerd.model.User;
 import com.fauxwerd.model.UserContent;
 import com.fauxwerd.util.ParseUtil;
@@ -47,6 +48,9 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 	
     @Autowired
     private ContentDAO contentDAO;
+    
+    @Autowired
+    private TopicService topicService;
  
     @Transactional
     public void addContent(Content content) {
@@ -132,6 +136,28 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 		}
 		
 		return content;    	
+    }
+    
+    @Transactional
+    public void addTopicToContent(Content content, Topic topic) {
+    	
+    	Topic existingTopic = topicService.getTopicByName(topic.getName());
+    	Topic originalTopic = topic;
+    	
+    	if (existingTopic != null) {
+    		topic = existingTopic;    		
+    	} else {
+    		topicService.saveOrUpdateTopic(topic);
+    	}
+    	    	
+    	contentDAO.addTopicToContent(content, topic);
+    	
+    	//to pass id back with topic
+    	originalTopic.setId(topic.getId());
+    }
+    
+    public void removeTopicFromContent(Long contentId, Long topicId) {
+    	contentDAO.removeTopicFromContent(contentId, topicId);
     }
     
     @Transactional

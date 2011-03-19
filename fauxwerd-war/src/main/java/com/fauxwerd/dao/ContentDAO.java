@@ -5,11 +5,16 @@ import java.util.List;
 import com.fauxwerd.model.Content;
 import com.fauxwerd.model.ContentStatus;
 import com.fauxwerd.model.Site;
+import com.fauxwerd.model.Topic;
 import com.fauxwerd.model.UserContent;
 
 public interface ContentDAO {
 
 	public void addContent(Content content);
+	
+	public void addTopicToContent(Content content, Topic topic);
+	
+	public void removeTopicFromContent(Long contentId, Long topicId);
 	
 	public void addSite(Site site);
 	

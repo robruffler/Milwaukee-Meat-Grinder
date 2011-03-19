@@ -3,6 +3,7 @@ package com.fauxwerd.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -10,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -36,7 +38,8 @@ public class Content {
 	private String parsedHtmlPath;
 //	private Long upVotes;
 //	private Long downVotes;
-	private List<UserContent> userContent = new ArrayList<UserContent>();	
+	private List<UserContent> userContent = new ArrayList<UserContent>();
+	private List<Topic> topics = new ArrayList<Topic>();
 	private Site site;
 	private DateTime dateAdded = new DateTime();
 	private DateTime dateUpdated;
@@ -145,6 +148,20 @@ public class Content {
 	public void setUserContent(List<UserContent> userContent) {
 		this.userContent = userContent;
 	}
+	
+	@ManyToMany
+	@JoinTable(name = "content_topic",
+				joinColumns = { @JoinColumn(name = "content_id")},
+				inverseJoinColumns = { @JoinColumn(name = "topic_id")})
+	@org.hibernate.annotations.ForeignKey(name = "FK_CONTENT_TOPIC_TOPIC",
+											inverseName = "FK_CONTENT_TOPIC_CONTENT")
+	public List<Topic> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(List<Topic> topics) {
+		this.topics = topics;
+	}
 
 	@ManyToOne
 	@JoinTable(name = "site_content",
@@ -155,7 +172,6 @@ public class Content {
 	public Site getSite() {
 		return site;
 	}
-
 	public void setSite(Site site) {
 		this.site = site;
 	}

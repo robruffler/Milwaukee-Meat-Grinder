@@ -396,5 +396,79 @@
           baseTableName="activity" baseColumnNames="content_id" 
           referencedTableName="content" referencedColumnNames="content_id"/> 
     </changeSet>
+    
+    <changeSet author="rob" id="54">
+        <createTable tableName="topic">
+            <column name="topic_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>        
+            <column name="date_added" type="datetime"/>
+            <column name="date_updated" type="datetime"/>
+            <column name="optlock" type="int">
+                <constraints nullable="false" />
+            </column>            
+        </createTable>  
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+            <append value=" collate utf8_unicode_ci"/>
+        </modifySql>
+    </changeSet>
+    
+    <changeSet author="rob" id="55">
+        <createTable tableName="topic_relation">
+            <column name="topic_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="parent_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>  
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+            <append value=" collate utf8_unicode_ci"/>
+        </modifySql>
+    </changeSet>
+
+    <changeSet author="rob" id="56">
+        <createTable tableName="content_topic">
+            <column name="content_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="topic_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>  
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+            <append value=" collate utf8_unicode_ci"/>
+        </modifySql>
+    </changeSet>
+    
+    <changeSet author="rob" id="57">
+        <addForeignKeyConstraint constraintName="fk_topic_relation_topic" 
+          baseTableName="topic_relation" baseColumnNames="topic_id" 
+          referencedTableName="topic" referencedColumnNames="topic_id"/> 
+    </changeSet>
+    
+    <changeSet author="rob" id="58">
+        <addForeignKeyConstraint constraintName="fk_topic_relation_parent" 
+          baseTableName="topic_relation" baseColumnNames="parent_id" 
+          referencedTableName="topic" referencedColumnNames="topic_id"/> 
+    </changeSet>           
+
+    <changeSet author="rob" id="59">
+        <addForeignKeyConstraint constraintName="fk_content_topic_content" 
+          baseTableName="content_topic" baseColumnNames="content_id" 
+          referencedTableName="content" referencedColumnNames="content_id"/> 
+    </changeSet>
+    
+    <changeSet author="rob" id="60">
+        <addForeignKeyConstraint constraintName="fk_content_topic_topic" 
+          baseTableName="content_topic" baseColumnNames="topic_id" 
+          referencedTableName="topic" referencedColumnNames="topic_id"/> 
+    </changeSet>           
         
 </databaseChangeLog>

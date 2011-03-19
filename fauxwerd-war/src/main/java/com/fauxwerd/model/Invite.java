@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fauxwerd.util.HashCodeUtil;
+
 @Entity
 @Table(name = "invite")
 public class Invite {
@@ -101,5 +103,24 @@ public class Invite {
 	public void setDateUpdated(DateTime dateUpdated) {
 		this.dateUpdated = dateUpdated;
 	}
+	
+	public boolean equals(Object other) {
+		if (this == other) return true;
+		if (!(other instanceof Invite)) return false;
+		
+		final Invite invite = (Invite)other;
+		if (!invite.getCode().equals( getCode())) return false;
+		
+		return true;
+	}
+	
+	public int hashCode() {
+		int result = HashCodeUtil.SEED;
+
+		result = HashCodeUtil.hash(result, getCode());
+		
+		return result;		
+	}	
+	
 
 }

@@ -17,14 +17,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fauxwerd.model.Activity;
 import com.fauxwerd.model.ActivityType;
 import com.fauxwerd.model.Content;
+import com.fauxwerd.model.Topic;
 import com.fauxwerd.model.User;
 import com.fauxwerd.service.ActivityService;
 import com.fauxwerd.service.ContentService;
+import com.fauxwerd.service.TopicService;
 import com.fauxwerd.service.UserService;
 
 @Controller
@@ -39,6 +42,8 @@ public class ContentController {
     private UserService userService;
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private TopicService topicService;
 	
 	@RequestMapping(value="/{contentIdString}", method=RequestMethod.GET)
 	public ModelAndView getContent(@PathVariable("contentIdString") String contentIdString) {
@@ -54,7 +59,8 @@ public class ContentController {
 		}
 		
 		Content content = contentService.getContentById(contentId);
-		ModelAndView modelAndView = new ModelAndView("content/view", "content", content);		
+		ModelAndView modelAndView = new ModelAndView("content/view", "content", content);
+		
 		return modelAndView;		
 	}
 	
@@ -116,5 +122,52 @@ public class ContentController {
 						
 		return "content/saved";
 	}
-
+	
+	@RequestMapping(value = "/add-topic/{contentIdString}")
+	public @ResponseBody Topic addTopicToContent(@PathVariable("contentIdString") String contentIdString, HttpServletRequest req, HttpServletResponse res) {
+		Long contentId = null;
+		String name = req.getParameter("topic");
+		
+		try {
+			contentId = Long.valueOf(contentIdString);
+		}
+		catch (NumberFormatException e) {
+			if(log.isErrorEnabled()) {
+				log.error("", e);
+			}
+		}
+		
+		Content content = contentService.getContentById(contentId);
+				
+		Topic topic = new Topic(name);
+		
+		contentService.addTopicToContent(content, topic);
+		
+		return topic;		
+	}
+	
+	@RequestMapping(value = "/remove-topic/{contentIdString}/{topicIdString}")
+	public @ResponseBody Topic addTopicToContent(@PathVariable("contentIdString") String contentIdString, @PathVariable("topicIdString") String topicIdString,
+			HttpServletRequest req, HttpServletResponse res) {
+		Long contentId = null;
+		Long topicId = null;
+		
+		try {
+			contentId = Long.valueOf(contentIdString);
+			topicId = Long.valueOf(topicIdString);
+		}
+		catch (NumberFormatException e) {
+			if(log.isErrorEnabled()) {
+				log.error("", e);
+			}
+		}
+		
+		if (log.isDebugEnabled()) log.debug(String.format("removing topicId [%s] from contentId [%s]", topicId, contentId));
+		
+		contentService.removeTopicFromContent(contentId, topicId);
+		
+		Topic topic = new Topic();
+		return topic;
+	}
+	
 }

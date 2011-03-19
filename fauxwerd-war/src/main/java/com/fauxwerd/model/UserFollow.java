@@ -15,6 +15,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import com.fauxwerd.model.UserContent.Id;
+import com.fauxwerd.util.HashCodeUtil;
 
 @Entity
 @Table(name = "user_follow")
@@ -155,5 +156,24 @@ public class UserFollow {
 		this.follow = follow;
 	}
 	
+	public boolean equals(Object other) {
+		if (this == other) return true;
+		if (!(other instanceof UserFollow)) return false;
+		
+		final UserFollow userFollow = (UserFollow)other;
+		if (!userFollow.getUser().equals( getUser())) return false;
+		if (!userFollow.getFollow().equals( getFollow())) return false;
+		
+		return true;
+	}
+	
+	public int hashCode() {
+		int result = HashCodeUtil.SEED;
 
+		result = HashCodeUtil.hash(result, getUser());
+		result = HashCodeUtil.hash(result, getFollow());
+		
+		return result;		
+	}	
+	
 }
