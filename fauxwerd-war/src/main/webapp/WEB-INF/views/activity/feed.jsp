@@ -24,12 +24,4 @@
     </table>
 </c:if>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        if (fw.utils.cookie.eat('${user.id}') === null) {
-            fw.user.login('${user.id}');
-        }
-    });
-</script>
-
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />

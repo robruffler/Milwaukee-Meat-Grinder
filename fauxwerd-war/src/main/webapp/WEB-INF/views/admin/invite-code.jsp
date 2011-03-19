@@ -20,12 +20,4 @@
 </c:if>
 <p><a href="${baseUrl}/register?code=${invite.code}">${baseUrl}/register?code=${invite.code}</a></p>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        if (fw.utils.cookie.eat('${user.id}') === null) {
-            fw.user.login('${user.id}');
-        }
-    });
-</script>
-
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
