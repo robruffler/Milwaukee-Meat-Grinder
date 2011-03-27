@@ -71,15 +71,19 @@ public class ContentController {
 		String userIdString = req.getParameter("userId");
 		Long userId = null;
 		String title = req.getParameter("title");
+		String page = req.getParameter("page");
 			
 		if (log.isDebugEnabled()) log.debug(String.format("title = %s", title));
+		if (log.isDebugEnabled()) log.debug(String.format("page = %s", page));
 		if (log.isDebugEnabled()) log.debug(String.format("urlString = %s", urlString));
 				
 		try {
 			urlString = URLDecoder.decode(urlString, "utf-8");
 			title = URLDecoder.decode(title, "utf-8");
+			page = URLDecoder.decode(page, "utf-8");
 			
 			if (log.isDebugEnabled()) log.debug(String.format("title after decode = %s", title));
+			if (log.isDebugEnabled()) log.debug(String.format("page after decode = %s", page));
 			if (log.isDebugEnabled()) log.debug(String.format("urlString after decode = %s", urlString));
 			
 			//drop any url fragments (#) that aren't ajax crawlable			

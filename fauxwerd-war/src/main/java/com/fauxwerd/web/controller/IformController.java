@@ -18,18 +18,21 @@ public class IformController {
 
     final Logger log = LoggerFactory.getLogger(getClass());
 
-	@RequestMapping(method=RequestMethod.GET)
+	@RequestMapping(method=RequestMethod.POST)
 	public ModelAndView getIform(HttpServletRequest req, HttpServletResponse res, Model model) {
 		String url = req.getParameter("url");
 		String u = req.getParameter("u");
 		String t = req.getParameter("t");
+		String p = req.getParameter("p");
 		
 		if (log.isDebugEnabled()) log.debug(String.format("t = %s", t));
+		if (log.isDebugEnabled()) log.debug(String.format("p = %s", p));
 		if (log.isDebugEnabled()) log.debug(String.format("req.getQueryString() = %s", req.getQueryString()));
 				
 		model.addAttribute("url", url);
 		model.addAttribute("u", u);
 		model.addAttribute("t", t);
+		model.addAttribute("p", p);
 		ModelAndView modelAndView = new ModelAndView("iform");
 		return modelAndView;
 	}

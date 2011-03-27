@@ -25,7 +25,7 @@
 			if (u === '${u}') { 
 				$.ajax({
 					url: '/content',
-					data: {url: '${url}', userId: '${u}', title: '${t}' },
+					data: {url: '${url}', userId: '${u}', title: '${t}', page: '${p}' },
 					contentType: 'application/x-www-form-urlencoded;charset=utf-8',
 					cache: false,
 					type: 'post',
