@@ -116,7 +116,7 @@ public class ContentController {
 		
 		User user = userService.getUserById(userId);
 		
-		Content content = contentService.addContent(url, user, title);
+		Content content = contentService.addContent(url, user, title, page);
 		
 		Activity activity = new Activity(user, ActivityType.SAVED, content);
 		

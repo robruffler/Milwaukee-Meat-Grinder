@@ -16,6 +16,8 @@ public interface ContentService {
 	
 	public Content addContent(URL url, User user, String title);
 	
+	public Content addContent(URL url, User user, String title, String page);
+	
 	public void addTopicToContent(Content content, Topic topic);
 	
 	public void removeTopicFromContent(Long contentId, Long topicId);	

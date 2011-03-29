@@ -59,6 +59,12 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
     
     @Transactional 
     public Content addContent(URL url, User user, String title) {
+		
+		return addContent(url, user, title, null);    	
+    }
+    
+    @Transactional
+    public Content addContent(URL url, User user, String title, String page) {
 		String siteHostname = url.getAuthority();
 		
 		if (log.isDebugEnabled()) {
@@ -119,6 +125,26 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 			addContent(content);
 		}
 		
+		if (page != null) {
+			content.setStatus(ContentStatus.FETCHED);
+			
+			String dataDirectoryPath = siteProperties.get("dataStore");			
+
+			String siteDirectoryPath = content.getSite().getHostname();
+			siteDirectoryPath = siteDirectoryPath.replace('.', '_');
+			
+        	File file = new File(dataDirectoryPath + "/" + siteDirectoryPath + "/" + content.getId().toString() + "-raw.html");
+        	try {
+        		FileUtils.writeStringToFile(file, page, "utf-8");
+        	} catch (IOException e) {
+        		if (log.isErrorEnabled()) { log.error("", e); }
+        	}
+			
+			content.setRawHtmlPath(file.getAbsolutePath());
+			
+			updateContent(content);			
+		}
+								
 		if (userContent == null) {
 			if (log.isDebugEnabled()) {
 				log.debug("adding new user content record");
@@ -134,8 +160,8 @@ public class ContentServiceImpl implements ContentService, ApplicationContextAwa
 			userContent.setDateUpdated(new DateTime());
 			updateUserContent(userContent);
 		}
-		
-		return content;    	
+    	
+    	return content;
     }
     
     @Transactional
