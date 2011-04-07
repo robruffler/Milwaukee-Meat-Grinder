@@ -1,15 +1,20 @@
 package com.fauxwerd.web.controller;
 
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
 import java.io.UnsupportedEncodingException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +38,13 @@ import org.springframework.ui.Model;
 
 import com.fauxwerd.model.Invite;
 import com.fauxwerd.model.InviteStatus;
+import com.fauxwerd.model.PasswordResetRequest;
 import com.fauxwerd.model.Role;
 import com.fauxwerd.model.User;
+import com.fauxwerd.service.MailService;
 import com.fauxwerd.service.UserService;
+import com.fauxwerd.web.valid.ForgotPasswordForm;
+import com.fauxwerd.web.valid.ResetPasswordForm;
 
 @Controller
 public class UserController {
@@ -45,11 +54,17 @@ public class UserController {
     @Autowired
     private UserService userService;
     
+	@Autowired
+	private MailService mailService;
+    
 	//@Resource - need to understand best way to annotate dependencies when multiple options exist
 	@Autowired
 	@Qualifier("org.springframework.security.authenticationManager")
 	private ProviderManager authenticationManager;
-        
+	
+	@Resource(name = "site")
+	private Map<String,String> site;
+	        
     @RequestMapping(value = "/register")
     public ModelAndView register(@RequestParam String code) {
     	if (log.isDebugEnabled()) log.debug(String.format("code = %s", code));
@@ -112,6 +127,101 @@ public class UserController {
 		return new ModelAndView("redirect:/home", "user", user);
 	}
 	
+	@RequestMapping(value = "/forgot-password", method = RequestMethod.GET)
+	public ModelAndView forgotPassword() {
+		ForgotPasswordForm form = new ForgotPasswordForm();
+		return new ModelAndView("user/forgot-password", "forgotPasswordForm", form);
+	}
+	
+	@RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
+	public ModelAndView forgotPasswordSubmit(@Valid ForgotPasswordForm form, BindingResult result, HttpServletRequest req, HttpServletResponse res) {
+		if (result.hasErrors()) {
+			return new ModelAndView("user/forgot-password", "forgotPasswordForm", form);
+		}
+		
+		if (log.isDebugEnabled()) log.debug(String.format("form.getEmail() = %s",form.getEmail()));
+
+		String email = form.getEmail();
+
+		User user = userService.getUser(email);
+				
+		if (user != null) {
+			String resetPasswordCode = UUID.randomUUID().toString();
+			resetPasswordCode = StringUtils.remove(resetPasswordCode, '-');
+						
+			userService.addPasswordResetRequest(new PasswordResetRequest(user, resetPasswordCode));
+						
+			String url = "";
+			if (site.get("hostname").equalsIgnoreCase("localhost")) {
+				url = "http://localhost";
+				if (!site.get("port").equals("80")) {
+					url += ":" + site.get("port");
+				}			
+			} else {
+				url = "http://fauxwerd.com";
+			}
+			url += "/forgot-password/" + resetPasswordCode;
+			
+			String body = String.format("<p>We received a request to reset the password associated with this e-mail address. If you made this request, please follow the instructions below.</p>"
+			+ "<p>Click the link below to reset your password:</p>"
+			+ "<p><a href=\"%s\">%s</a></p>"
+			+ "<p>If you did not request to have your password reset you can safely ignore this email. Rest assured your account is safe.</p>"
+			+ "<p>If clicking the link doesn't seem to work, you can copy and paste the link into your browser's address window, or retype it there. Once you have returned to Fauxwerd, we will give instructions for resetting your password.</p>"
+			+ "<p>Fauxwerd will never e-mail you and ask you to disclose or verify your Amazon.com password, credit card, or banking account number. If you receive a suspicious e-mail with a link to update your account information, do not click on the link--instead, report the e-mail to Fauxwerd for investigation."
+			+ "Thanks for visiting Fauxwerd!</p>"
+			, url, url);		
+
+			try {
+				mailService.sendMail(email, "Fauxwerd Password Assistance", body);
+			} catch (MessagingException e) {
+				if (log.isErrorEnabled()) log.error(null, e);
+			} catch (UnsupportedEncodingException e) {
+				if (log.isErrorEnabled()) log.error(null, e);
+			}
+		}
+		
+		ModelAndView modelAndView = new ModelAndView("user/forgot-password");
+		modelAndView.addObject("forgotPasswordForm", form);
+		modelAndView.addObject("complete", true);
+		
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/forgot-password/{forgotPasswordCode}", method = RequestMethod.GET)
+	public ModelAndView resetPassword(@PathVariable("forgotPasswordCode") String forgotPasswordCode) {		
+		PasswordResetRequest resetRequest = userService.getPasswordResetRequest(forgotPasswordCode);
+		
+		if (resetRequest == null) return new ModelAndView("redirect:/");
+		
+		ResetPasswordForm resetPasswordForm = new ResetPasswordForm();
+		
+		ModelAndView modelAndView = new ModelAndView("user/forgot-password");
+		modelAndView.addObject(resetPasswordForm);
+		modelAndView.addObject("reset", true);		
+		return modelAndView;
+	}	
+	
+	@RequestMapping(value = "/forgot-password/{forgotPasswordCode}", method = RequestMethod.POST)
+	public ModelAndView resetPasswordSubmit(@Valid ResetPasswordForm resetPasswordForm, BindingResult result, @PathVariable("forgotPasswordCode") String forgotPasswordCode) {
+		ModelAndView modelAndView = new ModelAndView("user/forgot-password");
+		modelAndView.addObject("resetPasswordForm", resetPasswordForm);
+			
+		if (result.hasErrors()) {
+			modelAndView.addObject("reset", true);
+			return modelAndView;
+		}
+		
+		PasswordResetRequest resetRequest = userService.getPasswordResetRequest(forgotPasswordCode);
+		
+		User user = resetRequest.getUser();
+		
+		userService.updatePassword(user, resetPasswordForm.getPassword());
+		
+		modelAndView.addObject("resetComplete", true);
+		
+		return modelAndView;		
+	}
+	
 	@RequestMapping(value = "/profile")
 	public ModelAndView profile() {
 		
@@ -170,6 +280,10 @@ public class UserController {
 		}	
 		
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				
+		//this is necessary b/c of hibernate lazy loading weirdness
+		user = userService.getUserById(user.getId());
+		
 		User toFollow = userService.getUserById(userId);
 		
 		if (log.isDebugEnabled()) log.debug(String.format("user = %s", user));
@@ -194,13 +308,16 @@ public class UserController {
 		}	
 		
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		//this is necessary b/c of hibernate lazy loading weirdness
+		user = userService.getUserById(user.getId());
+				
 		User toUnfollow = userService.getUserById(userId);
 		
 		userService.unfollowUser(user, toUnfollow);
 		
 		return new ModelAndView("redirect:/home", "user", user);
 	}
-	
 	
 	@RequestMapping(value = "wrong-bookmark", method = RequestMethod.GET)
 	public ModelAndView wrongBookmark(HttpServletRequest req, HttpServletResponse res, Model model) {

@@ -469,6 +469,35 @@
         <addForeignKeyConstraint constraintName="fk_content_topic_topic" 
           baseTableName="content_topic" baseColumnNames="topic_id" 
           referencedTableName="topic" referencedColumnNames="topic_id"/> 
-    </changeSet>           
+    </changeSet>  
+    
+    <changeSet author="rob" id="61">
+        <createTable tableName="password_reset">
+            <column name="password_reset_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="varchar(40)">
+              <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" />
+            </column>                            
+            <column name="date_added" type="datetime"/>
+            <column name="date_updated" type="datetime"/>
+            <column name="optlock" type="int">
+                <constraints nullable="false" />
+            </column>            
+        </createTable>   
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+            <append value=" collate utf8_unicode_ci"/>
+        </modifySql>         
+    </changeSet>
+    
+    <changeSet author="rob" id="62">
+        <addForeignKeyConstraint constraintName="fk_password_reset_user" 
+          baseTableName="password_reset" baseColumnNames="user_id" 
+          referencedTableName="user" referencedColumnNames="user_id"/> 
+    </changeSet>    
         
 </databaseChangeLog>

@@ -186,7 +186,21 @@
 	   <groupId>org.codehaus.jackson</groupId>
 	   <artifactId>jackson-mapper-asl</artifactId>
 	   <version>1.6.4</version>
-	</dependency>    
+	</dependency>
+	
+	<!-- javax Mail -->
+	<dependency>
+	   <groupId>javax.mail</groupId>
+	   <artifactId>mail</artifactId>
+	   <version>1.4.1</version>
+	</dependency>	    
+	
+	<!-- AWS Java API -->
+	<dependency>
+	   <groupId>com.amazonaws</groupId>
+	   <artifactId>aws-java-sdk</artifactId>
+	   <version>1.1.8</version>
+	</dependency>	
 
     <!-- Logging -->    
     <dependency>
@@ -219,12 +233,13 @@
       <artifactId>validation-api</artifactId>
       <version>1.0.0.GA</version>
     </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>4.0.2.GA</version>
-    </dependency>   
 
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator-annotation-processor</artifactId>
+        <version>4.1.0.Final</version>
+    </dependency>
+    
     <!-- JSoup -->
 	<dependency>
 	   <groupId>org.jsoup</groupId>

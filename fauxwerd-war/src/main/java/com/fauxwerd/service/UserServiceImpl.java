@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fauxwerd.dao.UserDAO;
 import com.fauxwerd.model.Invite;
 import com.fauxwerd.model.InviteStatus;
+import com.fauxwerd.model.PasswordResetRequest;
 import com.fauxwerd.model.Role;
 import com.fauxwerd.model.User;
 
@@ -66,6 +67,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 		return "success";
 	}
+	
+	@Transactional
+	public void saveOrUpdateUser(User user) {
+		userDAO.saveOrUpdateUser(user);
+	}
 
 	@Transactional
 	public User getUser(String email) {
@@ -112,6 +118,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Transactional
 	public Invite getInvite(String code) {
 		return userDAO.getInvite(code);
+	}
+
+	@Transactional
+	public void addPasswordResetRequest(PasswordResetRequest request) {
+		userDAO.addPasswordResetRequest(request);
+	}
+	
+	@Transactional
+	public PasswordResetRequest getPasswordResetRequest(String code) {
+		return userDAO.getPasswordResetRequest(code);
+	}
+		
+	@Transactional
+	public void updatePassword(User user, String password) {
+		user.setPassword(createHash(password));
+		userDAO.saveOrUpdateUser(user);
 	}
 	
 	@Transactional

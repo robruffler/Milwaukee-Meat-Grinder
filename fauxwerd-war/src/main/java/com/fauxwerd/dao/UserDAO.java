@@ -3,6 +3,7 @@ package com.fauxwerd.dao;
 import java.util.List;
 
 import com.fauxwerd.model.Invite;
+import com.fauxwerd.model.PasswordResetRequest;
 import com.fauxwerd.model.Role;
 import com.fauxwerd.model.User;
 import com.fauxwerd.model.UserFollow;
@@ -28,6 +29,10 @@ public interface UserDAO {
 	public void updateInvite(Invite invite);
 	
 	public Invite getInvite(String code);
+	
+	public void addPasswordResetRequest(PasswordResetRequest request);
+	
+	public PasswordResetRequest getPasswordResetRequest(String code);
 	
 	public void saveOrUpdateUserFollow(UserFollow userFollow);
 	

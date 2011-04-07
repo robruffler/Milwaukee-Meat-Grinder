@@ -6,12 +6,15 @@ import java.util.List;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fauxwerd.model.Invite;
+import com.fauxwerd.model.PasswordResetRequest;
 import com.fauxwerd.model.Role;
 import com.fauxwerd.model.User;
 
 public interface UserService {
 
 	public String createUser(User user);
+	
+	public void saveOrUpdateUser(User user);
 	
 	public User getUser(String username);
 	
@@ -31,6 +34,12 @@ public interface UserService {
 	
 	public Invite getInvite(String code);
 	
+	public void addPasswordResetRequest(PasswordResetRequest request);
+	
+	public PasswordResetRequest getPasswordResetRequest(String code);
+	
+	public void updatePassword(User user, String password);
+		
 	public void followUser(User user, User toFollow);
 	
 	public void unfollowUser(User user, User toUnfollow);

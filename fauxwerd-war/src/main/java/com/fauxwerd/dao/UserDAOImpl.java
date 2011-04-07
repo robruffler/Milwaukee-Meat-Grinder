@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.fauxwerd.model.Invite;
+import com.fauxwerd.model.PasswordResetRequest;
 import com.fauxwerd.model.Role;
 import com.fauxwerd.model.User;
 import com.fauxwerd.model.UserFollow;
@@ -77,6 +78,16 @@ public class UserDAOImpl implements UserDAO {
 		.setString(0, code)
 		.uniqueResult();		
 	}
+	
+	public void addPasswordResetRequest(PasswordResetRequest request) {
+		sessionFactory.getCurrentSession().save(request);
+	}
+	
+	public PasswordResetRequest getPasswordResetRequest(String code) {
+		return (PasswordResetRequest)sessionFactory.getCurrentSession().createQuery("from PasswordResetRequest as passwordReset where passwordReset.code = ?")
+		.setString(0, code)
+		.uniqueResult();
+	}	
 
 	public void saveOrUpdateUserFollow(UserFollow userFollow) {
 		sessionFactory.getCurrentSession().saveOrUpdate(userFollow);

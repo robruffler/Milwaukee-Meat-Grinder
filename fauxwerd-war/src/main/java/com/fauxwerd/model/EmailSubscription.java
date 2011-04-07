@@ -8,7 +8,7 @@ public class EmailSubscription {
 
 //	listSubscribe(string apikey, string id, string email_address, array merge_vars, string email_type, bool double_optin, 
 //	bool update_existing, bool replace_interests, bool send_welcome)
-
+//TODO should move apiKey to service layer methinks
 	private String apiKey = null;
 	private String email = null;
 	private String listId = null;

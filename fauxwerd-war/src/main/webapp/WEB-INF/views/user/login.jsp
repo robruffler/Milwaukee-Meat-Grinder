@@ -43,5 +43,6 @@
 	  </p>
   </fieldset>
 </form>
+<p><a href="forgot-password">Forgot your password?</a></p>
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
