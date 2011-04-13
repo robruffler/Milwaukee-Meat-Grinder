@@ -30,10 +30,10 @@
 					cache: false,
 					type: 'post',
 					success: function(d,t,x) {
-						$('#response').html(d);
+						$('#response').fadeOut(500, function() { $('#response').html(d).fadeIn(200);});
 					},
 					error: function() {
-						$('#response').html('<div class="error">Could not save. Try again in a few minutes.</div>');
+						$('#response').html('<div class="infotainer error">Could not save. Try again in a few minutes.</div>');
 					}
 				});
 			} else if (u === null) {

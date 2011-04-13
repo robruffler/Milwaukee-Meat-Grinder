@@ -1,1 +1,1 @@
-<div class="success">Saved! Visit your <a href="javascript:parent.location='http://${site.hostname}/home'" id="profile">page</a> to view your articles.</div>
+<div class="infotainer success">Saved! Visit your <a href="javascript:parent.location='http://${site.hostname}/home'" id="profile">page</a> to view your articles.</div>
