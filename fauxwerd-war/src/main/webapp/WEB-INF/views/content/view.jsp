@@ -16,7 +16,10 @@
 <jsp:include page="/WEB-INF/views/common/header.jsp">
     <jsp:param name="title" value="${index.title}"/>
 </jsp:include>
-
+<div class="share">
+	<a href="http://twitter.com/share" class="twitter-share-button" data-count="none" data-via="fauwerd">Tweet</a>
+	<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+</div>
 <p>
 <ul id="topics">
     <c:forEach items="${content.topics}" var="topic">
