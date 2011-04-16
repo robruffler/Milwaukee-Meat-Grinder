@@ -2,7 +2,7 @@ try {
 	(function() {
 		function fw_strip(str) {return str.replace(/<\/?[^>]+(>|$)/g, "");}
 		function fw_trim(str) {return str.replace(/^\s+|\s+$/g,"");}
-		function fw_removeApostrophe(str) {return str.replace(/'/g, "%27");}
+		function fw_removeApostrophe(str) {return str.replace(/'/g, "%E2%80%99");}
 		function fw_combineMeta(meta) {
 			var i = 0;
 				len = meta.length,
