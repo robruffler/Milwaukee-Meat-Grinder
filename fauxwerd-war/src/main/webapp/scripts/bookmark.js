@@ -2,7 +2,7 @@ try {
 	(function() {
 		function fw_strip(str) {return str.replace(/<\/?[^>]+(>|$)/g, "");}
 		function fw_trim(str) {return str.replace(/^\s+|\s+$/g,"");}
-		function fw_removeApostrophe(str) {return str.replace(/'/g, "%E2%80%99");}
+		function fw_removeApostrophe(str) {return str.replace(/'/g, "’");}
 		function fw_combineMeta(meta) {
 			var i = 0;
 				len = meta.length,
@@ -19,8 +19,8 @@ try {
 			var c = content.replace(/<!--.*?-->/ig, '');
 			c = c.replace(/(style|target|rel|border|cell[a-z]+|on[a-z]+)=".*?"/ig, '');
 			c = c.replace(/[\s\t\r\n]+/ig, ' ');
-			c = encodeURIComponent(c);
 			c = fw_removeApostrophe(c);
+			c = encodeURIComponent(c);
 			return c;
 		}
 		function saveText() {
