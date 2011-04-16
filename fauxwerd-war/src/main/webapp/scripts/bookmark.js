@@ -19,8 +19,8 @@ try {
 			var c = content.replace(/<!--.*?-->/ig, '');
 			c = c.replace(/(style|target|rel|border|cell[a-z]+|on[a-z]+)=".*?"/ig, '');
 			c = c.replace(/[\s\t\r\n]+/ig, ' ');
-			c = fw_removeApostrophe(c);
 			c = encodeURIComponent(c);
+			c = fw_removeApostrophe(c);
 			return c;
 		}
 		function saveText() {
@@ -59,7 +59,7 @@ try {
 		FW.fdoc.write('<input type="hidden" name="u" value="'+FW.u+'" />');
 		FW.fdoc.write('<input type="hidden" name="url" value="'+encodeURIComponent(FW.l.href)+'" />');
 		FW.fdoc.write('<input type="hidden" name="p" value="'+fwPage+'" />');
-		FW.fdoc.write('<input type="hidden" name="t" value="'+encodeURIComponent(fw_trim(fw_removeApostrophe(cTitle)))+'" />');
+		FW.fdoc.write('<input type="hidden" name="t" value="'+fw_removeApostrophe(encodeURIComponent(fw_trim(cTitle)))+'" />');
 		FW.fdoc.write('</form>');
 		FW.fdoc.write('</body></html>');
 		FW.fdoc.close();
