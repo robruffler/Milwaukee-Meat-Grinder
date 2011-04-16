@@ -8,7 +8,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 
-<jsp:include page="/WEB-INF/views/common/head.jsp" />
+<jsp:include page="/WEB-INF/views/common/head.jsp">
+	<jsp:param name="title" value="See what your friends are reading"/>
+</jsp:include>
 <jsp:include page="/WEB-INF/views/common/header.jsp">
     <jsp:param name="title" value="${index.title}"/>
 </jsp:include>

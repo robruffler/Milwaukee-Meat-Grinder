@@ -10,7 +10,7 @@
 <%@ taglib prefix="fw" uri="/WEB-INF/tlds/fauxwerd.tld" %>
 
 <jsp:include page="/WEB-INF/views/common/head.jsp">
-    <jsp:param name="title" value="Fauxwerd.com" />
+    <jsp:param name="title" value="${content.title}" />
 </jsp:include>
 
 <jsp:include page="/WEB-INF/views/common/header.jsp">
@@ -18,7 +18,7 @@
 </jsp:include>
 <div class="share">
 	<a href="http://twitter.com/share" class="twitter-share-button" data-count="none" data-via="fauwerd">Tweet</a>
-	<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+	<fb:like href="http://<%= request.getServerName() + request.getAttribute("javax.servlet.forward.request_uri").toString() %>" layout="button_count" show_faces="false" width="450" />
 </div>
 <p>
 <ul id="topics">

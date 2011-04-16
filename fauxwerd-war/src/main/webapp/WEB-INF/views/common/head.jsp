@@ -3,10 +3,16 @@
       pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
   <head>
     <meta charset="utf-8" />
-    <title>${title}</title>
+	<meta property="og:type" content="article" />
+	<meta property="og:site_name" content="fauxwerd" />
+	<meta property="og:title" content="<%= request.getParameter("title") %> on Fauxwerd.com" />
+	<meta property="og:app_id" content="195555050485313" />
+	<meta property="og:url" content="${currentUrl}" />
+	<meta property="og:image" content="http://www.fauxwerd.com/images/logo.png" />
+    <title><%= request.getParameter("title") %> on Fauxwerd.com</title>
 	<link rel="stylesheet" type="text/css" href="/styles/base.css" />
 	<link rel="stylesheet" type="text/css" href="/styles/main.css" />
 	<link rel="stylesheet" type="text/css" href="/styles/content.css" />
