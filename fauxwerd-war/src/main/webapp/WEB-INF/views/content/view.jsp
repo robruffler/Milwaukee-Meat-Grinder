@@ -12,28 +12,27 @@
 <jsp:include page="/WEB-INF/views/common/head.jsp">
     <jsp:param name="title" value="${content.title}" />
 </jsp:include>
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
 
-<jsp:include page="/WEB-INF/views/common/header.jsp">
-    <jsp:param name="title" value="${index.title}"/>
-</jsp:include>
-<div class="share">
+<section class="share">
 	<a href="http://twitter.com/share" class="twitter-share-button" data-count="none" data-via="fauwerd">Tweet</a>
 	<fb:like href="http://<%= request.getServerName() + request.getAttribute("javax.servlet.forward.request_uri").toString() %>" layout="button_count" show_faces="false" width="450" />
-</div>
-<p>
-<ul id="topics">
-    <c:forEach items="${content.topics}" var="topic">
-        <li><a href="/topic/${topic.id}">${topic.name}</a> <span class="remove">[<a href="#" class="remove-topic" topicId="${topic.id}">x</a>]</span></li>
-    </c:forEach>
-</ul>
-<a href="#" id="add-topics">Add Topics</a>
-<a href="#" id="edit-topics">Edit Topics</a>
-<div id="add-box">
-    <form id="topic-form" >               
-        <input type="text" name="topic" /> <button type="button" id="add-topic">Add</button> <a href="#" id="add-hide">Done</a> <a href="#" id="edit-hide">Done</a>
-    </form> 
-</div>        
-</p>
+</section>
+<section class="module">
+	<h3>Topics</h3>
+	<ul id="topics">
+		<c:forEach items="${content.topics}" var="topic">
+			<li><a href="/topic/${topic.id}">${topic.name}</a> <span class="remove"><a href="#" class="remove-topic" topicId="${topic.id}">x</a></span></li>
+		</c:forEach>
+	</ul>
+	<a href="#" id="add-topics">Add Topics</a>
+	<a href="#" id="edit-topics">Edit Topics</a>
+	<div id="add-box">
+		<form id="topic-form" >               
+			<input type="text" name="topic" /> <button type="button" id="add-topic">Add</button> <a href="#" id="add-hide">Done</a> <a href="#" id="edit-hide">Done</a>
+		</form> 
+	</div>
+</section>
 
 <h1>${content.title}</h1>
 
@@ -74,7 +73,7 @@ $(document).ready(function() {
     $("#add-topic").click(function() {
         $.post("/content/add-topic/${content.id}", $("#topic-form").serialize(),
         		function( data ) {
-              $("ul#topics").append('<li><a href="/topic/' + data.id + '" topicId="' + data.id + '">' + data.name + '</a> <span class="remove">[<a href="#" class="remove-topic" topicId="' + data.id + '">x</a>]</span></li>');
+              $("ul#topics").append('<li><a href="/topic/' + data.id + '" topicId="' + data.id + '">' + data.name + '</a> <span class="remove"><a href="#" class="remove-topic" topicId="' + data.id + '">x</a></span></li>');
               $('#topics li').find('.remove').hide();
               $('form input:text[name="topic"]').val('');              
               $('#add-box').hide();
@@ -89,7 +88,7 @@ $(document).ready(function() {
     	        e.preventDefault();
     	        $.post("/content/add-topic/${content.id}", $("#topic-form").serialize(),
     	                function( data ) {
-    	              $("ul#topics").append('<li><a href="/topic/' + data.id + '" topicId="' + data.id + '">' + data.name + '</a> <span class="remove">[<a href="#" class="remove-topic" topicId="' + data.id + '">x</a>]</span></li>');
+    	              $("ul#topics").append('<li><a href="/topic/' + data.id + '" topicId="' + data.id + '">' + data.name + '</a> <span class="remove"><a href="#" class="remove-topic" topicId="' + data.id + '">x</a></span></li>');
     	              $('#topics li').find('.remove').hide();
     	              $('form input:text[name="topic"]').val('');              
     	              $('#add-box').hide();

@@ -11,3 +11,50 @@
 .content-list .alt-row {
 	background: #FAFAFA;
 }
+
+#topics {
+	overflow: hidden;
+	margin: 0 auto;
+	padding: 0;
+}
+
+#topics li {
+	float: left;
+	margin: 0 5px;
+	padding: 2px 4px;
+	background: #F4F4F4;
+	border-radius: 5px;
+	list-style: none;
+}
+
+#topics li:hover {
+	background: #A9CCDE;
+}
+
+#topics li a {
+	text-decoration: none;
+	color: #246;
+}
+
+#topics li .remove {
+	display: block;
+	float: right;
+	position: relative;
+	top: 3px;
+	left: 2px;
+	width: 10px;
+	height: 10px;
+	background: #246;
+}
+
+#topics li .remove a {
+	color: #FFF;
+	position: relative;
+	top: -4px;
+	left: 1px;
+}
+
+.fb_edge_widget_with_comment {
+	position: relative;
+	top: 2px;
+}
