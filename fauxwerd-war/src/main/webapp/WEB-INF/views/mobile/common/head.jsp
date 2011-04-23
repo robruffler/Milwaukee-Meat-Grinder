@@ -12,6 +12,7 @@
 	<meta property="og:app_id" content="195555050485313" />
 	<meta property="og:url" content="${currentUrl}" />
 	<meta property="og:image" content="http://www.fauxwerd.com/images/logo.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, target-densityDpi=device-dpi" />
     <title><%= request.getParameter("title") %> on Fauxwerd.com</title>
 	<link rel="stylesheet" type="text/css" href="/styles/mobile-base.css" />
     <!-- google analytics -->
