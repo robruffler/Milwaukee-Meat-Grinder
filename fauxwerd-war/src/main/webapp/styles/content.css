@@ -1,6 +1,12 @@
 a { text-decoration: none }
 
 #dialog { display: none; }
+#external-view { 
+	display: none;
+	margin: 0 auto;
+	padding: 0;
+	overflow: hidden;
+}
 
 .content-list {
 	width: 100%;
@@ -100,48 +106,30 @@ a { text-decoration: none }
 	opacity: .7;
 	filter: alpha(opacity = 70);
 }
-/*
-#topics {
-	overflow: hidden;
-	margin: 0 auto;
-	padding: 0;
-}
 
-#topics li {
-	position: relative;
-	float: left;
-	margin: 0 5px;
-	padding: 2px 7px;
-	background: #F4F4F4;
-	border-radius: 5px;
-	list-style: none;
-}
-
-#topics li:hover {
-	background: #A9CCDE;
-}
-
-#topics li a {
-	text-decoration: none;
-	color: #246;
-}
-
-#topics li .remove {
+#return {
 	display: block;
-	position: absolute;
-	top: 5px;
-	right: -5px;
-	width: 10px;
-	height: 10px;
-	background: #246;
+	float: right;
+	font-size: 16px;
+	font-weight: bold;
+	color: #ececec;
 }
 
-#topics li .remove a {
+#return:hover {
 	color: #FFF;
-	position: relative;
-	top: -4px;
-	left: 1px;
-}*/
+}
+
+#external-view .external-article {
+	clear: both;
+	width: 920px;
+	height: 700px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+#ui-dialog-title-external-view {
+	cursor: pointer;
+}
 
 .fb_edge_widget_with_comment {
 	position: relative;

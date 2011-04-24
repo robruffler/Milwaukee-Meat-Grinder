@@ -1,6 +1,4 @@
 @import "reset.css";
-
-section, header, nav, article { display: block; }
 a { text-decoration: none; }
 body { 
 	background: #FFF;

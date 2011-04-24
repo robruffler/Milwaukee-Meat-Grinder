@@ -25,10 +25,9 @@
 	</form>
 	<a href="#" id="all-set">Done</a>
 </div>
-
-<script>
-	
-</script>
+<div id="external-view" title="Return to Fauxwerd">
+<!-- -->
+</div>
 
 <section class="share">
 	<a href="http://twitter.com/share" class="twitter-share-button" data-count="none" data-via="fauwerd">Tweet</a>
@@ -36,7 +35,7 @@
 </section>
 <article class="fauxwerd-article">
 	<header>${content.title}</header>
-	<cite>via <a href="${content.url}">${content.site.hostname}</a></cite>
+	<cite>via <a href="${content.url}" class="external-view">${content.site.hostname}</a></cite>
 	<ul id="topics" class="topics">
 		<c:forEach items="${content.topics}" var="topic">
 			<li><a href="/topic/${topic.id}" class="topic-${topic.id}">${topic.name}</a></li>
@@ -50,12 +49,24 @@
 	(function($) {
 		var $topics = $("#topics"),
 			$list = $("#topics-list"),
-			$dialog = $("#dialog");
+			$dialog = $("#dialog"),
+			$external = $("#external-view"),
+			$window = $(window);
 		$(document).ready(function() {
-			$("#dialog").dialog({
+			$dialog.dialog({
 				autoOpen: false,
 				modal: true,
 				width: 500
+			});
+			$external.dialog({
+				autoOpen: false,
+				modal: true,
+				width: $window.width() - 50,
+				height: $window.height() - 50,
+				draggable: false,
+				close: function() {
+					$(".external-article").remove();
+				}
 			});
 			$("#edit-topics").click(function(e) {
 				e.preventDefault();
@@ -66,6 +77,21 @@
 			$("#all-set").click(function(e) {
 				e.preventDefault();
 				$dialog.dialog("close");
+				return false;
+			});
+			$("#ui-dialog-title-external-view").click(function() {
+				$external.dialog("close");
+				$(".external-article").remove();
+			});
+			$(".external-view").click(function(e) {
+				e.preventDefault();
+				var width = $window.width() - 50,
+					height = $window.height() - 50;
+				$(".ui-dialog").css({ "width": width, "height": height });
+				$('<iframe src="'+ $(this).attr('href') +'" class="external-article"></iframe>').css({"width": width - 5, "height": height - 40}).appendTo($external);
+				$external.dialog("option", "width", width);
+				$external.dialog("option", "height", height);
+				$external.dialog("open");
 				return false;
 			});
 			$("#topic-form").submit(function(e) {
