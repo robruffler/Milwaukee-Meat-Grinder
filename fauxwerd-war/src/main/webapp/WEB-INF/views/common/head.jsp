@@ -13,18 +13,18 @@
 	<meta property="og:url" content="${currentUrl}" />
 	<meta property="og:image" content="http://www.fauxwerd.com/images/logo.png" />
     <title><%= request.getParameter("title") %> on Fauxwerd.com</title>
-	<link rel="stylesheet" type="text/css" href="/styles/base.css" />
-	<link rel="stylesheet" type="text/css" href="/styles/main.css" />
-	<link rel="stylesheet" type="text/css" href="/styles/content.css" />
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"><!----></script>
-	<script type="text/javascript" src="/scripts/fw.js"><!----></script>
-	<script type="text/javascript" src="/scripts/modules.js"><!----></script>
-	<script type="text/javascript" src="/scripts/user/user.js"><!----></script>
+	<link rel="stylesheet" type="text/css" href="/styles/full-base.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
+	<script src="/scripts/fw.js"><!----></script>
+	<script src="/scripts/modules.js"><!----></script>
+	<script src="/scripts/user/user.js"><!----></script>
 	<!--[if IE]>
 	<script type="text/javascript">
 		document.createElement('header');
 		document.createElement('section');
 		document.createElement('article');
+		document.createElement('nav');
 	</script>
 	<![endif]-->
     <!-- google analytics -->
@@ -39,6 +39,5 @@
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
     </script>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
   </head>
   <body>

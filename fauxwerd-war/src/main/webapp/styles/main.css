@@ -9,13 +9,12 @@ body {
 }
 
 a {
-	color: #000;
+	color: #333;
 	text-decoration: underline;
 	font-weight: bold;
 }
 
 a:hover {
-	color: #E62020;
 }
 
 #bookmarklet {
@@ -78,16 +77,16 @@ a:hover {
 }
 
 #menu li a {
-	color: #6b4c4c;
+	color: #333;
 	text-decoration: none;
 	display: block;
 }
 
 #menu li .lesser {
-	color: #b6bac0;
+	color: #666;
 }
 
-#menu li a:hover { color: #262626;}
+#menu li a:hover { color: #000;}
 
 #login-form { float: right; margin-top: 5px; }
 

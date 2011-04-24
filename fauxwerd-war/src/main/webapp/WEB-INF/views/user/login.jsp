@@ -12,7 +12,7 @@
 
 
 <jsp:include page="/WEB-INF/views/common/head.jsp">
-  <jsp:param name="title" value="login | Fauxwerd.com" />
+  <jsp:param name="title" value="Login" />
 </jsp:include>
 <jsp:include page="/WEB-INF/views/common/header.jsp">
   <jsp:param name="title" value="${index.title}"/>

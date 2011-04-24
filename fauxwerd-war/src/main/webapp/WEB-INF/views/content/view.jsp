@@ -14,122 +14,95 @@
 </jsp:include>
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
 
+<div id="dialog" title="Edit Topics">
+	<ul id="topics-list" class="topics removable">
+		<c:forEach items="${content.topics}" var="topic">
+			<li><a href="/topic/${topic.id}" data-id="${topic.id}" class="topic-${topic.id}" title="Remove">${topic.name}</a></li>
+		</c:forEach>
+	</ul>
+	<form id="topic-form">
+		<input type="text" id="topic-name" name="topic-name" autofocus /> <input type="submit" id="add-topic" value="Add Topic" />
+	</form>
+	<a href="#" id="all-set">Done</a>
+</div>
+
+<script>
+	
+</script>
+
 <section class="share">
 	<a href="http://twitter.com/share" class="twitter-share-button" data-count="none" data-via="fauwerd">Tweet</a>
 	<fb:like href="http://<%= request.getServerName() + request.getAttribute("javax.servlet.forward.request_uri").toString() %>" layout="button_count" show_faces="false" width="450" />
 </section>
-<section class="module">
-	<h3>Topics</h3>
-	<ul id="topics">
+<article class="fauxwerd-article">
+	<header>${content.title}</header>
+	<cite>via <a href="${content.url}">${content.site.hostname}</a></cite>
+	<ul id="topics" class="topics">
 		<c:forEach items="${content.topics}" var="topic">
-			<li><a href="/topic/${topic.id}">${topic.name}</a> <span class="remove"><a href="#" class="remove-topic" topicId="${topic.id}">x</a></span></li>
+			<li><a href="/topic/${topic.id}" class="topic-${topic.id}">${topic.name}</a></li>
 		</c:forEach>
+		<li id="edit-topics-li"><a href="#" id="edit-topics" class="edit-topics">edit topics</a></li>
 	</ul>
-	<a href="#" id="add-topics">Add Topics</a>
-	<a href="#" id="edit-topics">Edit Topics</a>
-	<div id="add-box">
-		<form id="topic-form" >               
-			<input type="text" name="topic" /> <button type="button" id="add-topic">Add</button> <a href="#" id="add-hide">Done</a> <a href="#" id="edit-hide">Done</a>
-		</form> 
-	</div>
-</section>
-
-<h1>${content.title}</h1>
-
-<p><a href="${content.url}">View this article on ${content.site.hostname}</a></p>
-
-<fw:content contentId="${content.id}"/>
-
+	
+	<fw:content contentId="${content.id}"/>
+</article>
+<script>
+	(function($) {
+		var $topics = $("#topics"),
+			$list = $("#topics-list"),
+			$dialog = $("#dialog");
+		$(document).ready(function() {
+			$("#dialog").dialog({
+				autoOpen: false,
+				modal: true,
+				width: 500
+			});
+			$("#edit-topics").click(function(e) {
+				e.preventDefault();
+				$dialog.dialog("open");
+				$("#topic-name").get(0).focus();
+				return false;
+			});
+			$("#all-set").click(function(e) {
+				e.preventDefault();
+				$dialog.dialog("close");
+				return false;
+			});
+			$("#topic-form").submit(function(e) {
+				e.preventDefault();
+				$.ajax({
+					url: "/content/add-topic/${content.id}",
+					data: {"topic": $("#topic-name").val() },
+					type: "post",
+					dataType: "json",
+					success: function(data) {
+						$('<li><a href="/topic/' + data.id + '" class="topic-' + data.id + '">' + data.name + '</a></li>').insertBefore("#edit-topics-li");
+						$list.append('<li><a href="/topic/' + data.id + '" data-id="' + data.id + '" class="topic-' + data.id + '" title="Remove">' + data.name + '</a></li>');
+						$("#topic-name").val('').get(0).focus();
+					},
+					error: function( x, t, err) {
+						fw.utils.log(err);
+					}
+				});
+				return false;
+			});
+			$list.delegate('a', 'click', function(e) {
+				e.preventDefault();
+				var topicId = $(this).attr("data-id");
+				$.ajax({
+					url: '/content/remove-topic/${content.id}/' + topicId,
+					type: 'get',
+					dataType: 'json',
+					success: function(data) {
+						$(".topic-" + topicId).parent().remove();
+					},
+					error: function( x, t, err) {
+						fw.utils.log(err);
+					}
+				});
+				return false;
+			});
+		});
+	}(jQuery));
+</script>
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
-
-<script language="javascript"><!-- 
-$(document).ready(function() {
-    // hides the add-box as soon as the DOM is ready
-    $('#add-box').hide();
-    $('#topics li').find('.remove').hide();    
-    if ($('#topics li').length > 0) {
-    	$('#add-topics').hide();
-    	$('#add-hide').hide();
-    } else {
-    	$('#edit-topics').hide();
-    	$('#edit-hide').hide();
-    }
-    
-    // shows the add-box on clicking the noted link  
-    $('#add-topics').click(function() {
-        $('#add-box').show();
-        $('#add-topics').hide();
-        return false;
-    });
-        
-    // hides the add-box on clicking the noted link  
-    $('#add-hide').click(function() {
-        $('#add-box').hide();
-	    $('#add-topics').show();
-	    return false;
-	});
-        	 	 
-    // submits topic form
-    $("#add-topic").click(function() {
-        $.post("/content/add-topic/${content.id}", $("#topic-form").serialize(),
-        		function( data ) {
-              $("ul#topics").append('<li><a href="/topic/' + data.id + '" topicId="' + data.id + '">' + data.name + '</a> <span class="remove"><a href="#" class="remove-topic" topicId="' + data.id + '">x</a></span></li>');
-              $('#topics li').find('.remove').hide();
-              $('form input:text[name="topic"]').val('');              
-              $('#add-box').hide();
-              $('#edit-topics').show();              
-            }, "json");
-	});
-    
-    //also submits topic form
-    $('#topic-form input').bind('keypress', function(e) {
-    	 var code = (e.keyCode ? e.keyCode : e.which);
-    	 if(code == 13) { //Enter keycode
-    	        e.preventDefault();
-    	        $.post("/content/add-topic/${content.id}", $("#topic-form").serialize(),
-    	                function( data ) {
-    	              $("ul#topics").append('<li><a href="/topic/' + data.id + '" topicId="' + data.id + '">' + data.name + '</a> <span class="remove"><a href="#" class="remove-topic" topicId="' + data.id + '">x</a></span></li>');
-    	              $('#topics li').find('.remove').hide();
-    	              $('form input:text[name="topic"]').val('');              
-    	              $('#add-box').hide();
-    	              $('#edit-topics').show();              
-    	            }, "json");
-    	 }    	    	
-    });    
-        
-    // shows the edit-box on clicking the noted link  
-    $('#edit-topics').click(function() {
-        $('#add-box').show();
-        $('#edit-topics').hide();
-        $('#topics li').find('.remove').show();        
-        return false;
-    });
-        
-    // hides the add-box on clicking the noted link  
-    $('#edit-hide').click(function() {
-        $('#add-box').hide();
-        $('#edit-topics').show();
-        $('#topics li').find('.remove').hide();        
-        return false;
-    });
-        
-    $('.remove-topic').live('click', function(e) {
-    	var topicId = $(this).attr("topicId");
-        $.get('/content/remove-topic/${content.id}/' + topicId, "",
-                function( data ) {
-            return false;
-        }, "json");
-        $(this).parent().parent().remove();
-        $('#add-box').hide();
-        $('form input:text[name="topic"]').val('');
-        if ($('#topics li').length > 0) {
-            $('#edit-topics').show();
-
-        } else {
-            $('#add-topics').show();
-        }
-
-    });
-    
-});
---></script>
