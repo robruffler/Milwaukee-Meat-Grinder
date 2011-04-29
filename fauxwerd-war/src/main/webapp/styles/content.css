@@ -26,11 +26,11 @@ a { text-decoration: none }
 }
 .fauxwerd-article {
 	margin: 5px 10%;
-	-moz-column-count: 2;
+	/*-moz-column-count: 2;
 	-moz-column-gap: 20px;
 	-webkit-column-count: 2;
 	-webkit-column-gap: 20px;
-	column-count: 3;
+	column-count: 2;
 	column-gap: 20px;
 	-moz-column-rule-color: #ececec;
 	-webkit-column-rule-color: #ececec;
@@ -40,14 +40,14 @@ a { text-decoration: none }
 	column-rule-style: solid;
 	-moz-column-rule-width: 1px;
 	-webkit-column-rule-width: 1px;
-	column-rule-width: 1px;
+	column-rule-width: 1px;*/
 }
 .fauxwerd-article header {
 	font-size: 28px;
-	font-weight: bold;
+	font-weight: bold;/*
 	-moz-column-span: all;
 	-webkit-column-span: all;
-	column-span: all;
+	column-span: all;*/
 }
 .fauxwerd-article cite {
 	font-size: 12px;
@@ -86,10 +86,10 @@ a { text-decoration: none }
 	float: left;
 	margin: 2px 0 0 3px;
 	background: none;
-	color: #999;
+	color: #F33;
 }
 .topics li .edit-topics:hover {
-	color: #666;
+	color: #C00;
 	background: none;
 }
 #topic-form #topic-name {

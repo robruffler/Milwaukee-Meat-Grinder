@@ -17,7 +17,7 @@
 <div id="dialog" title="Edit Topics">
 	<ul id="topics-list" class="topics removable">
 		<c:forEach items="${content.topics}" var="topic">
-			<li><a href="/topic/${topic.id}" data-id="${topic.id}" class="topic-${topic.id}" title="Remove">${topic.name}</a></li>
+			<li><a href="/topic/${topic.id}" data-id="${topic.id}" class="topic-${topic.id}" title="Remove">${topic.name} [x]</a></li>
 		</c:forEach>
 	</ul>
 	<form id="topic-form">
@@ -40,7 +40,18 @@
 		<c:forEach items="${content.topics}" var="topic">
 			<li><a href="/topic/${topic.id}" class="topic-${topic.id}">${topic.name}</a></li>
 		</c:forEach>
-		<li id="edit-topics-li"><a href="#" id="edit-topics" class="edit-topics">edit topics</a></li>
+		<li id="edit-topics-li">
+			<a href="#" id="edit-topics" class="edit-topics">
+			<c:choose>
+				<c:when test="${fn:length(content.topics) > 0}">
+					edit topics
+				</c:when>
+				<c:otherwise>
+					add topics
+				</c:otherwise>
+			</c:choose>
+			</a>
+		</li>
 	</ul>
 	
 	<fw:content contentId="${content.id}"/>
@@ -51,7 +62,8 @@
 			$list = $("#topics-list"),
 			$dialog = $("#dialog"),
 			$external = $("#external-view"),
-			$window = $(window);
+			$window = $(window),
+			firstRun = true;
 		$(document).ready(function() {
 			$dialog.dialog({
 				autoOpen: false,
@@ -103,8 +115,12 @@
 					dataType: "json",
 					success: function(data) {
 						$('<li><a href="/topic/' + data.id + '" class="topic-' + data.id + '">' + data.name + '</a></li>').insertBefore("#edit-topics-li");
-						$list.append('<li><a href="/topic/' + data.id + '" data-id="' + data.id + '" class="topic-' + data.id + '" title="Remove">' + data.name + '</a></li>');
+						$list.append('<li><a href="/topic/' + data.id + '" data-id="' + data.id + '" class="topic-' + data.id + '" title="Remove">' + data.name + ' [x]</a></li>');
 						$("#topic-name").val('').get(0).focus();
+						if (firstRun) {
+							$("#edit-topics-li a").text("edit topics");
+							firstRun = false;
+						}
 					},
 					error: function( x, t, err) {
 						fw.utils.log(err);
