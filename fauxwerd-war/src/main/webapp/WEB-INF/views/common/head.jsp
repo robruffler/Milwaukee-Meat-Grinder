@@ -14,7 +14,7 @@
 	<meta property="og:image" content="http://www.fauxwerd.com/images/logo.png" />
     <title><%= request.getParameter("title") %> on Fauxwerd.com</title>
 	<link rel="stylesheet" type="text/css" href="/styles/full-base.css" />
-	<link rel="Shortcut Icon" href="/images/fav.ico" />
+	<link rel="Shortcut Icon" href="/images/favicon.ico" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
 	<script src="/scripts/fw.js"><!----></script>
